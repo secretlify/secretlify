@@ -1,26 +1,9 @@
 'use client';
 
 import { FloatingDock } from './floating-dock';
-import { Cat, Dog, User, Shield } from 'lucide-react';
+import { Cat, Dog } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-
-function useUser(pathname: string | null) {
-  const [userName, setUserName] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Re-read on route change to capture user switches when navigating via login
-    try {
-      const stored = localStorage.getItem('x-user');
-      setUserName(stored ?? null);
-    } catch {
-      setUserName(null);
-    }
-  }, [pathname]);
-
-  return userName;
-}
 
 export function AppNavigation() {
   const pathname = usePathname();

@@ -15,7 +15,7 @@ export default function PageB() {
       if (!res.ok) throw new Error('Failed');
       const data = (await res.json()) as { value: number };
       setValue(data.value);
-    } catch (e) {
+    } catch {
       setError('Failed to load');
     } finally {
       setLoading(false);
