@@ -1,13 +1,9 @@
-"use client";
-
 import { FloatingDock } from "./floating-dock";
-import { Cat, LogIn, ScanFaceIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { LogIn, ScanFaceIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export function AppNavigation() {
-  const pathname = usePathname();
-  const isAppRoute = pathname?.startsWith("/app");
+  const isAppRoute = true;
   const navItems = [
     {
       title: "Log in",
