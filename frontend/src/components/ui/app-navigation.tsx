@@ -1,5 +1,5 @@
 import { FloatingDock } from "./floating-dock";
-import { LogIn, ScanFaceIcon } from "lucide-react";
+import { Home, LogIn, ScanFaceIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, memo } from "react";
 
@@ -10,6 +10,13 @@ function AppNavigationImpl() {
 
   const isAppRoute = true;
   const navItems = [
+    {
+      title: "Home",
+      icon: (
+        <Home className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "/",
+    },
     {
       title: "Login",
       icon: (

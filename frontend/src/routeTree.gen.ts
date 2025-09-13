@@ -9,73 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
 
-const AppRouteRoute = AppRouteRouteImport.update({
-  id: '/app',
-  path: '/app',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppMeRoute = AppMeRouteImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => AppRouteRoute,
+  id: '/app/me',
+  path: '/app/me',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppLoginRoute = AppLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AppRouteRoute,
+  id: '/app/login',
+  path: '/app/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/app/login' | '/app/me'
+  fullPaths: '/' | '/app/login' | '/app/me'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/app/login' | '/app/me'
-  id: '__root__' | '/' | '/app' | '/app/login' | '/app/me'
+  to: '/' | '/app/login' | '/app/me'
+  id: '__root__' | '/' | '/app/login' | '/app/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRouteRoute: typeof AppRouteRouteWithChildren
+  AppLoginRoute: typeof AppLoginRoute
+  AppMeRoute: typeof AppMeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -85,38 +70,25 @@ declare module '@tanstack/react-router' {
     }
     '/app/me': {
       id: '/app/me'
-      path: '/me'
+      path: '/app/me'
       fullPath: '/app/me'
       preLoaderRoute: typeof AppMeRouteImport
-      parentRoute: typeof AppRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/login': {
       id: '/app/login'
-      path: '/login'
+      path: '/app/login'
       fullPath: '/app/login'
       preLoaderRoute: typeof AppLoginRouteImport
-      parentRoute: typeof AppRouteRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AppRouteRouteChildren {
-  AppLoginRoute: typeof AppLoginRoute
-  AppMeRoute: typeof AppMeRoute
-}
-
-const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppLoginRoute: AppLoginRoute,
-  AppMeRoute: AppMeRoute,
-}
-
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
-  AppRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRouteRoute: AppRouteRouteWithChildren,
+  AppLoginRoute: AppLoginRoute,
+  AppMeRoute: AppMeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
