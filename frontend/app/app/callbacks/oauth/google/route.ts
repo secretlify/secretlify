@@ -1,4 +1,5 @@
 import { AuthApi } from "@/lib/api/auth.api";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -13,7 +14,9 @@ export async function GET(req: NextRequest) {
     const { token } = await AuthApi.loginGoogle(code);
 
     const res = NextResponse.redirect(new URL("/app/me", req.url));
-    res.cookies.set("jwt", token, {
+
+    const store = await cookies();
+    store.set("jwt", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
