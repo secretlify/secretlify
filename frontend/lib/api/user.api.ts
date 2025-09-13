@@ -10,7 +10,11 @@ export interface UserSerialized {
 
 export class UserApi {
   public static async getMe(jwtToken: string): Promise<UserSerialized> {
-    const response = await axios.get("/users/me");
+    const response = await axios.get("/users/me", {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
     return response.data;
   }
 }
