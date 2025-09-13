@@ -3,16 +3,16 @@ import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/project/$projectId")({
+export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
 });
 
 function ProjectEditor() {
-  const { projectId } = useParams({ from: "/project/$projectId" });
+  const { projectId } = useParams({ from: "/app/project/$projectId" });
   const [value, setValue] = useState("");
 
   const onSubmit = () => {
-    // Placeholder submit action - follow existing patterns later when API available
+    // Placeholder submit action
     // eslint-disable-next-line no-alert
     alert(
       `Submitted content for project ${projectId}:\n\n${value.substring(

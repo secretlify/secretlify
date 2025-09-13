@@ -34,7 +34,7 @@ function AppNavigationImpl() {
       icon: (
         <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: `/project/${projectId}`,
+      href: `/app/project/${projectId}`,
     },
     // Show Login only when user is not logged in
     ...(!isLoggedIn

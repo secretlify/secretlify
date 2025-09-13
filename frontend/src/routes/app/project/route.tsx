@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/project")({
+export const Route = createFileRoute("/app/project")({
   component: ProjectLayout,
 });
 
@@ -28,8 +28,8 @@ function ProjectLayout() {
     { id: "charlie", name: "Charlie" },
   ];
 
-  const activeProjectId = location.href.startsWith("/project/")
-    ? location.href.split("/")[2]
+  const activeProjectId = location.href.startsWith("/app/project/")
+    ? location.href.split("/")[3]
     : undefined;
 
   return (
@@ -48,7 +48,7 @@ function ProjectLayout() {
                 return (
                   <Link
                     key={project.id}
-                    to="/project/$projectId"
+                    to="/app/project/$projectId"
                     params={{ projectId: project.id }}
                     className={cn(
                       "block w-full rounded-xl px-3 py-2 text-sm transition",

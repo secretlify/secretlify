@@ -9,28 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProjectRouteRouteImport } from './routes/project/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProjectProjectIdRouteImport } from './routes/project/$projectId'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
+import { Route as AppProjectRouteRouteImport } from './routes/app/project/route'
+import { Route as AppProjectProjectIdRouteImport } from './routes/app/project/$projectId'
 import { Route as AppCallbacksOauthGoogleRouteImport } from './routes/app/callbacks/oauth/google'
 import { Route as AppCallbacksOauthGithubRouteImport } from './routes/app/callbacks/oauth/github'
 
-const ProjectRouteRoute = ProjectRouteRouteImport.update({
-  id: '/project',
-  path: '/project',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectProjectIdRoute = ProjectProjectIdRouteImport.update({
-  id: '/$projectId',
-  path: '/$projectId',
-  getParentRoute: () => ProjectRouteRoute,
 } as any)
 const AppMeRoute = AppMeRouteImport.update({
   id: '/app/me',
@@ -41,6 +31,16 @@ const AppLoginRoute = AppLoginRouteImport.update({
   id: '/app/login',
   path: '/app/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppProjectRouteRoute = AppProjectRouteRouteImport.update({
+  id: '/app/project',
+  path: '/app/project',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppProjectProjectIdRoute = AppProjectProjectIdRouteImport.update({
+  id: '/$projectId',
+  path: '/$projectId',
+  getParentRoute: () => AppProjectRouteRoute,
 } as any)
 const AppCallbacksOauthGoogleRoute = AppCallbacksOauthGoogleRouteImport.update({
   id: '/app/callbacks/oauth/google',
@@ -55,29 +55,29 @@ const AppCallbacksOauthGithubRoute = AppCallbacksOauthGithubRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/project': typeof ProjectRouteRouteWithChildren
+  '/app/project': typeof AppProjectRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
-  '/project/$projectId': typeof ProjectProjectIdRoute
+  '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/project': typeof ProjectRouteRouteWithChildren
+  '/app/project': typeof AppProjectRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
-  '/project/$projectId': typeof ProjectProjectIdRoute
+  '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/project': typeof ProjectRouteRouteWithChildren
+  '/app/project': typeof AppProjectRouteRouteWithChildren
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
-  '/project/$projectId': typeof ProjectProjectIdRoute
+  '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
@@ -85,35 +85,35 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/project'
+    | '/app/project'
     | '/app/login'
     | '/app/me'
-    | '/project/$projectId'
+    | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/project'
+    | '/app/project'
     | '/app/login'
     | '/app/me'
-    | '/project/$projectId'
+    | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   id:
     | '__root__'
     | '/'
-    | '/project'
+    | '/app/project'
     | '/app/login'
     | '/app/me'
-    | '/project/$projectId'
+    | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProjectRouteRoute: typeof ProjectRouteRouteWithChildren
+  AppProjectRouteRoute: typeof AppProjectRouteRouteWithChildren
   AppLoginRoute: typeof AppLoginRoute
   AppMeRoute: typeof AppMeRoute
   AppCallbacksOauthGithubRoute: typeof AppCallbacksOauthGithubRoute
@@ -122,26 +122,12 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/project': {
-      id: '/project'
-      path: '/project'
-      fullPath: '/project'
-      preLoaderRoute: typeof ProjectRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/project/$projectId': {
-      id: '/project/$projectId'
-      path: '/$projectId'
-      fullPath: '/project/$projectId'
-      preLoaderRoute: typeof ProjectProjectIdRouteImport
-      parentRoute: typeof ProjectRouteRoute
     }
     '/app/me': {
       id: '/app/me'
@@ -156,6 +142,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/login'
       preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/project': {
+      id: '/app/project'
+      path: '/app/project'
+      fullPath: '/app/project'
+      preLoaderRoute: typeof AppProjectRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/project/$projectId': {
+      id: '/app/project/$projectId'
+      path: '/$projectId'
+      fullPath: '/app/project/$projectId'
+      preLoaderRoute: typeof AppProjectProjectIdRouteImport
+      parentRoute: typeof AppProjectRouteRoute
     }
     '/app/callbacks/oauth/google': {
       id: '/app/callbacks/oauth/google'
@@ -174,21 +174,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ProjectRouteRouteChildren {
-  ProjectProjectIdRoute: typeof ProjectProjectIdRoute
+interface AppProjectRouteRouteChildren {
+  AppProjectProjectIdRoute: typeof AppProjectProjectIdRoute
 }
 
-const ProjectRouteRouteChildren: ProjectRouteRouteChildren = {
-  ProjectProjectIdRoute: ProjectProjectIdRoute,
+const AppProjectRouteRouteChildren: AppProjectRouteRouteChildren = {
+  AppProjectProjectIdRoute: AppProjectProjectIdRoute,
 }
 
-const ProjectRouteRouteWithChildren = ProjectRouteRoute._addFileChildren(
-  ProjectRouteRouteChildren,
+const AppProjectRouteRouteWithChildren = AppProjectRouteRoute._addFileChildren(
+  AppProjectRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProjectRouteRoute: ProjectRouteRouteWithChildren,
+  AppProjectRouteRoute: AppProjectRouteRouteWithChildren,
   AppLoginRoute: AppLoginRoute,
   AppMeRoute: AppMeRoute,
   AppCallbacksOauthGithubRoute: AppCallbacksOauthGithubRoute,
