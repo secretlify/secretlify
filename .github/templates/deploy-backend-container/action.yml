@@ -71,16 +71,13 @@ runs:
           -e JWT_SECRET=${{ inputs.jwt-secret }} \
           -e OUR_ENV=${{ inputs.our-env }} \
           -e LOGDASH_API_KEY=${{ inputs.logdash-api-key }} \
-
           -e GOOGLE_CLIENT_ID=${{ inputs.google-client-id }} \
           -e GOOGLE_CLIENT_SECRET=${{ inputs.google-client-secret }} \
           -e GOOGLE_REDIRECT_URI=${{ inputs.google-redirect-uri }} \
           -e GOOGLE_REDIRECT_URI_ALTERNATIVE=${{ inputs.google-redirect-uri-alternative }} \
-
           -e GITHUB_CLIENT_ID=${{ inputs.github-client-id }} \
           -e GITHUB_CLIENT_SECRET=${{ inputs.github-client-secret }} \
           -e GITHUB_CLIENT_ID_ALTERNATIVE=${{ inputs.github-client-id-alternative }} \
           -e GITHUB_CLIENT_SECRET_ALTERNATIVE=${{ inputs.github-client-secret-alternative }} \
-
           -e PORT=${{ inputs.application-port }} \
           ${{ inputs.image-name }}

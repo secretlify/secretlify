@@ -10,16 +10,16 @@ defaults:
     working-directory: ./backend
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: npm install
+  #     - name: Install dependencies
+  #       run: npm install
 
-      # - name: Run e2e tests
-      #   run: npm run test:e2e
+  # - name: Run e2e tests
+  #   run: npm run test:e2e
 
   deploy:
     runs-on: ubuntu-latest
