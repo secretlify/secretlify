@@ -1,10 +1,18 @@
+import { useLocation } from "@tanstack/react-router";
 import { FloatingDock } from "./floating-dock";
 import { Home, LogIn, ScanFaceIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
+import { authLogic } from "@/authLogic";
+import { useValues } from "kea";
 
 function AppNavigationImpl() {
-  const isAppRoute = true;
+  const location = useLocation();
+
+  const isAppRoute = location.href.startsWith("/app");
+
+  const { isLoggedIn } = useValues(authLogic);
+
   const navItems = [
     {
       title: "Home",
@@ -13,20 +21,30 @@ function AppNavigationImpl() {
       ),
       href: "/",
     },
-    {
-      title: "Login",
-      icon: (
-        <LogIn className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "/app/login",
-    },
-    {
-      title: "Me",
-      icon: (
-        <ScanFaceIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "/app/me",
-    },
+    // Show Login only when user is not logged in
+    ...(!isLoggedIn
+      ? [
+          {
+            title: "Login",
+            icon: (
+              <LogIn className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+            ),
+            href: "/app/login",
+          },
+        ]
+      : []),
+    // Show Me only when user is logged in
+    ...(isLoggedIn
+      ? [
+          {
+            title: "Me",
+            icon: (
+              <ScanFaceIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+            ),
+            href: "/app/me",
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -39,7 +57,7 @@ function AppNavigationImpl() {
           exit={{ opacity: 0, y: 20 }}
           transition={{
             duration: 0.2,
-            ease: "easeOut",
+            ease: "easeInOut",
           }}
         >
           <FloatingDock items={navItems} />

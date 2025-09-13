@@ -9,7 +9,7 @@ function Home() {
     <div className="min-h-screen flex flex-col items-center justify-center p-8 gap-6 text-center bg-background text-foreground">
       <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
         <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Secretly
+          Secretlify
         </span>
       </h1>
       <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl">

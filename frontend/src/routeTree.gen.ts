@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
 import { Route as AppCallbacksOauthGoogleRouteImport } from './routes/app/callbacks/oauth/google'
+import { Route as AppCallbacksOauthGithubRouteImport } from './routes/app/callbacks/oauth/github'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,17 +35,24 @@ const AppCallbacksOauthGoogleRoute = AppCallbacksOauthGoogleRouteImport.update({
   path: '/app/callbacks/oauth/google',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCallbacksOauthGithubRoute = AppCallbacksOauthGithubRouteImport.update({
+  id: '/app/callbacks/oauth/github',
+  path: '/app/callbacks/oauth/github',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
 export interface FileRoutesById {
@@ -52,18 +60,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app/login' | '/app/me' | '/app/callbacks/oauth/google'
+  fullPaths:
+    | '/'
+    | '/app/login'
+    | '/app/me'
+    | '/app/callbacks/oauth/github'
+    | '/app/callbacks/oauth/google'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app/login' | '/app/me' | '/app/callbacks/oauth/google'
+  to:
+    | '/'
+    | '/app/login'
+    | '/app/me'
+    | '/app/callbacks/oauth/github'
+    | '/app/callbacks/oauth/google'
   id:
     | '__root__'
     | '/'
     | '/app/login'
     | '/app/me'
+    | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   fileRoutesById: FileRoutesById
 }
@@ -71,6 +91,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppLoginRoute: typeof AppLoginRoute
   AppMeRoute: typeof AppMeRoute
+  AppCallbacksOauthGithubRoute: typeof AppCallbacksOauthGithubRoute
   AppCallbacksOauthGoogleRoute: typeof AppCallbacksOauthGoogleRoute
 }
 
@@ -104,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCallbacksOauthGoogleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/callbacks/oauth/github': {
+      id: '/app/callbacks/oauth/github'
+      path: '/app/callbacks/oauth/github'
+      fullPath: '/app/callbacks/oauth/github'
+      preLoaderRoute: typeof AppCallbacksOauthGithubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -111,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppLoginRoute: AppLoginRoute,
   AppMeRoute: AppMeRoute,
+  AppCallbacksOauthGithubRoute: AppCallbacksOauthGithubRoute,
   AppCallbacksOauthGoogleRoute: AppCallbacksOauthGoogleRoute,
 }
 export const routeTree = rootRouteImport

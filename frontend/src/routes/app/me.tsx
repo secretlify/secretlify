@@ -1,5 +1,6 @@
 import { authLogic } from "@/authLogic";
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
 import { useEffect } from "react";
 
@@ -7,19 +8,127 @@ export const Route = createFileRoute("/app/me")({
   component: Me,
 });
 
+// User Icon component
+const UserIcon = () => (
+  <svg viewBox="0 0 24 24" className="w-12 h-12">
+    <path
+      fill="currentColor"
+      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+    />
+  </svg>
+);
+
+// Method Badge component
+const AuthMethodBadge = ({ method }: { method: string }) => {
+  const getMethodColor = (method: string) => {
+    switch (method?.toLowerCase()) {
+      case "google":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
+      case "github":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+    }
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getMethodColor(
+        method
+      )}`}
+    >
+      {method}
+    </span>
+  );
+};
+
 function Me() {
-  const { userData } = useValues(authLogic);
-  const { loadUserData } = useActions(authLogic);
+  const navigate = useNavigate();
+  const { userData, isLoggedIn } = useValues(authLogic);
+  const { loadUserData, reset } = useActions(authLogic);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate({ to: "/app/login" });
+    }
+  }, []);
 
   useEffect(() => {
     loadUserData();
   }, []);
 
+  const handleLogout = () => {
+    reset();
+    navigate({ to: "/app/login" });
+  };
+
   return (
-    <div>
-      <h1>Me</h1>
-      <p>Email: {userData?.email}</p>
-      <p>Auth method: {userData?.authMethod}</p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-card rounded-xl shadow-lg border border-border p-8">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-muted rounded-full text-muted-foreground">
+                <UserIcon />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-card-foreground mb-2">
+              Your Profile
+            </h1>
+          </div>
+
+          {userData ? (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Email Address
+                  </label>
+                  <p className="text-lg font-medium text-card-foreground mt-1">
+                    {userData.email}
+                  </p>
+                </div>
+
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Authentication Method
+                  </label>
+                  <div className="mt-2">
+                    <AuthMethodBadge method={userData.authMethod} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-card px-2 text-muted-foreground">
+                    Account Actions
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleLogout}
+                variant="secondary"
+                size="lg"
+                className="w-full"
+              >
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                Loading your profile...
+              </p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

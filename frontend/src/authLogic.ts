@@ -24,6 +24,9 @@ export const authLogic = kea<authLogicType>([
     jwtToken: [
       null as string | null,
       {
+        persist: true,
+      },
+      {
         setJwtToken: (_, { jwtToken }) => jwtToken,
         reset: () => null,
       },
@@ -45,6 +48,13 @@ export const authLogic = kea<authLogicType>([
     jwtToken: {
       loadJwtToken: async (googleCode: string): Promise<string | null> => {
         const jwtTokenValue = await AuthApi.loginGoogle(googleCode);
+
+        return jwtTokenValue;
+      },
+      loadJwtTokenGithub: async (
+        githubCode: string
+      ): Promise<string | null> => {
+        const jwtTokenValue = await AuthApi.loginGithub(githubCode);
 
         return jwtTokenValue;
       },
