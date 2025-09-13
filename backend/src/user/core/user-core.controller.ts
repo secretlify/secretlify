@@ -11,11 +11,7 @@ import { CustomJwtService } from '../../auth/custom-jwt/custom-jwt.service';
 @ApiTags('Users')
 @ApiBearerAuth()
 export class UserCoreController {
-  constructor(
-    private readonly userReadService: UserReadService,
-    private readonly userWriteService: UserWriteService,
-    private readonly jwtService: CustomJwtService,
-  ) {}
+  constructor(private readonly userReadService: UserReadService) {}
 
   @Get('me')
   @ApiResponse({ type: UserSerialized })

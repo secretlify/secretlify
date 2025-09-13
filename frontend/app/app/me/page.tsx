@@ -1,11 +1,22 @@
 import { Me } from "@/components/me/Me";
-import { AuthApi } from "@/lib/api/auth.api";
+import { UserApi } from "@/lib/api/user.api";
+import { cookies } from "next/headers";
 
-async function loadRandom() {
-  const res = await AuthApi.veryLongRequest();
+async function preloadData() {
+  const jwtToken = (await cookies()).get("jwt")?.value;
+
+  if (!jwtToken) {
+    throw new Error("JWT token not found");
+  }
+
+  const user = await UserApi.getMe(jwtToken);
+
+  return {
+    user: user,
+  };
 }
 
 export default async function MePage() {
-  await loadRandom();
-  return <Me initialValue={5} />;
+  const user = await preloadData();
+  return <Me preloadedData={user} />;
 }
