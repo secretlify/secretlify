@@ -41,6 +41,9 @@ importers:
       kea-loaders:
         specifier: ^3.1.1
         version: 3.1.1(kea@3.1.7(react@19.1.1))
+      kea-localstorage:
+        specifier: ^3.1.0
+        version: 3.1.0(kea@3.1.7(react@19.1.1))
       kea-router:
         specifier: ^3.4.1
         version: 3.4.1(kea@3.1.7(react@19.1.1))
@@ -2136,6 +2139,11 @@ packages:
 
   kea-loaders@3.1.1:
     resolution: {integrity: sha512-FZcOh5PSTIh5+Of5kZno7bXENmY4rCcRYnTB4e709Mbkc7KzriEZ6b/mIWvYx2vkDEgilIsvibUsGOADZ6wqPw==}
+    peerDependencies:
+      kea: '>= 3'
+
+  kea-localstorage@3.1.0:
+    resolution: {integrity: sha512-OFByJwu88Ro9C9A1bqY5n8v1JYl6ArXX1zC75qpN8HorrReoM9Kf0gZdVspyExsRuX5en9ga64vsk54+jW4Kvw==}
     peerDependencies:
       kea: '>= 3'
 
@@ -4884,6 +4892,10 @@ snapshots:
   json5@2.2.3: {}
 
   kea-loaders@3.1.1(kea@3.1.7(react@19.1.1)):
+    dependencies:
+      kea: 3.1.7(react@19.1.1)
+
+  kea-localstorage@3.1.0(kea@3.1.7(react@19.1.1)):
     dependencies:
       kea: 3.1.7(react@19.1.1)
 

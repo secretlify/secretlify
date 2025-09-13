@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "kea": "^3.1.7",
     "kea-loaders": "^3.1.1",
+    "kea-localstorage": "^3.1.0",
     "kea-router": "^3.4.1",
     "kea-subscriptions": "^3.0.1",
     "lucide-react": "^0.544.0",
