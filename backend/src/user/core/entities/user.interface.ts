@@ -5,6 +5,7 @@ export class UserNormalized {
   id: string;
   email: string;
   authMethod?: AuthMethod;
+  avatarUrl?: string;
 }
 
 export class UserSerialized {
@@ -16,4 +17,7 @@ export class UserSerialized {
 
   @ApiPropertyOptional({ enum: AuthMethod })
   authMethod?: AuthMethod;
+
+  @ApiPropertyOptional()
+  avatarUrl?: string;
 }

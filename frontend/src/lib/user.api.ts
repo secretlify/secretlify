@@ -3,6 +3,7 @@ import axios from "axios";
 export interface User {
   email: string;
   authMethod: string;
+  avatarUrl: string;
 }
 
 export class UserApi {

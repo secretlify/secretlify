@@ -18,30 +18,6 @@ const UserIcon = () => (
   </svg>
 );
 
-// Method Badge component
-const AuthMethodBadge = ({ method }: { method: string }) => {
-  const getMethodColor = (method: string) => {
-    switch (method?.toLowerCase()) {
-      case "google":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
-      case "github":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
-    }
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getMethodColor(
-        method
-      )}`}
-    >
-      {method}
-    </span>
-  );
-};
-
 function Me() {
   const navigate = useNavigate();
   const { userData, isLoggedIn } = useValues(authLogic);
@@ -68,8 +44,12 @@ function Me() {
         <div className="bg-card rounded-xl shadow-lg border border-border p-8">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <div className="p-3 bg-muted rounded-full text-muted-foreground">
-                <UserIcon />
+              <div className="p-2 bg-muted rounded-full text-muted-foreground">
+                <img
+                  src={userData?.avatarUrl}
+                  alt="User Avatar"
+                  className="w-16 h-16 rounded-full"
+                />
               </div>
             </div>
             <h1 className="text-3xl font-bold text-card-foreground mb-2">
@@ -93,9 +73,9 @@ function Me() {
                   <label className="text-sm font-medium text-muted-foreground">
                     Authentication Method
                   </label>
-                  <div className="mt-2">
-                    <AuthMethodBadge method={userData.authMethod} />
-                  </div>
+                  <p className="text-lg font-medium text-card-foreground mt-1">
+                    {userData.authMethod}
+                  </p>
                 </div>
               </div>
 

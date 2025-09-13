@@ -7,6 +7,7 @@ export class UserSerializer {
       id: entity._id.toString(),
       authMethod: entity.authMethod,
       email: entity.email,
+      avatarUrl: entity.avatarUrl,
     };
   }
 
@@ -15,6 +16,7 @@ export class UserSerializer {
       id: normalized.id,
       authMethod: normalized.authMethod,
       email: normalized.email,
+      avatarUrl: normalized.avatarUrl,
     };
   }
 }
