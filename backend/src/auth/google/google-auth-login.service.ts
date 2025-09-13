@@ -15,7 +15,6 @@ export class GoogleAuthLoginService {
     private readonly jwtService: CustomJwtService,
     private readonly userReadService: UserReadService,
     private readonly userWriteService: UserWriteService,
-    private readonly emitter: AuthEventEmitter,
     private readonly logger: Logger,
     private readonly authGoogleDataService: GoogleAuthDataService,
     private readonly metrics: Metrics,
