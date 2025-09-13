@@ -1,13 +1,9 @@
 import { FloatingDock } from "./floating-dock";
 import { Home, LogIn, ScanFaceIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useEffect, memo } from "react";
+import { memo } from "react";
 
 function AppNavigationImpl() {
-  useEffect(() => {
-    console.log("Spawning");
-  }, []);
-
   const isAppRoute = true;
   const navItems = [
     {

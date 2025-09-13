@@ -1,4 +1,4 @@
-import { AppNavigation } from "@/components/ui/app-navigation";
+import { AppNavigation } from "@/components/navigation/app-navigation";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 const RootLayout = () => (

@@ -5,5 +5,7 @@ export const Route = createFileRoute("/app/me")({
 });
 
 function Me() {
-  return <div>Hello "/app/me"!</div>;
+  const isLoggedIn = true;
+
+  return <div>Are you logged in? {isLoggedIn ? "Yes" : "No"}</div>;
 }
