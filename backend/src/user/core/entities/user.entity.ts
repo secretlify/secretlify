@@ -13,6 +13,9 @@ export class UserEntity {
   authMethod?: AuthMethod;
 
   @Prop()
+  avatarUrl?: string;
+
+  @Prop()
   createdAt: Date;
 
   @Prop()

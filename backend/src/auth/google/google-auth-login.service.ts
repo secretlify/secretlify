@@ -28,6 +28,8 @@ export class GoogleAuthLoginService {
       dto.forceLocalLogin,
     );
 
+    console.log(accessToken);
+
     const { email, avatar } = await this.authGoogleDataService.getGoogleEmailAndAvatar(accessToken);
 
     if (email.length === 0 || !email) {

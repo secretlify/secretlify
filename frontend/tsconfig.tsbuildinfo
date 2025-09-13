@@ -1,0 +1,1 @@
+{"root":["./src/authlogic.ts","./src/authlogictype.ts","./src/main.tsx","./src/routetree.gen.ts","./src/vite-env.d.ts","./src/components/navigation/app-navigation.tsx","./src/components/navigation/floating-dock.tsx","./src/lib/utils.ts","./src/routes/__root.tsx","./src/routes/index.tsx","./src/routes/app/login.tsx","./src/routes/app/me.tsx"],"errors":true,"version":"5.8.3"}
