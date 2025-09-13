@@ -29,11 +29,7 @@ export const FloatingDock = ({
     setLoadingItem(null);
   }, []);
 
-  const handleClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    title: string
-  ) => {
+  const handleClick = () => {
     // Don't show loading state if clicking on current page
     // if (href === pathname) return;
     // e.preventDefault();
@@ -68,11 +64,7 @@ const FloatingDockMobile = ({
   items: { title: string; icon: React.ReactNode; href: string }[];
   className?: string;
   loadingItem: string | null;
-  onItemClick: (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    title: string
-  ) => void;
+  onItemClick: () => void;
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -103,7 +95,7 @@ const FloatingDockMobile = ({
                 <Link
                   to={item.href}
                   key={item.title}
-                  onClick={(e) => onItemClick(e, item.href, item.title)}
+                  onClick={() => onItemClick()}
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900 active:scale-90 transition-transform"
                 >
                   <div className="h-4 w-4">
@@ -138,11 +130,7 @@ const FloatingDockDesktop = ({
   items: { title: string; icon: React.ReactNode; href: string }[];
   className?: string;
   loadingItem: string | null;
-  onItemClick: (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    title: string
-  ) => void;
+  onItemClick: () => void;
 }) => {
   const mouseX = useMotionValue(Infinity);
   return (
@@ -180,11 +168,7 @@ function IconContainer({
   icon: React.ReactNode;
   href: string;
   isLoading: boolean;
-  onItemClick: (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    title: string
-  ) => void;
+  onItemClick: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -233,7 +217,7 @@ function IconContainer({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <a href={href} onClick={(e) => onItemClick(e, href, title)}>
+    <Link to={href} onClick={() => onItemClick()}>
       <motion.div
         ref={ref}
         style={{ width, height }}
@@ -260,6 +244,6 @@ function IconContainer({
           {isLoading ? <IconLoader2 className="animate-spin" /> : icon}
         </motion.div>
       </motion.div>
-    </a>
+    </Link>
   );
 }
