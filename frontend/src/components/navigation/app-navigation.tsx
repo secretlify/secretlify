@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { FloatingDock } from "./floating-dock";
-import { Home, LogIn, ScanFaceIcon } from "lucide-react";
+import { Home, LogIn, ScanFaceIcon, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
 import { authLogic } from "@/authLogic";
@@ -13,6 +13,14 @@ function AppNavigationImpl() {
 
   const { isLoggedIn } = useValues(authLogic);
 
+  // Stable random project id stored in localStorage
+  const projectIdKey = "secretlify_demo_project_id";
+  let projectId = localStorage.getItem(projectIdKey);
+  if (!projectId) {
+    projectId = Math.random().toString(36).slice(2, 10);
+    localStorage.setItem(projectIdKey, projectId);
+  }
+
   const navItems = [
     {
       title: "Home",
@@ -20,6 +28,13 @@ function AppNavigationImpl() {
         <Home className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/",
+    },
+    {
+      title: "Project",
+      icon: (
+        <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: `/project/${projectId}`,
     },
     // Show Login only when user is not logged in
     ...(!isLoggedIn
