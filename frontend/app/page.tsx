@@ -17,17 +17,17 @@ export default function Home() {
           href="/app/page-a"
           className="rounded-md border border-border px-4 py-2 bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground transition"
         >
-          Try Page A
+          Page A
         </a>
         <a
-          href="/app/page-b"
+          href="/app/login"
           className="rounded-md border border-border px-4 py-2 bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground transition"
         >
-          Try Page B
+          Log in
         </a>
       </div>
       <div className="text-xs text-muted-foreground">
-        No subscriptions. No paywalls. Just secure sharing.
+        No subscriptions. No paywalls. Just secure zero-trust sharing.
       </div>
     </div>
   );

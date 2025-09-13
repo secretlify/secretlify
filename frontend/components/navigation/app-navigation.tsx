@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { FloatingDock } from './floating-dock';
-import { Cat, Dog } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'motion/react';
+import { FloatingDock } from "./floating-dock";
+import { Cat, LogIn } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
 
 export function AppNavigation() {
   const pathname = usePathname();
-  const isAppRoute = pathname?.startsWith('/app');
+  const isAppRoute = pathname?.startsWith("/app");
   const navItems = [
     {
-      title: 'Page A',
+      title: "Log in",
+      icon: (
+        <LogIn className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "/app/login",
+    },
+    {
+      title: "Page A",
       icon: (
         <Cat className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: '/app/page-a',
-    },
-    {
-      title: 'Page B',
-      icon: (
-        <Dog className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: '/app/page-b',
+      href: "/app/page-a",
     },
   ];
 
@@ -35,7 +35,7 @@ export function AppNavigation() {
           exit={{ opacity: 0, y: 20 }}
           transition={{
             duration: 0.2,
-            ease: 'easeOut',
+            ease: "easeOut",
           }}
         >
           <FloatingDock items={navItems} />
