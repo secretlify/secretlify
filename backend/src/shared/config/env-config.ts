@@ -36,51 +36,51 @@ export const EnvConfigs: EnvConfigs = {
   [OurEnv.Prod]: {
     oauth: {
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        clientIdAlternative: process.env.GITHUB_CLIENT_ID_ALTERNATIVE!,
-        clientSecretAlternative: process.env.GITHUB_CLIENT_SECRET_ALTERNATIVE!,
+        clientId: process.env.BACKEND_GITHUB_CLIENT_ID!,
+        clientSecret: process.env.BACKEND_GITHUB_CLIENT_SECRET!,
+        clientIdAlternative: process.env.BACKEND_GITHUB_CLIENT_ID_ALTERNATIVE!,
+        clientSecretAlternative: process.env.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE!,
       },
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        redirectUri: process.env.GOOGLE_REDIRECT_URI!,
-        redirectUriAlternative: process.env.GOOGLE_REDIRECT_URI_ALTERNATIVE!,
+        clientId: process.env.BACKEND_GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.BACKEND_GOOGLE_CLIENT_SECRET!,
+        redirectUri: process.env.BACKEND_GOOGLE_REDIRECT_URI!,
+        redirectUriAlternative: process.env.BACKEND_GOOGLE_REDIRECT_URI_ALTERNATIVE!,
       },
     },
     mongo: {
-      url: process.env.MONGO_URL!,
+      url: process.env.BACKEND_MONGO_URL!,
     },
     auth: {
-      jwtSecret: process.env.JWT_SECRET!,
+      jwtSecret: process.env.BACKEND_JWT_SECRET!,
     },
     logdash: {
-      apiKey: process.env.LOGDASH_API_KEY!,
+      apiKey: process.env.BACKEND_LOGDASH_API_KEY!,
     },
   },
   [OurEnv.Dev]: {
     oauth: {
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        clientIdAlternative: process.env.GITHUB_CLIENT_ID_ALTERNATIVE!,
-        clientSecretAlternative: process.env.GITHUB_CLIENT_SECRET_ALTERNATIVE!,
+        clientId: process.env.BACKEND_GITHUB_CLIENT_ID!,
+        clientSecret: process.env.BACKEND_GITHUB_CLIENT_SECRET!,
+        clientIdAlternative: process.env.BACKEND_GITHUB_CLIENT_ID_ALTERNATIVE!,
+        clientSecretAlternative: process.env.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE!,
       },
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        redirectUri: process.env.GOOGLE_REDIRECT_URI!,
-        redirectUriAlternative: process.env.GOOGLE_REDIRECT_URI_ALTERNATIVE!,
+        clientId: process.env.BACKEND_GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.BACKEND_GOOGLE_CLIENT_SECRET!,
+        redirectUri: process.env.BACKEND_GOOGLE_REDIRECT_URI!,
+        redirectUriAlternative: process.env.BACKEND_GOOGLE_REDIRECT_URI_ALTERNATIVE!,
       },
     },
     mongo: {
-      url: process.env.MONGO_URL!,
+      url: process.env.BACKEND_MONGO_URL!,
     },
     auth: {
-      jwtSecret: process.env.JWT_SECRET!,
+      jwtSecret: process.env.BACKEND_JWT_SECRET!,
     },
     logdash: {
-      apiKey: process.env.LOGDASH_API_KEY!,
+      apiKey: process.env.BACKEND_LOGDASH_API_KEY!,
     },
   },
 };
