@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-type PageAProps = {
+type MeProps = {
   initialValue: number;
 };
 
-export function PageA({ initialValue }: PageAProps) {
+export function Me({ initialValue }: MeProps) {
   const [value, setValue] = useState<number>(initialValue);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

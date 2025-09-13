@@ -7,7 +7,8 @@ export default function PageLogin() {
       <button
         className="w-fit rounded-md border border-border px-3 py-1 bg-card text-card-foreground"
         onClick={() => {
-          window.location.href = "/api/auth/google";
+          window.location.href =
+            "https://accounts.google.com/o/oauth2/v2/auth?client_id=456428460773-39vislc8t7omv2h9klmelsklg0497afm.apps.googleusercontent.com&redirect_uri=http://localhost:3001/app/callbacks/oauth/google&response_type=code&scope=openid%20email%20profile&state=PIETY_PAPIESKIE_SA_NIEBIESKIE";
         }}
       >
         Login using Google

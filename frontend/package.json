@@ -14,6 +14,7 @@
     "axios": "^1.12.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "kea": "^3.1.7",
     "lucide-react": "^0.507.0",
     "motion": "^12.9.7",
     "next": "15.3.1",

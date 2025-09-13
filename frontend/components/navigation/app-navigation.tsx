@@ -1,7 +1,7 @@
 "use client";
 
 import { FloatingDock } from "./floating-dock";
-import { Cat, LogIn } from "lucide-react";
+import { Cat, LogIn, ScanFaceIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -17,11 +17,11 @@ export function AppNavigation() {
       href: "/app/login",
     },
     {
-      title: "Page A",
+      title: "Me",
       icon: (
-        <Cat className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <ScanFaceIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "/app/page-a",
+      href: "/app/me",
     },
   ];
 
