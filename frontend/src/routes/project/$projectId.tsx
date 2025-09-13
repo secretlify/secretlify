@@ -23,8 +23,8 @@ function ProjectEditor() {
   };
 
   return (
-    <div className="min-h-screen w-full p-6 md:p-10 bg-background text-foreground">
-      <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="w-full p-2 md:p-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4">
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -49,7 +49,7 @@ function ProjectEditor() {
               onChange={(e) => setValue(e.target.value)}
               placeholder="Type or paste your content here..."
               className={cn(
-                "w-full min-h-[55vh] md:min-h-[65vh] resize-vertical",
+                "w-full min-h-[40vh] md:min-h-[55vh] resize-vertical",
                 "rounded-xl bg-background/60 text-foreground",
                 "outline-none border border-transparent focus:border-ring",
                 "p-4 md:p-5 leading-relaxed text-base md:text-lg",
