@@ -8,13 +8,16 @@ export const Route = createFileRoute("/app/login")({
 function Login() {
   const handleGoogleLogin = () => {
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=http://localhost:5173/app/callbacks/oauth/google&response_type=code&scope=openid%20email%20profile`;
+    const appUrl = import.meta.env.VITE_APP_URL;
+
+    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${appUrl}/app/callbacks/oauth/google&response_type=code&scope=openid%20email%20profile`;
     window.location.href = googleOAuthUrl;
   };
 
   const handleGitHubLogin = () => {
     const githubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-    const githubOAuthUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=http://localhost:5173/app/callbacks/oauth/github&scope=user:email`;
+    const appUrl = import.meta.env.VITE_APP_URL;
+    const githubOAuthUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${appUrl}/app/callbacks/oauth/github&scope=user:email`;
     window.location.href = githubOAuthUrl;
   };
 
