@@ -1,0 +1,64 @@
+name: Deploy backend
+
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./backend
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      # - name: Run e2e tests
+      #   run: npm run test:e2e
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build and push
+        uses: "./.github/templates/build-and-push"
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          dockerhub-username: ${{ secrets.BACKEND_DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.BACKEND_DOCKERHUB_TOKEN }}
+          image-name: ${{ secrets.BACKEND_DOCKER_IMAGE_NAME }}
+      - name: Deploy
+        uses: "./.github/templates/deploy-backend-container"
+        with:
+          host: ${{ secrets.BACKEND_SSH_HOST }}
+          username: ${{ secrets.BACKEND_SSH_USERNAME }}
+          port: ${{ secrets.BACKEND_SSH_PORT }}
+          ssh-private-key: ${{ secrets.BACKEND_SSH_PRIVATE_KEY }}
+          server-port: 3002
+          application-port: 3002
+          image-name: ${{ secrets.BACKEND_DOCKER_IMAGE_NAME }}
+          container-name: secretly-backend
+          jwt-secret: ${{ secrets.BACKEND_JWT_SECRET }}
+          our-env: prod
+          mongo-url: ${{ secrets.BACKEND_MONGO_URL }}
+          google-client-id: ${{ secrets.BACKEND_GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.BACKEND_GOOGLE_CLIENT_SECRET }}
+          google-redirect-uri: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI }}
+          google-redirect-uri-alternative: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI_ALTERNATIVE }}
+          logdash-api-key: ${{ secrets.BACKEND_LOGDASH_API_KEY }}
+      - name: Prune
+        uses: "./.github/templates/prune"
+        with:
+          host: ${{ secrets.BACKEND_SSH_HOST }}
+          username: ${{ secrets.BACKEND_SSH_USERNAME }}
+          port: ${{ secrets.BACKEND_SSH_PORT }}
+          ssh-private-key: ${{ secrets.BACKEND_SSH_PRIVATE_KEY }}

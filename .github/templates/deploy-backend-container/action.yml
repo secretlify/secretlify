@@ -1,0 +1,69 @@
+name: Deploy
+
+inputs:
+  # SSH
+  host:
+    required: true
+  username:
+    required: true
+  port:
+    required: true
+  ssh-private-key:
+    required: true
+
+  # Docker
+  image-name:
+    required: true
+  server-port:
+    required: true
+  container-name:
+    required: true
+  application-port:
+    required: true
+
+  # App
+  jwt-secret:
+    required: true
+  our-env:
+    required: true
+  mongo-url:
+    required: true
+  google-client-id:
+    required: true
+  google-client-secret:
+    required: true
+  google-redirect-uri:
+    required: true
+  google-redirect-uri-alternative:
+    required: true
+  logdash-api-key:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Update image inside VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.host }}
+        USERNAME: ${{ inputs.username }}
+        PORT: ${{ inputs.port }}
+        KEY: ${{ inputs.ssh-private-key }}
+        script: |
+          docker pull ${{ inputs.image-name }}
+          docker rm -f ${{ inputs.container-name }}
+          docker run -d \
+          -p ${{ inputs.server-port }}:${{ inputs.application-port }} \
+          --restart=always \
+          --add-host=host.docker.internal:host-gateway \
+          --name ${{ inputs.container-name }} \
+          -e MONGO_URL=${{ inputs.mongo-url }} \
+          -e JWT_SECRET=${{ inputs.jwt-secret }} \
+          -e OUR_ENV=${{ inputs.our-env }} \
+          -e GOOGLE_CLIENT_ID=${{ inputs.google-client-id }} \
+          -e GOOGLE_CLIENT_SECRET=${{ inputs.google-client-secret }} \
+          -e GOOGLE_REDIRECT_URI=${{ inputs.google-redirect-uri }} \
+          -e GOOGLE_REDIRECT_URI_ALTERNATIVE=${{ inputs.google-redirect-uri-alternative }} \
+          -e PORT=${{ inputs.application-port }} \
+          -e LOGDASH_API_KEY=${{ inputs.logdash-api-key }} \
+          ${{ inputs.image-name }}
