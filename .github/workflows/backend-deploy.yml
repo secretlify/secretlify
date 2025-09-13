@@ -50,10 +50,17 @@ jobs:
           jwt-secret: ${{ secrets.BACKEND_JWT_SECRET }}
           our-env: prod
           mongo-url: ${{ secrets.BACKEND_MONGO_URL }}
+
           google-client-id: ${{ secrets.BACKEND_GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.BACKEND_GOOGLE_CLIENT_SECRET }}
           google-redirect-uri: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI }}
           google-redirect-uri-alternative: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI_ALTERNATIVE }}
+
+          github-client-id: ${{ secrets.BACKEND_GITHUB_CLIENT_ID }}
+          github-client-secret: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET }}
+          github-client-id-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_ID_ALTERNATIVE }}
+          github-client-secret-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE }}
+
           logdash-api-key: ${{ secrets.BACKEND_LOGDASH_API_KEY }}
       - name: Prune
         uses: "./.github/templates/prune"
