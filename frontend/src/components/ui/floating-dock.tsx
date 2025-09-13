@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { IconLayoutNavbarCollapse, IconLoader2 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import {
   AnimatePresence,
   MotionValue,
@@ -99,8 +100,8 @@ const FloatingDockMobile = ({
                 }}
                 transition={{ delay: (items.length - 1 - idx) * 0.05 }}
               >
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   key={item.title}
                   onClick={(e) => onItemClick(e, item.href, item.title)}
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900 active:scale-90 transition-transform"
@@ -112,7 +113,7 @@ const FloatingDockMobile = ({
                       item.icon
                     )}
                   </div>
-                </a>
+                </Link>
               </motion.div>
             ))}
           </motion.div>
