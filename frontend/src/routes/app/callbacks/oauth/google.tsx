@@ -10,7 +10,7 @@ export const Route = createFileRoute("/app/callbacks/oauth/google")({
 function RouteComponent() {
   const navigate = useNavigate();
 
-  const { loadJwtToken } = useActions(authLogic);
+  const { exchangeGoogleCodeForJwt } = useActions(authLogic);
   const { userData } = useValues(authLogic);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function RouteComponent() {
     const authCode = urlParams.get("code");
 
     if (authCode) {
-      loadJwtToken(authCode);
+      exchangeGoogleCodeForJwt(authCode);
     }
   }, []);
 

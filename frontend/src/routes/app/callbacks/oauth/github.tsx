@@ -10,7 +10,7 @@ export const Route = createFileRoute("/app/callbacks/oauth/github")({
 function RouteComponent() {
   const navigate = useNavigate();
 
-  const { loadJwtTokenGithub } = useActions(authLogic);
+  const { exchangeGithubCodeForJwt } = useActions(authLogic);
   const { userData } = useValues(authLogic);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function RouteComponent() {
     const authCode = urlParams.get("code");
 
     if (authCode) {
-      loadJwtTokenGithub(authCode);
+      exchangeGithubCodeForJwt(authCode);
     }
   }, []);
 

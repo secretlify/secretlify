@@ -68,15 +68,6 @@ function Me() {
                     {userData.email}
                   </p>
                 </div>
-
-                <div className="p-4 bg-muted/50 rounded-lg">
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Authentication Method
-                  </label>
-                  <p className="text-lg font-medium text-card-foreground mt-1">
-                    {userData.authMethod}
-                  </p>
-                </div>
               </div>
 
               <div className="relative my-6">
@@ -85,7 +76,7 @@ function Me() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-card px-2 text-muted-foreground">
-                    Account Actions
+                    Actions
                   </span>
                 </div>
               </div>
