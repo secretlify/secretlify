@@ -8,60 +8,62 @@ import { subscriptions } from "kea-subscriptions";
 
 export const authLogic = kea<authLogicType>([
   path(["src", "authLogic"]),
+
   actions({
-    loginToStore: (jwtToken: string) => ({ jwtToken }),
+    setJwtToken: (jwtToken: string) => ({ jwtToken }),
+    setUserData: (userData: User) => ({ userData }),
+
     reset: true,
   }),
+
   defaults({
     userData: null as User | null,
   }),
+
   reducers({
     jwtToken: [
       null as string | null,
       {
+        setJwtToken: (_, { jwtToken }) => jwtToken,
         reset: () => null,
       },
     ],
     userData: [
       null as User | null,
       {
+        setUserData: (_, { userData }) => userData,
         reset: () => null,
       },
     ],
   }),
+
   selectors({
     isLoggedIn: [(state) => [state.jwtToken], (jwtToken) => jwtToken !== null],
   }),
+
   loaders(({ values }) => ({
     jwtToken: {
       loadJwtToken: async (googleCode: string): Promise<string | null> => {
-        console.log("Loading jwt token. Google code: ", googleCode);
+        const jwtTokenValue = await AuthApi.loginGoogle(googleCode);
 
-        const jwtToken = await AuthApi.loginGoogle(googleCode);
-
-        console.log("Jwt token loaded", jwtToken);
-
-        return jwtToken;
+        return jwtTokenValue;
       },
     },
     userData: {
       loadUserData: async (): Promise<User> => {
-        console.log("Loading user data with jwt token", values.jwtToken);
-        const userData = await UserApi.loginGoogle(values.jwtToken!);
+        const userDataValue = await UserApi.loginGoogle(values.jwtToken!);
 
-        console.log("User data loaded", userData);
-
-        return userData;
+        return userDataValue;
       },
     },
   })),
+
   subscriptions(({ actions }) => ({
     jwtToken: (jwtToken) => {
       if (!jwtToken) {
         return;
       }
 
-      console.log("reacting to subscription to jwt token", jwtToken);
       actions.loadUserData();
     },
   })),
