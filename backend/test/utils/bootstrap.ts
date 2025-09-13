@@ -6,7 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { clear } from 'jest-date-mock';
 import { Model } from 'mongoose';
 import * as nock from 'nock';
-import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
 import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
@@ -21,7 +20,6 @@ export async function createTestApp() {
       UserCoreModule,
       ScheduleModule.forRoot(),
       EventEmitterModule.forRoot(),
-      LogdashModule,
     ],
   }).compile();
 

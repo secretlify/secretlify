@@ -7,12 +7,6 @@ export class UserSerializer {
       id: entity._id.toString(),
       authMethod: entity.authMethod,
       email: entity.email,
-      passwordHash: entity.passwordHash,
-      accountClaimStatus: entity.accountClaimStatus,
-      tier: entity.tier,
-      stripeCustomerId: entity.stripeCustomerId,
-      avatarUrl: entity.avatarUrl,
-      paymentsMetadata: entity.paymentsMetadata,
     };
   }
 
@@ -21,10 +15,6 @@ export class UserSerializer {
       id: normalized.id,
       authMethod: normalized.authMethod,
       email: normalized.email,
-      accountClaimStatus: normalized.accountClaimStatus,
-      tier: normalized.tier,
-      avatarUrl: normalized.avatarUrl,
-      paymentsMetadata: normalized.paymentsMetadata,
     };
   }
 }

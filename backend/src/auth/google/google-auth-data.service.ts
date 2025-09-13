@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getEnvConfig } from '../../shared/configs/env-configs';
+import { getEnvConfig } from 'src/shared/config/env-config';
 
 @Injectable()
 export class GoogleAuthDataService {
@@ -10,17 +10,19 @@ export class GoogleAuthDataService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        client_id: getEnvConfig().google.clientId,
-        client_secret: getEnvConfig().google.clientSecret,
+        client_id: getEnvConfig().oauth.google.clientId,
+        client_secret: getEnvConfig().oauth.google.clientSecret,
         code: decodeURIComponent(code),
         grant_type: 'authorization_code',
         redirect_uri: forceLocalLogin
-          ? getEnvConfig().google.redirectUriAlternative!
-          : getEnvConfig().google.redirectUri,
+          ? getEnvConfig().oauth.google.redirectUriAlternative!
+          : getEnvConfig().oauth.google.redirectUri,
       }),
     });
 
     const data = await response.json();
+
+    console.log(data);
     return data.access_token;
   }
 

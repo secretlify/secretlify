@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getEnvConfig } from '../../shared/configs/env-configs';
+import { getEnvConfig } from 'src/shared/config/env-config';
 
 @Injectable()
 export class GithubAuthDataService {
@@ -56,14 +56,14 @@ export class GithubAuthDataService {
   }): Promise<{ clientId: string; clientSecret: string }> {
     if (dto.useAlternative) {
       return {
-        clientId: getEnvConfig().github.clientIdAlternative!,
-        clientSecret: getEnvConfig().github.clientSecretAlternative!,
+        clientId: getEnvConfig().oauth.github.clientIdAlternative!,
+        clientSecret: getEnvConfig().oauth.github.clientSecretAlternative!,
       };
     }
 
     return {
-      clientId: getEnvConfig().github.clientId,
-      clientSecret: getEnvConfig().github.clientSecret,
+      clientId: getEnvConfig().oauth.github.clientId,
+      clientSecret: getEnvConfig().oauth.github.clientSecret,
     };
   }
 }
