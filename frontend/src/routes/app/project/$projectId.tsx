@@ -69,12 +69,15 @@ function ProjectEditor() {
           </div>
         </div>
 
-        <div
+        <motion.div
           className={cn(
             "rounded-2xl border border-border bg-card/60 backdrop-blur",
             "shadow-[0_10px_40px_-15px_rgba(0,0,0,0.35)]",
-            "transition hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.45)]"
+            "hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.45)]"
           )}
+          initial={{ opacity: 0, x: -100, scale: 0.8 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.1 }}
         >
           <div className="p-4 md:p-6">
             <div className={cn("rounded-xl overflow-hidden border")}>
@@ -104,7 +107,7 @@ function ProjectEditor() {
               />
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
