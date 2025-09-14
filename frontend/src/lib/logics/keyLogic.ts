@@ -1,73 +1,97 @@
-import { actions, defaults, kea, path, reducers, selectors } from "kea";
-import { loaders } from "kea-loaders";
+import {
+  actions,
+  connect,
+  kea,
+  listeners,
+  path,
+  reducers,
+  selectors,
+} from "kea";
 
 import type { keyLogicType } from "./keyLogicType";
-import type { KeyPair } from "../crypto/crypto.asymmetric";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
+import { authLogic } from "./authLogic";
+import type { User } from "../api/user.api";
 
 export const keyLogic = kea<keyLogicType>([
   path(["src", "lib", "logics", "keyLogic"]),
 
+  connect({
+    values: [authLogic, ["userData"]],
+    actions: [authLogic, ["setUserData"]],
+  }),
+
   actions({
-    setPassphrase: (passphrase: string) => ({ passphrase }),
-    reset: true,
-  }),
-
-  defaults({
-    keyPair: null as KeyPair | null,
-    simulateShouldDoSetup: false,
-  }),
-
-  reducers({
-    keyPair: [
-      null as KeyPair | null,
-      {
-        persist: true,
-      },
-      {
-        reset: () => null,
-      },
-    ],
+    setUpPassphrase: (passphrase: string) => ({ passphrase }),
+    setLocalKeyPair: (keyPair: { publicKey: string; privateKey: string }) => ({
+      keyPair,
+    }),
+    setLocalEncryptedPrivateKey: (encryptedPrivateKey: string) => ({
+      encryptedPrivateKey,
+    }),
   }),
 
   selectors({
     shouldSetUpPassphrase: [
-      (state) => [state.simulateShouldDoSetup],
-      (simulateShouldDoSetup) => Boolean(simulateShouldDoSetup),
+      (state) => [state.userData],
+      (userData: User | null) =>
+        Boolean(userData) &&
+        (!userData!.publicKey || !userData!.encryptedPrivateKey),
     ],
   }),
 
-  loaders(({ values }) => ({
-    keyPair: {
-      generateKeyPair: async (): Promise<KeyPair> => {
-        if (values.keyPair) {
-          return values.keyPair;
-        }
-        const generated = await AsymmetricCrypto.generateKeyPair();
-        return generated;
+  reducers({
+    localKeyPair: [
+      null as { publicKey: string; privateKey: string } | null,
+      {},
+      {
+        setLocalKeyPair: (
+          _: { publicKey: string; privateKey: string } | null,
+          { keyPair }: { keyPair: { publicKey: string; privateKey: string } }
+        ) => keyPair,
       },
-    },
-    encryptedPrivateKey: {
-      encryptPrivateKey: async (passphrase: string): Promise<string> => {
-        if (!values.keyPair) {
-          throw new Error("Key pair not available");
-        }
-        const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
-          passphrase
-        );
-        const encrypted = await SymmetricCrypto.encrypt(
-          values.keyPair.privateKey,
-          base64Key
-        );
-
-        console.log("Sending this to server", {
-          publicKey: values.keyPair.publicKey,
-          privateKey: encrypted,
-        });
-
-        return encrypted;
+    ],
+    localEncryptedPrivateKey: [
+      null as string | null,
+      {},
+      {
+        setLocalEncryptedPrivateKey: (
+          _: string | null,
+          { encryptedPrivateKey }: { encryptedPrivateKey: string }
+        ) => encryptedPrivateKey,
       },
+    ],
+  }),
+
+  listeners(({ actions, values }) => ({
+    setUpPassphrase: async ({ passphrase }) => {
+      if (!values.userData) {
+        return;
+      }
+      const keyPair = await AsymmetricCrypto.generateKeyPair();
+      const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
+        passphrase
+      );
+      const encrypted = await SymmetricCrypto.encrypt(
+        keyPair.privateKey,
+        base64Key
+      );
+
+      console.log("Sending this to server", {
+        publicKey: keyPair.publicKey,
+        privateKey: encrypted,
+      });
+
+      actions.setLocalKeyPair(keyPair);
+      actions.setLocalEncryptedPrivateKey(encrypted);
+
+      const updatedUser: User = {
+        ...values.userData,
+        publicKey: keyPair.publicKey,
+        encryptedPrivateKey: encrypted,
+      };
+      actions.setUserData(updatedUser);
     },
   })),
 ]);

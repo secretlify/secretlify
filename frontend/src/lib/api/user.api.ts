@@ -4,6 +4,8 @@ export interface User {
   email: string;
   authMethod: string;
   avatarUrl: string;
+  publicKey?: string;
+  encryptedPrivateKey?: string;
 }
 
 export class UserApi {

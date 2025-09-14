@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { FloatingDock } from "./floating-dock";
-import { Home, LogIn, ScanFaceIcon, FileText } from "lucide-react";
+import { Home, LogIn, ScanFaceIcon, FileText, Key } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
@@ -51,6 +51,13 @@ function AppNavigationImpl() {
     // Show Me only when user is logged in
     ...(isLoggedIn
       ? [
+          {
+            title: "Keys",
+            icon: (
+              <Key className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+            ),
+            href: "/app/keys",
+          },
           {
             title: "Me",
             icon: (
