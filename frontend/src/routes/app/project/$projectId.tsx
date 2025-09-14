@@ -71,7 +71,7 @@ function ProjectEditor() {
           <div className="p-4 md:p-6">
             <div
               className={cn(
-                "bg-background/60 text-foreground",
+                "relative bg-background/60 text-foreground",
                 "border border-transparent focus-within:border-ring"
               )}
             >
@@ -90,14 +90,10 @@ function ProjectEditor() {
                   automaticLayout: true,
                 }}
               />
-            </div>
-          </div>
-          <div className="px-4 md:px-6 pb-4 md:pb-6">
-            <div className="flex items-center justify-end">
               <Button
                 size="lg"
                 className={cn(
-                  "h-12 px-8 rounded-xl",
+                  "absolute bottom-3 right-3 z-10 h-12 px-8 rounded-xl",
                   "bg-gradient-to-r from-blue-600 via-fuchsia-600 to-pink-600",
                   "hover:from-blue-500 hover:via-fuchsia-500 hover:to-pink-500",
                   "text-white shadow-lg shadow-fuchsia-600/20"
