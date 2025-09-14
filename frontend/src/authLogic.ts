@@ -67,7 +67,10 @@ export const authLogic = kea<authLogicType>([
     },
     userData: {
       loadUserData: async (): Promise<User> => {
+        console.log("before user data");
         const userDataValue = await UserApi.loginGoogle(values.jwtToken!);
+
+        console.log("after user data", userDataValue);
 
         return userDataValue;
       },
