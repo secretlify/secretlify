@@ -1,6 +1,5 @@
 import { actions, kea, reducers, path, selectors, defaults } from "kea";
 
-import type { authLogicType } from "../../authLogicType";
 import { loaders } from "kea-loaders";
 import { AuthApi } from "../api/auth.api";
 import { UserApi, type User } from "../api/user.api";
