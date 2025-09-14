@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Editor, { loader } from "@monaco-editor/react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -9,7 +10,36 @@ export const Route = createFileRoute("/app/project/$projectId")({
 
 function ProjectEditor() {
   const { projectId } = useParams({ from: "/app/project/$projectId" });
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(
+    'BANK_PASSWORD="iliketurtles"\nDATABASE_PASSWORD="zaq12wsx"'
+  );
+
+  useEffect(() => {
+    loader.init().then((monaco) => {
+      monaco.languages.register({ id: "dotenv" });
+
+      monaco.languages.setMonarchTokensProvider("dotenv", {
+        tokenizer: {
+          root: [
+            [/^[A-Z0-9_]+(?==)/, "variable"],
+            [/"([^"\\]|\\.)*"/, "string"],
+            [/#.*/, "comment"],
+          ],
+        },
+      });
+
+      monaco.editor.defineTheme("dotenvTheme", {
+        base: "vs-dark",
+        inherit: true,
+        rules: [
+          { token: "variable", foreground: "4FC1FF" },
+          { token: "string", foreground: "CE9178" },
+          { token: "comment", foreground: "6A9955", fontStyle: "italic" },
+        ],
+        colors: {},
+      });
+    });
+  }, []);
 
   const onSubmit = () => {
     alert(
@@ -39,18 +69,28 @@ function ProjectEditor() {
           )}
         >
           <div className="p-4 md:p-6">
-            <textarea
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="Type or paste your content here..."
+            <div
               className={cn(
-                "w-full min-h-[40vh] md:min-h-[55vh] resize-vertical",
-                "rounded-xl bg-background/60 text-foreground",
-                "outline-none border border-transparent focus:border-ring",
-                "p-4 md:p-5 leading-relaxed text-base md:text-lg",
-                "placeholder:text-muted-foreground/70"
+                "bg-background/60 text-foreground",
+                "border border-transparent focus-within:border-ring"
               )}
-            />
+            >
+              <Editor
+                height="55vh"
+                language="dotenv"
+                theme="dotenvTheme"
+                value={value}
+                onChange={(v) => setValue(v ?? "")}
+                options={{
+                  minimap: { enabled: false },
+                  wordWrap: "on",
+                  scrollBeyondLastLine: false,
+                  lineNumbers: "on",
+                  fontSize: 14,
+                  automaticLayout: true,
+                }}
+              />
+            </div>
           </div>
           <div className="px-4 md:px-6 pb-4 md:pb-6">
             <div className="flex items-center justify-end">
