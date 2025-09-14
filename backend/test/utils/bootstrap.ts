@@ -15,6 +15,7 @@ import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
 import { LoggerMock } from './mocks/logger-mock';
 import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
+import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
 
 export async function createTestApp() {
@@ -75,6 +76,7 @@ export async function createTestApp() {
     },
     utils: {
       userUtils: new UserUtils(app),
+      projectUtils: new ProjectUtils(app),
     },
     methods: {
       clearDatabase,
