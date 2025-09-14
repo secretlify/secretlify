@@ -75,12 +75,7 @@ function ProjectEditor() {
           )}
         >
           <div className="p-4 md:p-6">
-            <div
-              className={cn(
-                "relative bg-background/60 text-foreground",
-                "border border-transparent focus-within:border-ring"
-              )}
-            >
+            <div className={cn("rounded-xl overflow-hidden border")}>
               <Editor
                 height="55vh"
                 language="dotenv"
