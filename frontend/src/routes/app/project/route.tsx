@@ -34,7 +34,7 @@ function ProjectLayout() {
     : undefined;
 
   const containerVariants = {
-    hidden: { opacity: 0, y: 8, scale: 0.9 },
+    hidden: { opacity: 0, y: 8, scale: 0.5 },
     visible: {
       opacity: 1,
       y: 0,
@@ -45,7 +45,7 @@ function ProjectLayout() {
 
   const listVariants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.02, delayChildren: 0.2 } },
+    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
   } as const;
 
   const itemVariants = {
