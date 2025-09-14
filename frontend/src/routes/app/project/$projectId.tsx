@@ -38,11 +38,13 @@ function ProjectEditor() {
         base: "vs-dark",
         inherit: true,
         rules: [
-          { token: "variable", foreground: "4FC1FF" },
-          { token: "string", foreground: "CE9178" },
+          { token: "variable", foreground: "D4AF37" },
+          { token: "string", foreground: "A3A3A3" },
           { token: "comment", foreground: "6A9955", fontStyle: "italic" },
         ],
-        colors: {},
+        colors: {
+          focusBorder: "#00000000",
+        },
       });
     });
   }, []);
@@ -89,6 +91,10 @@ function ProjectEditor() {
                   lineNumbers: "on",
                   fontSize: 14,
                   automaticLayout: true,
+                  // Disable right-side navigation/overview UI and highlights
+                  overviewRulerBorder: false,
+                  hideCursorInOverviewRuler: true,
+                  renderLineHighlight: "none",
                 }}
               />
               <UpdateButton
