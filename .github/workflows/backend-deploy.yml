@@ -20,6 +20,9 @@ jobs:
 
       - name: Run e2e tests
         run: npm run test:e2e
+        env:
+          JWT_SECRET: "test"
+          OUR_ENV: "dev"
 
   deploy:
     runs-on: ubuntu-latest
