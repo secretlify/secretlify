@@ -60,10 +60,10 @@ function ProjectLayout() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            layout
+            layout="position"
           >
-            <div className="px-2 py-2 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
+            <div className="px-2 py-2 flex items-center justify-between shrink-0">
+              <h2 className="text-sm font-semibold text-muted-foreground tracking-wide shrink-0">
                 Projects
               </h2>
               <button
@@ -84,7 +84,7 @@ function ProjectLayout() {
                 +
               </button>
             </div>
-            <motion.nav className="space-y-1" variants={listVariants}>
+            <motion.nav className="space-y-1" variants={listVariants} layout>
               {projects.map((project) => {
                 const isActive = project.id === activeProjectId;
                 return (
