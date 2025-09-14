@@ -4,8 +4,8 @@ import { AuthMethod } from '../enum/auth-method.enum';
 export class UserNormalized {
   id: string;
   email: string;
-  authMethod?: AuthMethod;
-  avatarUrl?: string;
+  authMethod: AuthMethod;
+  avatarUrl: string;
   publicKey?: string;
   privateKeyEncrypted?: string;
 }

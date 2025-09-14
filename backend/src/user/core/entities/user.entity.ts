@@ -10,16 +10,16 @@ export class UserEntity {
   email: string;
 
   @Prop()
-  authMethod?: AuthMethod;
+  authMethod: AuthMethod;
+
+  @Prop()
+  avatarUrl: string;
 
   @Prop({ required: false })
   publicKey?: string;
 
   @Prop({ required: false })
   privateKeyEncrypted?: string;
-
-  @Prop()
-  avatarUrl?: string;
 
   @Prop()
   createdAt: Date;
