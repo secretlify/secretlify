@@ -7,6 +7,7 @@ import {
   reducers,
   selectors,
 } from "kea";
+import { loaders } from "kea-loaders";
 
 import type { keyLogicType } from "./keyLogicType";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
@@ -24,9 +25,7 @@ export const keyLogic = kea<keyLogicType>([
 
   actions({
     setUpPassphrase: (passphrase: string) => ({ passphrase }),
-    setLocalKeyPair: (keyPair: { publicKey: string; privateKey: string }) => ({
-      keyPair,
-    }),
+    setPassphrase: (passphrase: string) => ({ passphrase }),
     setLocalEncryptedPrivateKey: (encryptedPrivateKey: string) => ({
       encryptedPrivateKey,
     }),
@@ -42,14 +41,16 @@ export const keyLogic = kea<keyLogicType>([
   }),
 
   reducers({
-    localKeyPair: [
-      null as { publicKey: string; privateKey: string } | null,
-      {},
+    passphrase: [
+      null as string | null,
       {
-        setLocalKeyPair: (
-          _: { publicKey: string; privateKey: string } | null,
-          { keyPair }: { keyPair: { publicKey: string; privateKey: string } }
-        ) => keyPair,
+        persist: true,
+      },
+      {
+        setPassphrase: (
+          _: string | null,
+          { passphrase }: { passphrase: string }
+        ) => passphrase,
       },
     ],
     localEncryptedPrivateKey: [
@@ -63,6 +64,25 @@ export const keyLogic = kea<keyLogicType>([
       },
     ],
   }),
+
+  loaders(({ values }) => ({
+    privateKeyDecrypted: {
+      decryptPrivateKey: async (): Promise<string | null> => {
+        const encrypted = values.userData?.encryptedPrivateKey;
+        const passphrase = values.passphrase;
+        if (!encrypted || !passphrase) return null;
+        const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
+          passphrase
+        );
+        try {
+          const decrypted = await SymmetricCrypto.decrypt(encrypted, base64Key);
+          return decrypted;
+        } catch (e) {
+          return null;
+        }
+      },
+    },
+  })),
 
   listeners(({ actions, values }) => ({
     setUpPassphrase: async ({ passphrase }) => {
@@ -83,8 +103,8 @@ export const keyLogic = kea<keyLogicType>([
         privateKey: encrypted,
       });
 
-      actions.setLocalKeyPair(keyPair);
       actions.setLocalEncryptedPrivateKey(encrypted);
+      actions.setPassphrase(passphrase);
 
       const updatedUser: User = {
         ...values.userData,
@@ -92,6 +112,7 @@ export const keyLogic = kea<keyLogicType>([
         encryptedPrivateKey: encrypted,
       };
       actions.setUserData(updatedUser);
+      actions.decryptPrivateKey();
     },
   })),
 ]);

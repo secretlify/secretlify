@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BindLogic, useActions, useValues } from "kea";
 import { keyLogic } from "@/lib/logics/keyLogic";
 import { authLogic } from "@/lib/logics/authLogic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/app/keys")({
@@ -20,13 +20,21 @@ function KeysPage() {
 }
 
 function KeysInner() {
-  const { shouldSetUpPassphrase, userData, localKeyPair } = useValues(
-    keyLogic as any
-  );
-  const { setUpPassphrase } = useActions(keyLogic as any);
+  const { shouldSetUpPassphrase, userData, privateKeyDecrypted, passphrase } =
+    useValues(keyLogic);
+
+  const { setUpPassphrase, setPassphrase, decryptPrivateKey } =
+    useActions(keyLogic);
+
   const { setUserData } = useActions(authLogic);
 
-  const [passphrase, setPassphrase] = useState("");
+  const [setupPass, setSetupPass] = useState("");
+
+  useEffect(() => {
+    if (passphrase && userData?.encryptedPrivateKey) {
+      decryptPrivateKey();
+    }
+  }, [passphrase, userData?.encryptedPrivateKey]);
 
   const clearKeys = () => {
     if (!userData) return;
@@ -50,15 +58,15 @@ function KeysInner() {
             <input
               type="password"
               className="w-full rounded-md border px-3 py-2 text-sm bg-background"
-              placeholder="Enter passphrase"
-              value={passphrase}
-              onChange={(e) => setPassphrase(e.target.value)}
+              placeholder="Enter passphrase for setup"
+              value={setupPass}
+              onChange={(e) => setSetupPass(e.target.value)}
             />
             <Button
-              onClick={() => passphrase && setUpPassphrase(passphrase)}
-              disabled={!passphrase}
+              onClick={() => setupPass && setUpPassphrase(setupPass)}
+              disabled={!setupPass}
             >
-              Set up passphrase
+              Set up passphrase and generate keys
             </Button>
           </div>
         )}
@@ -71,18 +79,12 @@ function KeysInner() {
 
         <div className="space-y-3 pt-4">
           <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
-            Current keys (local session)
+            Current keys
           </h2>
           <div className="text-xs break-all">
             <div className="font-medium">Public Key:</div>
             <div className="rounded-md bg-muted p-2">
-              {localKeyPair?.publicKey || "—"}
-            </div>
-          </div>
-          <div className="text-xs break-all">
-            <div className="font-medium">Private Key (local only):</div>
-            <div className="rounded-md bg-muted p-2">
-              {localKeyPair?.privateKey || "—"}
+              {userData?.publicKey || "—"}
             </div>
           </div>
           <div className="text-xs break-all">
@@ -91,6 +93,26 @@ function KeysInner() {
             </div>
             <div className="rounded-md bg-muted p-2">
               {userData?.encryptedPrivateKey || "—"}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
+            Decrypt private key (local)
+          </h2>
+          <input
+            type="password"
+            className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+            placeholder="Enter passphrase to decrypt"
+            value={passphrase || ""}
+            onChange={(e) => setPassphrase(e.target.value)}
+          />
+          <div className="text-xs break-all">
+            <div className="font-medium">Private Key (decrypted locally):</div>
+            <div className="rounded-md bg-muted p-2">
+              {privateKeyDecrypted ||
+                (passphrase ? "Invalid passphrase or no data" : "—")}
             </div>
           </div>
         </div>
