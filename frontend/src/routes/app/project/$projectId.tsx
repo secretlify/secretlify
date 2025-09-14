@@ -4,6 +4,7 @@ import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { motion } from "motion/react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -91,11 +92,15 @@ function ProjectEditor() {
                   automaticLayout: true,
                 }}
               />
-              <div className="absolute bottom-3 right-3 z-10 inline-block">
+              <motion.div
+                className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <BackgroundGradient className="rounded-[22px] p-4 px-8 bg-white dark:bg-zinc-900">
                   <p>Update</p>
                 </BackgroundGradient>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
