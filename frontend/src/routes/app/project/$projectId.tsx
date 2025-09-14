@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -90,18 +91,11 @@ function ProjectEditor() {
                   automaticLayout: true,
                 }}
               />
-              <Button
-                size="lg"
-                className={cn(
-                  "absolute bottom-3 right-3 z-10 h-12 px-8 rounded-xl",
-                  "bg-gradient-to-r from-blue-600 via-fuchsia-600 to-pink-600",
-                  "hover:from-blue-500 hover:via-fuchsia-500 hover:to-pink-500",
-                  "text-white shadow-lg shadow-fuchsia-600/20"
-                )}
-                onClick={onSubmit}
-              >
-                Submit
-              </Button>
+              <div className="absolute bottom-3 right-3 z-10 inline-block">
+                <BackgroundGradient className="rounded-[22px] p-4 px-8 bg-white dark:bg-zinc-900">
+                  <p>Update</p>
+                </BackgroundGradient>
+              </div>
             </div>
           </div>
         </div>
