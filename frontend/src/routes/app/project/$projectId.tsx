@@ -18,6 +18,7 @@ function ProjectEditor() {
 
   const originalValueRef = useRef(value);
   const isDirty = value !== originalValueRef.current;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     loader.init().then((monaco) => {
@@ -47,13 +48,12 @@ function ProjectEditor() {
   }, []);
 
   const onSubmit = () => {
-    alert(
-      `Submitted content for project ${projectId}:\n\n${value.substring(
-        0,
-        200
-      )}${value.length > 200 ? "..." : ""}`
-    );
-    originalValueRef.current = value;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setTimeout(() => {
+      originalValueRef.current = value;
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
@@ -96,34 +96,63 @@ function ProjectEditor() {
                   automaticLayout: true,
                 }}
               />
-              <AnimatePresence>
-                {isDirty && (
-                  <motion.div
-                    key="update-button"
-                    className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
-                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 12, scale: 0.95 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 30,
-                      mass: 0.5,
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={onSubmit}
-                  >
-                    <BackgroundGradient className="rounded-[22px] p-4 px-8 bg-white dark:bg-zinc-900">
-                      <p className="font-semibold">Update</p>
-                    </BackgroundGradient>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <UpdateButton
+                visible={isDirty}
+                isSubmitting={isSubmitting}
+                onClick={onSubmit}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+type UpdateButtonProps = {
+  visible: boolean;
+  isSubmitting: boolean;
+  onClick: () => void;
+};
+
+function UpdateButton({ visible, isSubmitting, onClick }: UpdateButtonProps) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="update-button"
+          className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
+          layout
+          initial={{ opacity: 0, y: 12, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 12, scale: 0.95 }}
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 30,
+            mass: 0.5,
+          }}
+          whileHover={isSubmitting ? undefined : { scale: 1.05 }}
+          whileTap={isSubmitting ? undefined : { scale: 0.95 }}
+          onClick={onClick}
+        >
+          <BackgroundGradient
+            className={cn(
+              "rounded-[22px] bg-white dark:bg-zinc-900",
+              isSubmitting ? "p-3 px-6" : "p-4 px-8"
+            )}
+          >
+            {isSubmitting ? (
+              <span
+                aria-label="Saving"
+                className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent"
+              />
+            ) : (
+              <p className="font-semibold">Update</p>
+            )}
+          </BackgroundGradient>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -5,6 +5,7 @@ import {
   useLocation,
 } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { motion } from "motion/react";
 
 export const Route = createFileRoute("/app/project")({
   component: ProjectLayout,
@@ -32,43 +33,75 @@ function ProjectLayout() {
     ? location.href.split("/")[3]
     : undefined;
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 8, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
+    },
+  } as const;
+
+  const listVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.02, delayChildren: 0.05 } },
+  } as const;
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 8, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 500, damping: 30, mass: 0.5 },
+    },
+  } as const;
+
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground">
       <div className="mx-auto max-w-7xl h-full grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 p-4 md:p-8">
         <aside className="h-full overflow-y-auto flex flex-col justify-center">
-          <div className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm">
+          <motion.div
+            className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            layout
+          >
             <div className="px-2 py-2">
               <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
                 Projects
               </h2>
             </div>
-            <nav className="space-y-1">
+            <motion.nav className="space-y-1" variants={listVariants}>
               {projects.map((project) => {
                 const isActive = project.id === activeProjectId;
                 return (
-                  <Link
-                    key={project.id}
-                    to="/app/project/$projectId"
-                    params={{ projectId: project.id }}
-                    className={cn(
-                      "block w-full rounded-xl px-3 py-2 text-sm transition",
-                      "border border-transparent",
-                      isActive
-                        ? "bg-primary/10 text-primary border-primary/20"
-                        : "hover:bg-accent hover:text-accent-foreground"
-                    )}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{project.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {project.id}
-                      </span>
-                    </div>
-                  </Link>
+                  <motion.div key={project.id} variants={itemVariants} layout>
+                    <Link
+                      to="/app/project/$projectId"
+                      params={{ projectId: project.id }}
+                      className={cn(
+                        "block w-full rounded-xl px-3 py-2 text-sm transition",
+                        "border border-transparent",
+                        isActive
+                          ? "bg-primary/10 text-primary border-primary/20"
+                          : "hover:bg-accent hover:text-accent-foreground"
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{project.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {project.id}
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
                 );
               })}
-            </nav>
-          </div>
+            </motion.nav>
+          </motion.div>
         </aside>
 
         <main className="h-full overflow-y-auto flex items-center">
