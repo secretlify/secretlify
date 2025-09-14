@@ -6,18 +6,26 @@ export class UserNormalized {
   email: string;
   authMethod?: AuthMethod;
   avatarUrl?: string;
+  publicKey?: string;
+  privateKeyEncrypted?: string;
 }
 
 export class UserSerialized {
   @ApiProperty()
   id: string;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
   email: string;
 
-  @ApiPropertyOptional({ enum: AuthMethod })
-  authMethod?: AuthMethod;
+  @ApiProperty({ enum: AuthMethod })
+  authMethod: AuthMethod;
 
   @ApiPropertyOptional()
-  avatarUrl?: string;
+  avatarUrl: string;
+
+  @ApiPropertyOptional()
+  privateKeyEncrypted?: string;
+
+  @ApiPropertyOptional()
+  publicKey?: string;
 }

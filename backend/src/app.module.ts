@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { UserCoreModule } from './user/core/user-core.module';
-import { getEnvConfig } from './shared/config/env-config';
 import { AuthCoreModule } from './auth/core/auth-core.module';
+import { GithubAuthModule } from './auth/github/github-auth.module';
+import { GoogleAuthModule } from './auth/google/google-auth.module';
+import { getEnvConfig } from './shared/config/env-config';
 import { LogdashModule } from './shared/logdash/logdash.module';
+import { UserCoreModule } from './user/core/user-core.module';
 
 @Module({
   imports: [
@@ -15,6 +17,10 @@ import { LogdashModule } from './shared/logdash/logdash.module';
     EventEmitterModule.forRoot(),
     AuthCoreModule,
     LogdashModule,
+    GoogleAuthModule,
+    GithubAuthModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

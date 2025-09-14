@@ -1,14 +1,19 @@
+import { Logger, Metrics } from '@logdash/js-sdk';
 import { ValidationPipe } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
-import { clear } from 'jest-date-mock';
 import { Model } from 'mongoose';
 import * as nock from 'nock';
+import { GithubAuthModule } from '../../src/auth/github/github-auth.module';
+import { GoogleAuthModule } from '../../src/auth/google/google-auth.module';
+import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
 import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
+import { LoggerMock } from './mocks/logger-mock';
+import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
 import { UserUtils } from './user.utils';
 
@@ -16,17 +21,28 @@ export async function createTestApp() {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       rootMongooseTestModule(),
-      AuthCoreModule,
       UserCoreModule,
       ScheduleModule.forRoot(),
       EventEmitterModule.forRoot(),
+      AuthCoreModule,
+      LogdashModule,
+      GoogleAuthModule,
+      GithubAuthModule,
     ],
-  }).compile();
+  })
+    .overrideProvider(Logger)
+    .useClass(LoggerMock)
+    .overrideProvider(Metrics)
+    .useClass(MetricsMock)
+    .compile();
 
   const app = module.createNestApplication();
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
       transform: true,
+      transformOptions: { enableImplicitConversion: true },
     }),
   );
   await app.init();
@@ -38,6 +54,7 @@ export async function createTestApp() {
   };
 
   const beforeEach = async () => {
+    const { clear } = await import('jest-date-mock');
     clear();
     await clearDatabase();
     nock.cleanAll();
@@ -46,6 +63,7 @@ export async function createTestApp() {
   const afterAll = async () => {
     await app.close();
     await closeInMemoryMongoServer();
+    const { clear } = await import('jest-date-mock');
     clear();
   };
 

@@ -1,0 +1,1 @@
+export type Branded<T, Brand> = T & { _brand: Brand };

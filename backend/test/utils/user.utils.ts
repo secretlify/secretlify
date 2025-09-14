@@ -2,18 +2,19 @@ import { INestApplication } from '@nestjs/common';
 
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CustomJwtService } from '../../src/auth/custom-jwt/custom-jwt.service';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserNormalized } from '../../src/user/core/entities/user.interface';
 import { UserSerializer } from '../../src/user/core/entities/user.serializer';
-import { AccountClaimStatus } from '../../src/user/core/enum/account-claim-status.enum';
 import { AuthMethod } from '../../src/user/core/enum/auth-method.enum';
-import { UserTier } from '../../src/user/core/enum/user-tier.enum';
 
 export class UserUtils {
   private userModel: Model<UserEntity>;
+  private jwtService: CustomJwtService;
 
   constructor(private readonly app: INestApplication<any>) {
     this.userModel = this.app.get(getModelToken(UserEntity.name));
+    this.jwtService = this.app.get(CustomJwtService);
   }
 
   public async getUser(): Promise<UserNormalized | null> {
@@ -21,26 +22,20 @@ export class UserUtils {
     return user ? UserSerializer.normalize(user) : null;
   }
 
-  public async createDefaultUser(params?: {
-    email?: string;
-    authMethod?: AuthMethod;
-    accountClaimStatus?: AccountClaimStatus;
-    tier?: UserTier;
-    stripeCustomerId?: string;
-    avatarUrl?: string;
-    marketingConsent?: boolean;
-  }): Promise<UserNormalized> {
+  public async createDefault(params?: { email?: string }): Promise<{
+    user: UserNormalized;
+    token: string;
+  }> {
     const user = await this.userModel.create({
       email: params?.email || `test-user-${Math.random()}@example.com`,
-      authMethod: params?.authMethod || AuthMethod.Traditional,
-      accountClaimStatus: params?.accountClaimStatus || AccountClaimStatus.Claimed,
-      lastActivityDate: new Date(),
-      tier: params?.tier || UserTier.Free,
-      stripeCustomerId: params?.stripeCustomerId,
-      avatarUrl: params?.avatarUrl,
-      marketingConsent: params?.marketingConsent || false,
+      authMethod: AuthMethod.Google,
     });
 
-    return UserSerializer.normalize(user);
+    const token = await this.jwtService.sign({ id: user.id });
+
+    return {
+      user: UserSerializer.normalize(user),
+      token,
+    };
   }
 }

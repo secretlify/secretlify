@@ -1,8 +1,8 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from '../utils/bootstrap';
-import { closeInMemoryMongoServer } from '../utils/mongo-in-memory-server';
 
-describe('UserCoreController (writes)', () => {
+describe('User writes (e2e)', () => {
   let bootstrap: Awaited<ReturnType<typeof createTestApp>>;
 
   beforeAll(async () => {
@@ -17,17 +17,35 @@ describe('UserCoreController (writes)', () => {
     await bootstrap.methods.afterAll();
   });
 
-  it('creates anonymous user with cluster', async () => {
-    // when
-    const response = await request(bootstrap.app.getHttpServer()).post(
-      '/users/anonymous',
-    );
+  describe('PATCH /users/me', () => {
+    it('updates own keys', async () => {
+      // given
+      const { user, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
 
-    const cluster = (await bootstrap.models.clusterModel.findOne())!;
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/users/me`)
+        .set('authorization', `Bearer ${token}`)
+        .send({ publicKey: 'test-public-key', privateKeyEncrypted: 'test-private-key' });
 
-    // then
-    expect(response.body.token).toBeDefined();
-    expect(response.body.user).toBeDefined();
-    expect(response.body.cluster.creatorId).toBe(response.body.user.id);
+      // then
+      expect(response.status).toEqual(HttpStatus.OK);
+      expect(response.body).toMatchObject({
+        publicKey: 'test-public-key',
+        privateKeyEncrypted: 'test-private-key',
+      });
+    });
+
+    it('does not update if not logged in', async () => {
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/users/me`)
+        .send({ publicKey: 'test-public-key', privateKeyEncrypted: 'test-private-key' });
+
+      // then
+      expect(response.status).toEqual(HttpStatus.UNAUTHORIZED);
+    });
   });
 });

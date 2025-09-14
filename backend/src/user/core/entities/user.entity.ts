@@ -12,6 +12,12 @@ export class UserEntity {
   @Prop()
   authMethod?: AuthMethod;
 
+  @Prop({ required: false })
+  publicKey?: string;
+
+  @Prop({ required: false })
+  privateKeyEncrypted?: string;
+
   @Prop()
   avatarUrl?: string;
 

@@ -8,6 +8,8 @@ export class UserSerializer {
       authMethod: entity.authMethod,
       email: entity.email,
       avatarUrl: entity.avatarUrl,
+      privateKeyEncrypted: entity.privateKeyEncrypted,
+      publicKey: entity.publicKey,
     };
   }
 
@@ -17,6 +19,8 @@ export class UserSerializer {
       authMethod: normalized.authMethod,
       email: normalized.email,
       avatarUrl: normalized.avatarUrl,
+      privateKeyEncrypted: normalized.privateKeyEncrypted,
+      publicKey: normalized.publicKey,
     };
   }
 }

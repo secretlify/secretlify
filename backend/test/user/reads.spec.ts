@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 import { createTestApp } from '../utils/bootstrap';
-import { closeInMemoryMongoServer } from '../utils/mongo-in-memory-server';
 
 describe('UserCoreController (reads)', () => {
   let bootstrap: Awaited<ReturnType<typeof createTestApp>>;
@@ -17,31 +16,62 @@ describe('UserCoreController (reads)', () => {
     await bootstrap.methods.afterAll();
   });
 
-  it('returns current user if logged in', async () => {
-    // given
-    const { token } = await bootstrap.utils.generalUtils.setupClaimed({
-      email: 'test@test.com',
+  describe('GET /users/me', () => {
+    it('returns current user', async () => {
+      // given
+      const { user, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get('/users/me')
+        .set('authorization', `Bearer ${token}`);
+
+      // then
+      expect(response.body).toMatchObject({ id: expect.any(String), email: user.email });
     });
 
-    // when
-    const response = await request(bootstrap.app.getHttpServer())
-      .get('/users/me')
-      .set('authorization', `Bearer ${token}`);
+    it('returns 401 when not logged in', async () => {
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).get('/users/me');
 
-    // then
-    expect(response.body.email).toEqual('test@test.com');
+      // then
+      expect(response.status).toEqual(401);
+    });
   });
 
-  it('returns exception if not logged in', async () => {
-    // given
-    const token = 'asdf';
+  describe('POST /users/public-keys', () => {
+    it('returns public keys', async () => {
+      // given
+      const { user: user1, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      const { user: user2 } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test2@test.com',
+      });
 
-    // when
-    const response = await request(bootstrap.app.getHttpServer())
-      .get('/users/me')
-      .set('authorization', `Bearer ${token}`);
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .post('/users/public-keys')
+        .send({
+          userIds: [user1.id, user2.id],
+        })
+        .set('authorization', `Bearer ${token}`);
 
-    // then
-    expect(response.status).toEqual(401);
+      // then
+      expect(response.body.publicKeys).toEqual({
+        [user1.id]: user1.publicKey,
+        [user2.id]: user2.publicKey,
+      });
+    });
+
+    it('returns 401 when not logged in', async () => {
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).post('/users/public-keys');
+
+      // then
+      expect(response.status).toEqual(401);
+    });
   });
 });

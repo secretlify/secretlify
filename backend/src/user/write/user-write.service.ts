@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types, UpdateQuery } from 'mongoose';
 import { UserEntity } from '../core/entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserNormalized } from '../core/entities/user.interface';
 import { UserSerializer } from '../core/entities/user.serializer';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -21,29 +21,25 @@ export class UserWriteService {
     return UserSerializer.normalize(user);
   }
 
-  public async update(dto: UpdateUserDto): Promise<UserNormalized> {
+  public async update(id: string, dto: UpdateUserDto): Promise<UserNormalized> {
     const updateQuery: UpdateQuery<UserEntity> = {};
 
-    if (dto.email) {
-      updateQuery.email = dto.email;
+    if (dto.publicKey) {
+      updateQuery.publicKey = dto.publicKey;
     }
 
-    if (dto.authMethod) {
-      updateQuery.authMethod = dto.authMethod;
-    }
-
-    if (dto.avatarUrl) {
-      updateQuery.avatarUrl = dto.avatarUrl;
+    if (dto.privateKeyEncrypted) {
+      updateQuery.privateKeyEncrypted = dto.privateKeyEncrypted;
     }
 
     const user = await this.userModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(dto.id) },
+      { _id: new Types.ObjectId(id) },
       updateQuery,
       { new: true },
     );
 
     if (!user) {
-      throw new Error(`User with id ${dto.id} not found for update`);
+      throw new Error(`User with id ${id} not found for update`);
     }
 
     return UserSerializer.normalize(user);

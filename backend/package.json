@@ -97,8 +97,6 @@
     "setupFiles": [
       "jest-date-mock"
     ],
-    "globalSetup": "<rootDir>/test/utils/global-setup.ts",
-    "globalTeardown": "<rootDir>/test/utils/global-teardown.ts",
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/src/$1"
     }
