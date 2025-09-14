@@ -1,4 +1,4 @@
-import { authLogic } from "@/authLogic";
+import { authLogic } from "@/lib/logics/authLogic";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
 import { useEffect } from "react";

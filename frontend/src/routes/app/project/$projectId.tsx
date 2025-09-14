@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { cn, defaultLoader } from "@/lib/utils";
-import { Encryption, type KeyPair } from "@/lib/encryption";
+import type { KeyPair } from "@/lib/crypto/crypto.asymmetric";
+import { AsymmetricCrypto } from "@/lib/crypto/crypto.asymmetric";
+import { SymmetricCrypto } from "@/lib/crypto/crypto.symmetric";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -17,7 +19,7 @@ function ProjectEditor() {
     let active = true;
     (async () => {
       try {
-        const kp = await Encryption.generateKeyPair();
+        const kp = await AsymmetricCrypto.generateKeyPair();
         if (active) setKeyPair(kp);
       } catch {
         if (active) setKeyPair(null);
@@ -29,19 +31,14 @@ function ProjectEditor() {
   }, []);
   const [symPass, setSymPass] = useState(() => randomString(10));
 
-  // Derive a 32-byte key from 10-char passphrase using Web Crypto SHA-256, then base64 for Encryption API
+  // Derive a 32-byte key from passphrase using helper
   const [derivedSymKeyB64, setDerivedSymKeyB64] = useState("");
   useEffect(() => {
     let active = true;
     (async () => {
       try {
-        const passBytes = new TextEncoder().encode(symPass);
-        const digestBuf = await window.crypto.subtle.digest(
-          "SHA-256",
-          passBytes
-        );
-        const digest = new Uint8Array(digestBuf);
-        if (active) setDerivedSymKeyB64(u8ToB64(digest));
+        const k = await SymmetricCrypto.deriveBase64KeyFromPassphrase(symPass);
+        if (active) setDerivedSymKeyB64(k);
       } catch {
         if (active) setDerivedSymKeyB64("");
       }
@@ -65,11 +62,8 @@ function ProjectEditor() {
           }
           return;
         }
-        const enc = await Encryption.encryptAsymetric(
-          symPass,
-          keyPair.publicKey
-        );
-        const dec = await Encryption.decryptAsymetric(enc, keyPair.privateKey);
+        const enc = await AsymmetricCrypto.encrypt(symPass, keyPair.publicKey);
+        const dec = await AsymmetricCrypto.decrypt(enc, keyPair.privateKey);
         if (active) {
           setAsymEncryptedPass(enc);
           setAsymDecryptedPass(dec);
@@ -100,8 +94,8 @@ function ProjectEditor() {
           }
           return;
         }
-        const enc = await Encryption.encrypt(value, derivedSymKeyB64);
-        const dec = await Encryption.decrypt(enc, derivedSymKeyB64);
+        const enc = await SymmetricCrypto.encrypt(value, derivedSymKeyB64);
+        const dec = await SymmetricCrypto.decrypt(enc, derivedSymKeyB64);
         if (active) {
           setSymEncryptedText(enc);
           setSymDecryptedText(dec);
@@ -246,12 +240,4 @@ function randomString(length: number): string {
     out += alphabet[array[i] % alphabet.length];
   }
   return out;
-}
-
-function u8ToB64(bytes: Uint8Array): string {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
 }

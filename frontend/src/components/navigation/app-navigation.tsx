@@ -3,7 +3,7 @@ import { FloatingDock } from "./floating-dock";
 import { Home, LogIn, ScanFaceIcon, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
-import { authLogic } from "@/authLogic";
+import { authLogic } from "@/lib/logics/authLogic";
 import { useValues } from "kea";
 
 function AppNavigationImpl() {
