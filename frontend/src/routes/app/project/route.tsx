@@ -34,10 +34,15 @@ function ProjectLayout() {
 
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground">
-      <div className="w-full h-full grid grid-cols-[260px_1fr] gap-4 p-3 md:p-6">
-        <aside className="h-full overflow-y-auto">
-          <div className="h-full rounded-2xl border border-border bg-card/60 backdrop-blur shadow-sm flex flex-col">
-            <nav className="p-2 space-y-1">
+      <div className="mx-auto max-w-7xl h-full grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 p-4 md:p-8">
+        <aside className="h-full overflow-y-auto flex flex-col justify-center">
+          <div className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm">
+            <div className="px-2 py-2">
+              <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
+                Projects
+              </h2>
+            </div>
+            <nav className="space-y-1">
               {projects.map((project) => {
                 const isActive = project.id === activeProjectId;
                 return (
@@ -66,22 +71,9 @@ function ProjectLayout() {
           </div>
         </aside>
 
-        <div className="h-full min-w-0 flex flex-col overflow-hidden">
-          <header className="shrink-0 px-4 md:px-6 py-3 md:py-4">
-            <div className="text-sm text-muted-foreground">
-              <span className="hover:underline">Projects</span>
-              <span className="px-2">/</span>
-              <span className="text-foreground font-medium">
-                {activeProjectId ?? "Select a project"}
-              </span>
-            </div>
-          </header>
-          <main className="grow overflow-y-auto">
-            <div className="px-2 md:px-4 pb-4">
-              <Outlet />
-            </div>
-          </main>
-        </div>
+        <main className="h-full overflow-y-auto flex items-center">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

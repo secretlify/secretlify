@@ -8,7 +8,7 @@ import { subscriptions } from "kea-subscriptions";
 import type { authLogicType } from "./authLogicType";
 
 export const authLogic = kea<authLogicType>([
-  path(["src", "authLogic"]),
+  path(["src", "lib", "logics", "authLogic"]),
 
   actions({
     setJwtToken: (jwtToken: string) => ({ jwtToken }),

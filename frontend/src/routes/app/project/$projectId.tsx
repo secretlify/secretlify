@@ -1,120 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { cn, defaultLoader } from "@/lib/utils";
-import type { KeyPair } from "@/lib/crypto/crypto.asymmetric";
-import { AsymmetricCrypto } from "@/lib/crypto/crypto.asymmetric";
-import { SymmetricCrypto } from "@/lib/crypto/crypto.symmetric";
+import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
-  loader: defaultLoader,
 });
 
 function ProjectEditor() {
   const { projectId } = useParams({ from: "/app/project/$projectId" });
   const [value, setValue] = useState("");
-  const [keyPair, setKeyPair] = useState<KeyPair | null>(null);
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const kp = await AsymmetricCrypto.generateKeyPair();
-        if (active) setKeyPair(kp);
-      } catch {
-        if (active) setKeyPair(null);
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, []);
-  const [symPass, setSymPass] = useState(() => randomString(10));
-
-  // Derive a 32-byte key from passphrase using helper
-  const [derivedSymKeyB64, setDerivedSymKeyB64] = useState("");
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const k = await SymmetricCrypto.deriveBase64KeyFromPassphrase(symPass);
-        if (active) setDerivedSymKeyB64(k);
-      } catch {
-        if (active) setDerivedSymKeyB64("");
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [symPass]);
-
-  // Asymmetric: encrypt the 10-char passphrase with public key, decrypt with private key
-  const [asymEncryptedPass, setAsymEncryptedPass] = useState("");
-  const [asymDecryptedPass, setAsymDecryptedPass] = useState("");
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        if (!keyPair) {
-          if (active) {
-            setAsymEncryptedPass("");
-            setAsymDecryptedPass("");
-          }
-          return;
-        }
-        const enc = await AsymmetricCrypto.encrypt(symPass, keyPair.publicKey);
-        const dec = await AsymmetricCrypto.decrypt(enc, keyPair.privateKey);
-        if (active) {
-          setAsymEncryptedPass(enc);
-          setAsymDecryptedPass(dec);
-        }
-      } catch {
-        if (active) {
-          setAsymEncryptedPass("");
-          setAsymDecryptedPass("");
-        }
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [symPass, keyPair]);
-
-  // Symmetric: encrypt and decrypt the textarea content using derived 32-byte key
-  const [symEncryptedText, setSymEncryptedText] = useState("");
-  const [symDecryptedText, setSymDecryptedText] = useState("");
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        if (!value || !derivedSymKeyB64) {
-          if (active) {
-            setSymEncryptedText("");
-            setSymDecryptedText("");
-          }
-          return;
-        }
-        const enc = await SymmetricCrypto.encrypt(value, derivedSymKeyB64);
-        const dec = await SymmetricCrypto.decrypt(enc, derivedSymKeyB64);
-        if (active) {
-          setSymEncryptedText(enc);
-          setSymDecryptedText(dec);
-        }
-      } catch {
-        if (active) {
-          setSymEncryptedText("");
-          setSymDecryptedText("");
-        }
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [value, derivedSymKeyB64]);
 
   const onSubmit = () => {
-    // Placeholder submit action
-    // eslint-disable-next-line no-alert
     alert(
       `Submitted content for project ${projectId}:\n\n${value.substring(
         0,
@@ -124,20 +21,30 @@ function ProjectEditor() {
   };
 
   return (
-    <div className="w-full max-h-screen overflow-y-auto">
-      <div className="w-full">
+    <div className="w-full p-2 md:p-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4">
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Project {projectId}
+            </h1>
+          </div>
+        </div>
+
         <div
-          className={
-            "rounded-2xl border border-border bg-card/60 backdrop-blur"
-          }
+          className={cn(
+            "rounded-2xl border border-border bg-card/60 backdrop-blur",
+            "shadow-[0_10px_40px_-15px_rgba(0,0,0,0.35)]",
+            "transition hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.45)]"
+          )}
         >
-          <div className="p-2 pb-0">
+          <div className="p-4 md:p-6">
             <textarea
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder="Type or paste your content here..."
               className={cn(
-                "w-full",
+                "w-full min-h-[40vh] md:min-h-[55vh] resize-vertical",
                 "rounded-xl bg-background/60 text-foreground",
                 "outline-none border border-transparent focus:border-ring",
                 "p-4 md:p-5 leading-relaxed text-base md:text-lg",
@@ -145,7 +52,7 @@ function ProjectEditor() {
               )}
             />
           </div>
-          <div className="p-2">
+          <div className="px-4 md:px-6 pb-4 md:pb-6">
             <div className="flex items-center justify-end">
               <Button
                 size="lg"
@@ -162,82 +69,7 @@ function ProjectEditor() {
             </div>
           </div>
         </div>
-        <div className="mt-6 space-y-4 rounded-2xl border border-border bg-card/60 p-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="font-semibold">Asymmetric Key Pair</div>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setSymPass(randomString(10))}
-            >
-              Regenerate Sym Pass
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm break-all">
-            <div>
-              <div className="text-muted-foreground">Public Key (base64)</div>
-              <div className="select-all">{keyPair?.publicKey ?? ""}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Private Key (base64)</div>
-              <div className="select-all">{keyPair?.privateKey ?? ""}</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm break-all">
-            <div>
-              <div className="text-muted-foreground">
-                Symmetric Passphrase (10 chars)
-              </div>
-              <div className="select-all">{symPass}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">
-                Derived Symmetric Key (SHA-256 → base64)
-              </div>
-              <div className="select-all">{derivedSymKeyB64}</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm break-all">
-            <div>
-              <div className="text-muted-foreground">
-                Asym Encrypted Passphrase
-              </div>
-              <div className="select-all">{asymEncryptedPass}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">
-                Asym Decrypted Passphrase
-              </div>
-              <div className="select-all">{asymDecryptedPass}</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm break-all">
-            <div>
-              <div className="text-muted-foreground">Sym Encrypted Text</div>
-              <div className="select-all">{symEncryptedText}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Sym Decrypted Text</div>
-              <div className="select-all">{symDecryptedText}</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
-}
-
-function randomString(length: number): string {
-  const alphabet =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const array = new Uint8Array(length);
-  (crypto || (window as any).msCrypto).getRandomValues(array);
-  let out = "";
-  for (let i = 0; i < length; i++) {
-    out += alphabet[array[i] % alphabet.length];
-  }
-  return out;
 }
