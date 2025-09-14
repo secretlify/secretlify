@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+// removed unused Button import
 import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -15,6 +15,9 @@ function ProjectEditor() {
   const [value, setValue] = useState(
     'BANK_PASSWORD="iliketurtles"\nDATABASE_PASSWORD="zaq12wsx"'
   );
+
+  const originalValueRef = useRef(value);
+  const isDirty = value !== originalValueRef.current;
 
   useEffect(() => {
     loader.init().then((monaco) => {
@@ -50,6 +53,7 @@ function ProjectEditor() {
         200
       )}${value.length > 200 ? "..." : ""}`
     );
+    originalValueRef.current = value;
   };
 
   return (
@@ -92,15 +96,30 @@ function ProjectEditor() {
                   automaticLayout: true,
                 }}
               />
-              <motion.div
-                className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <BackgroundGradient className="rounded-[22px] p-4 px-8 bg-white dark:bg-zinc-900">
-                  <p>Update</p>
-                </BackgroundGradient>
-              </motion.div>
+              <AnimatePresence>
+                {isDirty && (
+                  <motion.div
+                    key="update-button"
+                    className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
+                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 12, scale: 0.95 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                      mass: 0.5,
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onSubmit}
+                  >
+                    <BackgroundGradient className="rounded-[22px] p-4 px-8 bg-white dark:bg-zinc-900">
+                      <p className="font-semibold">Update</p>
+                    </BackgroundGradient>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
