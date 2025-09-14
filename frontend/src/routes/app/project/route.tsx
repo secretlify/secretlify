@@ -14,19 +14,11 @@ export const Route = createFileRoute("/app/project")({
 function ProjectLayout() {
   const location = useLocation();
 
-  // Stable demo id used elsewhere in the app
-  const projectIdStorageKey = "secretlify_demo_project_id";
-  let demoProjectId = localStorage.getItem(projectIdStorageKey);
-  if (!demoProjectId) {
-    demoProjectId = Math.random().toString(36).slice(2, 10);
-    localStorage.setItem(projectIdStorageKey, demoProjectId);
-  }
-
   const projects = [
-    { id: demoProjectId, name: "My Project" },
     { id: "alpha", name: "Alpha" },
     { id: "bravo", name: "Bravo" },
     { id: "charlie", name: "Charlie" },
+    { id: "delta", name: "Delta" },
   ];
 
   const activeProjectId = location.href.startsWith("/app/project/")
