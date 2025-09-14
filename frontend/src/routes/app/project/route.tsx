@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/app/project")({
   component: ProjectLayout,
@@ -14,12 +15,12 @@ export const Route = createFileRoute("/app/project")({
 function ProjectLayout() {
   const location = useLocation();
 
-  const projects = [
+  const [projects, setProjects] = useState([
     { id: "alpha", name: "Alpha" },
     { id: "bravo", name: "Bravo" },
     { id: "charlie", name: "Charlie" },
     { id: "delta", name: "Delta" },
-  ];
+  ]);
 
   const activeProjectId = location.href.startsWith("/app/project/")
     ? location.href.split("/")[3]
@@ -61,10 +62,27 @@ function ProjectLayout() {
             animate="visible"
             layout
           >
-            <div className="px-2 py-2">
+            <div className="px-2 py-2 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-muted-foreground tracking-wide">
                 Projects
               </h2>
+              <button
+                type="button"
+                aria-label="Add project"
+                className={cn(
+                  "inline-flex h-7 w-7 items-center justify-center rounded-md",
+                  "border border-border bg-secondary text-secondary-foreground",
+                  "hover:bg-secondary/80 transition"
+                )}
+                onClick={() =>
+                  setProjects((prev) => [
+                    ...prev,
+                    { id: Math.random().toString(36).slice(2, 8), name: "new" },
+                  ])
+                }
+              >
+                +
+              </button>
             </div>
             <motion.nav className="space-y-1" variants={listVariants}>
               {projects.map((project) => {
