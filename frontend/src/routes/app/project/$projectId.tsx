@@ -80,7 +80,7 @@ function ProjectEditor() {
           )}
           initial={{ opacity: 0, x: -100, scale: 0.8 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.1 }}
+          transition={{ duration: 1, ease: [0, 1, 0, 1], delay: 0.1 }}
         >
           <div className="p-5 ">
             <div className="mb-3 flex items-center justify-between gap-4">
