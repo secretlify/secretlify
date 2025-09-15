@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -18,6 +18,10 @@ function ProjectEditor() {
   const originalValueRef = useRef(value);
   const isDirty = value !== originalValueRef.current;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [lastChangedLabel, setLastChangedLabel] = useState(
+    "Changed by you 1 week ago"
+  );
 
   useEffect(() => {
     loader.init().then((monaco) => {
@@ -54,8 +58,16 @@ function ProjectEditor() {
     setTimeout(() => {
       originalValueRef.current = value;
       setIsSubmitting(false);
+      setLastChangedLabel("Changed by you just now");
     }, 1000);
   };
+
+  // Reset hover state when button becomes disabled
+  useEffect(() => {
+    if (isSubmitting || !isDirty) {
+      setIsHovered(false);
+    }
+  }, [isSubmitting, isDirty]);
 
   return (
     <div className="w-full p-2 md:p-4">
@@ -80,16 +92,26 @@ function ProjectEditor() {
                 aria-label="Update"
                 onClick={onSubmit}
                 disabled={isSubmitting || !isDirty}
-                whileHover={
-                  isSubmitting || !isDirty ? undefined : { scale: 1.1 }
+                whileTap={
+                  isSubmitting || !isDirty ? undefined : { scale: 0.95 }
                 }
-                whileTap={isSubmitting || !isDirty ? undefined : { scale: 0.9 }}
                 layout
                 transition={{
                   layout: { duration: 0.25, ease: [0.2, 0, 0, 1] },
+                  scale: {
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 30,
+                    mass: 0.5,
+                  },
                 }}
+                animate={{ scale: isHovered ? 1.05 : 1 }}
+                onHoverStart={() => {
+                  if (!isSubmitting && isDirty) setIsHovered(true);
+                }}
+                onHoverEnd={() => setIsHovered(false)}
                 className={cn(
-                  "inline-flex h-10 items-center gap-2 rounded-md border px-4 font-semibold whitespace-nowrap",
+                  "inline-flex h-10 items-center gap-2 rounded-md border px-4 font-semibold whitespace-nowrap cursor-pointer",
                   "bg-primary text-primary-foreground",
                   "disabled:opacity-50 disabled:cursor-not-allowed"
                 )}
@@ -105,11 +127,36 @@ function ProjectEditor() {
                 ) : !isDirty ? (
                   <span>Saved</span>
                 ) : (
-                  <span>Update</span>
+                  <>
+                    <span>Update</span>
+                    <motion.span
+                      className="inline-flex items-center justify-center overflow-hidden"
+                      aria-hidden
+                      initial={{ width: 0 }}
+                      animate={{ width: isHovered ? 16 : 0 }}
+                      transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
+                    >
+                      <motion.span
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{
+                          opacity: isHovered ? 1 : 0,
+                          x: isHovered ? 0 : -8,
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 30,
+                          mass: 0.5,
+                        }}
+                      >
+                        →
+                      </motion.span>
+                    </motion.span>
+                  </>
                 )}
               </motion.button>
             </div>
-            <div className={cn("rounded-xl overflow-hidden border")}>
+            <div className={cn("relative rounded-xl overflow-hidden border")}>
               <Editor
                 height="55vh"
                 language="dotenv"
@@ -129,6 +176,20 @@ function ProjectEditor() {
                   renderLineHighlight: "none",
                 }}
               />
+              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={lastChangedLabel}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ ease: "easeInOut", duration: 0.1 }}
+                    className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                  >
+                    {lastChangedLabel}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </motion.div>
