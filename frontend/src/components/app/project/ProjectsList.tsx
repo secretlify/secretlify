@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { cn, randomId } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useActions, useValues } from "kea";
@@ -8,8 +8,16 @@ import { useProjects } from "@/lib/hooks/useProjects";
 export function ProjectsList() {
   const { projects } = useValues(projectsLogic);
   const { addProject } = useActions(projectsLogic);
+  const navigate = useNavigate();
 
   const { activeProject } = useProjects();
+
+  if (!projects.find((project) => project.id === activeProject?.id)) {
+    navigate({
+      to: "/app/project/$projectId",
+      params: { projectId: projects[0].id },
+    });
+  }
 
   const containerVariants = {
     hidden: { opacity: 0, y: 300, scale: 0.5 },
