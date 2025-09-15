@@ -3,8 +3,7 @@ import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 
 export const Route = createFileRoute("/app/project/$projectId")({
   component: ProjectEditor,
@@ -50,7 +49,7 @@ function ProjectEditor() {
   }, []);
 
   const onSubmit = () => {
-    if (isSubmitting) return;
+    if (isSubmitting || !isDirty) return;
     setIsSubmitting(true);
     setTimeout(() => {
       originalValueRef.current = value;
@@ -61,14 +60,6 @@ function ProjectEditor() {
   return (
     <div className="w-full p-2 md:p-4">
       <div className="mx-auto w-full max-w-5xl space-y-4">
-        <div className="flex items-end justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Project {projectId}
-            </h1>
-          </div>
-        </div>
-
         <motion.div
           className={cn(
             "rounded-2xl border border-border bg-card/60 backdrop-blur",
@@ -79,7 +70,45 @@ function ProjectEditor() {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.1 }}
         >
-          <div className="p-4 md:p-6">
+          <div className="p-5 ">
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <h1 className="text-3xl md:text-3xl font-bold tracking-tight">
+                Project {projectId}
+              </h1>
+              <motion.button
+                type="button"
+                aria-label="Update"
+                onClick={onSubmit}
+                disabled={isSubmitting || !isDirty}
+                whileHover={
+                  isSubmitting || !isDirty ? undefined : { scale: 1.1 }
+                }
+                whileTap={isSubmitting || !isDirty ? undefined : { scale: 0.9 }}
+                layout
+                transition={{
+                  layout: { duration: 0.25, ease: [0.2, 0, 0, 1] },
+                }}
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 rounded-md border px-4 font-semibold whitespace-nowrap",
+                  "bg-primary text-primary-foreground",
+                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                )}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span
+                      aria-label="Saving"
+                      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/60 border-t-transparent"
+                    />
+                    <span>Saving...</span>
+                  </>
+                ) : !isDirty ? (
+                  <span>Saved</span>
+                ) : (
+                  <span>Update</span>
+                )}
+              </motion.button>
+            </div>
             <div className={cn("rounded-xl overflow-hidden border")}>
               <Editor
                 height="55vh"
@@ -100,63 +129,10 @@ function ProjectEditor() {
                   renderLineHighlight: "none",
                 }}
               />
-              <UpdateButton
-                visible={isDirty}
-                isSubmitting={isSubmitting}
-                onClick={onSubmit}
-              />
             </div>
           </div>
         </motion.div>
       </div>
     </div>
-  );
-}
-
-type UpdateButtonProps = {
-  visible: boolean;
-  isSubmitting: boolean;
-  onClick: () => void;
-};
-
-function UpdateButton({ visible, isSubmitting, onClick }: UpdateButtonProps) {
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          key="update-button"
-          className="absolute bottom-3 right-3 z-10 inline-block cursor-pointer"
-          layout
-          initial={{ opacity: 0, y: 12, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.95 }}
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 30,
-            mass: 0.5,
-          }}
-          whileHover={isSubmitting ? undefined : { scale: 1.05 }}
-          whileTap={isSubmitting ? undefined : { scale: 0.95 }}
-          onClick={onClick}
-        >
-          <BackgroundGradient
-            className={cn(
-              "rounded-[22px] bg-white dark:bg-zinc-900",
-              isSubmitting ? "p-3 px-6" : "p-4 px-8"
-            )}
-          >
-            {isSubmitting ? (
-              <span
-                aria-label="Saving"
-                className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent"
-              />
-            ) : (
-              <p className="font-semibold">Update</p>
-            )}
-          </BackgroundGradient>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
