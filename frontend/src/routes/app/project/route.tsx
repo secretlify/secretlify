@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ProjectLayout as ProjectLayoutComponent } from "@/components/layouts/ProjectLayout";
+import { ProjectPage } from "@/components/app/project/ProjectPage";
 
 export const Route = createFileRoute("/app/project")({
-  component: ProjectTanstackLayout,
+  component: ProjectTanstackPage,
 });
 
-function ProjectTanstackLayout() {
-  return <ProjectLayoutComponent />;
+function ProjectTanstackPage() {
+  return <ProjectPage />;
 }

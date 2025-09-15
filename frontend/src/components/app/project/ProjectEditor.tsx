@@ -1,11 +1,9 @@
 import { cn } from "@/lib/utils";
-import { useParams } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
 import Editor, { loader } from "@monaco-editor/react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
-export function ProjectIdPage() {
-  const { projectId } = useParams({ from: "/app/project/$projectId" });
+export function ProjectEditor({ projectId }: { projectId?: string }) {
   const [value, setValue] = useState(
     'BANK_PASSWORD="iliketurtles"\nDATABASE_PASSWORD="zaq12wsx"'
   );
