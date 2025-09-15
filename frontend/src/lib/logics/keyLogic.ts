@@ -7,37 +7,31 @@ import {
   reducers,
   selectors,
 } from "kea";
-import { loaders } from "kea-loaders";
 
 import type { keyLogicType } from "./keyLogicType";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { authLogic } from "./authLogic";
-import type { User } from "../api/user.api";
+import { UserApi, type User } from "../api/user.api";
 
 export const keyLogic = kea<keyLogicType>([
   path(["src", "lib", "logics", "keyLogic"]),
 
   connect({
-    values: [authLogic, ["userData"]],
-    actions: [authLogic, ["setUserData"]],
+    values: [authLogic, ["userData", "jwtToken"]],
+    actions: [authLogic, ["loadUserData"]],
   }),
 
   actions({
-    setUpPassphrase: (passphrase: string) => ({ passphrase }),
+    // reducers
     setPassphrase: (passphrase: string) => ({ passphrase }),
-    setLocalEncryptedPrivateKey: (encryptedPrivateKey: string) => ({
-      encryptedPrivateKey,
+    setPrivateKeyDecrypted: (privateKeyDecrypted: string | null) => ({
+      privateKeyDecrypted,
     }),
-  }),
 
-  selectors({
-    shouldSetUpPassphrase: [
-      (state) => [state.userData],
-      (userData: User | null) =>
-        Boolean(userData) &&
-        (!userData!.publicKey || !userData!.encryptedPrivateKey),
-    ],
+    // listeners
+    setUpPassphrase: (passphrase: string) => ({ passphrase }),
+    decryptPrivateKey: true,
   }),
 
   reducers({
@@ -53,36 +47,29 @@ export const keyLogic = kea<keyLogicType>([
         ) => passphrase,
       },
     ],
-    localEncryptedPrivateKey: [
+    privateKeyDecrypted: [
       null as string | null,
-      {},
       {
-        setLocalEncryptedPrivateKey: (
+        setPrivateKeyDecrypted: (
           _: string | null,
-          { encryptedPrivateKey }: { encryptedPrivateKey: string }
-        ) => encryptedPrivateKey,
+          { privateKeyDecrypted }: { privateKeyDecrypted: string | null }
+        ) => privateKeyDecrypted,
       },
     ],
   }),
 
-  loaders(({ values }) => ({
-    privateKeyDecrypted: {
-      decryptPrivateKey: async (): Promise<string | null> => {
-        const encrypted = values.userData?.encryptedPrivateKey;
-        const passphrase = values.passphrase;
-        if (!encrypted || !passphrase) return null;
-        const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
-          passphrase
-        );
-        try {
-          const decrypted = await SymmetricCrypto.decrypt(encrypted, base64Key);
-          return decrypted;
-        } catch (e) {
-          return null;
-        }
-      },
-    },
-  })),
+  selectors({
+    shouldSetUpPassphrase: [
+      (state) => [state.userData],
+      (userData: User | null) =>
+        Boolean(userData) &&
+        (!userData!.publicKey || !userData!.privateKeyEncrypted),
+    ],
+    browserIsUnlocked: [
+      (state) => [state.privateKeyDecrypted],
+      (privateKeyDecrypted: string | null) => Boolean(privateKeyDecrypted),
+    ],
+  }),
 
   listeners(({ actions, values }) => ({
     setUpPassphrase: async ({ passphrase }) => {
@@ -98,21 +85,30 @@ export const keyLogic = kea<keyLogicType>([
         base64Key
       );
 
-      console.log("Sending this to server", {
-        publicKey: keyPair.publicKey,
-        privateKey: encrypted,
-      });
-
-      actions.setLocalEncryptedPrivateKey(encrypted);
       actions.setPassphrase(passphrase);
 
-      const updatedUser: User = {
-        ...values.userData,
+      await UserApi.updateMe(values.jwtToken!, {
         publicKey: keyPair.publicKey,
-        encryptedPrivateKey: encrypted,
-      };
-      actions.setUserData(updatedUser);
-      actions.decryptPrivateKey();
+        privateKeyEncrypted: encrypted,
+      });
+
+      await actions.loadUserData();
+
+      await actions.decryptPrivateKey();
+    },
+    decryptPrivateKey: async (): Promise<void> => {
+      const encrypted = values.userData?.privateKeyEncrypted;
+      const passphrase = values.passphrase;
+      if (!encrypted || !passphrase) return;
+      const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
+        passphrase
+      );
+      try {
+        const decrypted = await SymmetricCrypto.decrypt(encrypted, base64Key);
+        actions.setPrivateKeyDecrypted(decrypted);
+      } catch (e) {
+        actions.setPrivateKeyDecrypted(null);
+      }
     },
   })),
 ]);

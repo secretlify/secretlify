@@ -1,5 +1,5 @@
 import { Logger } from '@logdash/js-sdk';
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { UserReadService } from '../read/user-read.service';
@@ -37,6 +37,12 @@ export class UserCoreController {
     const user = await this.userWriteService.update(userId, body);
 
     return UserSerializer.serialize(user);
+  }
+
+  // todo: this is a temporary endpoint - IT SHOULD BE REMOVED
+  @Delete('keys')
+  public async deleteKeys(@CurrentUserId() userId: string): Promise<void> {
+    await this.userWriteService.deleteKeys(userId);
   }
 
   @Post('public-keys')

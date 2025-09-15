@@ -44,4 +44,11 @@ export class UserWriteService {
 
     return UserSerializer.normalize(user);
   }
+
+  public async deleteKeys(id: string): Promise<void> {
+    await this.userModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
+      { $unset: { publicKey: null, privateKeyEncrypted: null } },
+    );
+  }
 }
