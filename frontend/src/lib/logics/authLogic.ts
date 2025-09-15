@@ -1,13 +1,14 @@
 import { actions, kea, reducers, path, selectors, defaults } from "kea";
 
-import type { authLogicType } from "./authLogicType";
 import { loaders } from "kea-loaders";
-import { AuthApi } from "./lib/auth.api";
-import { UserApi, type User } from "./lib/user.api";
+import { AuthApi } from "../api/auth.api";
+import { UserApi, type User } from "../api/user.api";
 import { subscriptions } from "kea-subscriptions";
 
+import type { authLogicType } from "./authLogicType";
+
 export const authLogic = kea<authLogicType>([
-  path(["src", "authLogic"]),
+  path(["src", "lib", "logics", "authLogic"]),
 
   actions({
     setJwtToken: (jwtToken: string) => ({ jwtToken }),
@@ -56,18 +57,14 @@ export const authLogic = kea<authLogicType>([
       exchangeGithubCodeForJwt: async (
         githubCode: string
       ): Promise<string | null> => {
-        console.log("exchangeGithubCodeForJwt", githubCode);
-
         const jwtTokenValue = await AuthApi.loginGithub(githubCode);
-
-        console.log("jwtTokenValue", jwtTokenValue);
 
         return jwtTokenValue;
       },
     },
     userData: {
       loadUserData: async (): Promise<User> => {
-        const userDataValue = await UserApi.loginGoogle(values.jwtToken!);
+        const userDataValue = await UserApi.getMe(values.jwtToken!);
 
         return userDataValue;
       },
