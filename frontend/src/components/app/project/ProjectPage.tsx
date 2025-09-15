@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { ProjectsList } from "@/components/app/project/ProjectsList";
-import { ProjectEditor } from "@/components/app/project/ProjectEditor";
+import { ProjectEditor } from "@/components/app/project/ProjectEditor/ProjectEditor";
 
 export function ProjectPage() {
   const { projectId: activeProjectId } = useParams({
