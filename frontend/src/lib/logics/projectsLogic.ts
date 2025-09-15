@@ -1,4 +1,4 @@
-import { actions, kea, listeners, path, reducers, selectors } from "kea";
+import { actions, kea, path, reducers, selectors } from "kea";
 
 import type { projectsLogicType } from "./projectsLogicType";
 import { randomId } from "../utils";
