@@ -52,7 +52,10 @@ export function FileEditor({
         fontSize: 14,
         automaticLayout: true,
         overviewRulerBorder: false,
+        overviewRulerLanes: 0,
         hideCursorInOverviewRuler: true,
+        occurrencesHighlight: "off",
+        selectionHighlight: false,
         renderLineHighlight: "none",
       }}
     />
