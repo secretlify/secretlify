@@ -3,8 +3,11 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { FileEditor } from "@/components/app/project/ProjectEditor/FileEditor";
 import { UpdateButton } from "@/components/app/project/ProjectEditor/UpdateButton";
+import { useProjects } from "@/lib/hooks/useProjects";
 
-export function ProjectEditor({ projectId }: { projectId?: string }) {
+export function ProjectEditor() {
+  const { activeProject } = useProjects();
+
   const [value, setValue] = useState(
     'BANK_PASSWORD="iliketurtles"\nDATABASE_PASSWORD="zaq12wsx"'
   );
@@ -47,7 +50,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           <div className="p-5 ">
             <div className="mb-3 flex items-center justify-between gap-4">
               <h1 className="text-3xl md:text-3xl font-bold tracking-tight">
-                Project {projectId}
+                Project {activeProject?.name}
               </h1>
               <UpdateButton
                 onClick={onSubmit}

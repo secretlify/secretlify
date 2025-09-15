@@ -1,16 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
+import { cn, randomId } from "@/lib/utils";
 import { motion } from "motion/react";
+import { useActions, useValues } from "kea";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { useProjects } from "@/lib/hooks/useProjects";
 
-export function ProjectsList({
-  projects,
-  onAddProject,
-  activeProjectId,
-}: {
-  projects: { id: string; name: string }[];
-  onAddProject: () => void;
-  activeProjectId?: string;
-}) {
+export function ProjectsList() {
+  const { projects } = useValues(projectsLogic);
+  const { addProject } = useActions(projectsLogic);
+
+  const { activeProject } = useProjects();
+
   const containerVariants = {
     hidden: { opacity: 0, y: 300, scale: 0.5 },
     visible: {
@@ -56,14 +56,14 @@ export function ProjectsList({
             "border border-border bg-secondary text-secondary-foreground",
             "hover:bg-secondary/80 transition"
           )}
-          onClick={onAddProject}
+          onClick={() => addProject({ id: randomId(), name: "New Project" })}
         >
           +
         </button>
       </div>
       <motion.nav className="space-y-1" variants={listVariants} layout>
         {projects.map((project) => {
-          const isActive = project.id === activeProjectId;
+          const isActive = project.id === activeProject?.id;
           return (
             <motion.div key={project.id} variants={itemVariants} layout>
               <Link
