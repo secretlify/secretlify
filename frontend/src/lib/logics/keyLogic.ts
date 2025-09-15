@@ -97,8 +97,6 @@ export const keyLogic = kea<keyLogicType>([
       });
 
       await actions.loadUserData();
-
-      await actions.decryptPrivateKey();
     },
     decryptPrivateKey: async (): Promise<void> => {
       const encrypted = values.userData?.privateKeyEncrypted;
@@ -119,7 +117,6 @@ export const keyLogic = kea<keyLogicType>([
         const decrypted = await SymmetricCrypto.decrypt(encrypted, base64Key);
         actions.setPrivateKeyDecrypted(decrypted);
       } catch (e) {
-        console.log("setting private key decrypted to null");
         actions.setPrivateKeyDecrypted(null);
       }
     },
@@ -127,6 +124,9 @@ export const keyLogic = kea<keyLogicType>([
 
   subscriptions(({ actions }) => ({
     passphrase: () => {
+      actions.decryptPrivateKey();
+    },
+    userData: () => {
       actions.decryptPrivateKey();
     },
   })),

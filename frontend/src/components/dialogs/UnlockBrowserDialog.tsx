@@ -9,9 +9,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { authLogic } from "@/lib/logics/authLogic";
 
 export function UnlockBrowserDialog() {
-  const { browserIsUnlocked } = useValues(keyLogic);
+  const { browserIsUnlocked, shouldSetUpPassphrase } = useValues(keyLogic);
+  const { isLoggedIn } = useValues(authLogic);
   const { setPassphrase, decryptPrivateKey } = useActions(keyLogic);
 
   const [passphrase, setLocalPassphrase] = useState("");
@@ -38,7 +40,7 @@ export function UnlockBrowserDialog() {
   };
 
   return (
-    <Dialog open={!browserIsUnlocked}>
+    <Dialog open={!browserIsUnlocked && isLoggedIn && !shouldSetUpPassphrase}>
       <DialogContent
         onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
