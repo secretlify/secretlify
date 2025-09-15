@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { FloatingDock } from "./floating-dock";
-import { Home, LogIn, ScanFaceIcon, FileText, Key } from "lucide-react";
+import { Home, LogIn, ScanFaceIcon, FileText, Key, Code } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
@@ -52,11 +52,11 @@ function AppNavigationImpl() {
     ...(isLoggedIn
       ? [
           {
-            title: "Keys",
+            title: "Developer",
             icon: (
-              <Key className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+              <Code className="h-full w-full text-neutral-500 dark:text-neutral-300" />
             ),
-            href: "/app/keys",
+            href: "/app/developer",
           },
           {
             title: "Me",

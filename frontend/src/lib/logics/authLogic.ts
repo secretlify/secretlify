@@ -57,21 +57,14 @@ export const authLogic = kea<authLogicType>([
       exchangeGithubCodeForJwt: async (
         githubCode: string
       ): Promise<string | null> => {
-        console.log("exchangeGithubCodeForJwt", githubCode);
-
         const jwtTokenValue = await AuthApi.loginGithub(githubCode);
-
-        console.log("jwtTokenValue", jwtTokenValue);
 
         return jwtTokenValue;
       },
     },
     userData: {
       loadUserData: async (): Promise<User> => {
-        console.log("before user data");
         const userDataValue = await UserApi.getMe(values.jwtToken!);
-
-        console.log("after user data", userDataValue);
 
         return userDataValue;
       },

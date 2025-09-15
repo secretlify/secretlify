@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
-import { Route as AppKeysRouteImport } from './routes/app/keys'
+import { Route as AppDeveloperRouteImport } from './routes/app/developer'
 import { Route as AppProjectRouteRouteImport } from './routes/app/project/route'
 import { Route as AppProjectProjectIdRouteImport } from './routes/app/project/$projectId'
 import { Route as AppCallbacksOauthGoogleRouteImport } from './routes/app/callbacks/oauth/google'
@@ -33,9 +33,9 @@ const AppLoginRoute = AppLoginRouteImport.update({
   path: '/app/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppKeysRoute = AppKeysRouteImport.update({
-  id: '/app/keys',
-  path: '/app/keys',
+const AppDeveloperRoute = AppDeveloperRouteImport.update({
+  id: '/app/developer',
+  path: '/app/developer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppProjectRouteRoute = AppProjectRouteRouteImport.update({
@@ -62,7 +62,7 @@ const AppCallbacksOauthGithubRoute = AppCallbacksOauthGithubRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app/project': typeof AppProjectRouteRouteWithChildren
-  '/app/keys': typeof AppKeysRoute
+  '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
@@ -72,7 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app/project': typeof AppProjectRouteRouteWithChildren
-  '/app/keys': typeof AppKeysRoute
+  '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
@@ -83,7 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app/project': typeof AppProjectRouteRouteWithChildren
-  '/app/keys': typeof AppKeysRoute
+  '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
@@ -95,7 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app/project'
-    | '/app/keys'
+    | '/app/developer'
     | '/app/login'
     | '/app/me'
     | '/app/project/$projectId'
@@ -105,7 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/app/project'
-    | '/app/keys'
+    | '/app/developer'
     | '/app/login'
     | '/app/me'
     | '/app/project/$projectId'
@@ -115,7 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app/project'
-    | '/app/keys'
+    | '/app/developer'
     | '/app/login'
     | '/app/me'
     | '/app/project/$projectId'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppProjectRouteRoute: typeof AppProjectRouteRouteWithChildren
-  AppKeysRoute: typeof AppKeysRoute
+  AppDeveloperRoute: typeof AppDeveloperRoute
   AppLoginRoute: typeof AppLoginRoute
   AppMeRoute: typeof AppMeRoute
   AppCallbacksOauthGithubRoute: typeof AppCallbacksOauthGithubRoute
@@ -156,11 +156,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/keys': {
-      id: '/app/keys'
-      path: '/app/keys'
-      fullPath: '/app/keys'
-      preLoaderRoute: typeof AppKeysRouteImport
+    '/app/developer': {
+      id: '/app/developer'
+      path: '/app/developer'
+      fullPath: '/app/developer'
+      preLoaderRoute: typeof AppDeveloperRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/project': {
@@ -209,7 +209,7 @@ const AppProjectRouteRouteWithChildren = AppProjectRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppProjectRouteRoute: AppProjectRouteRouteWithChildren,
-  AppKeysRoute: AppKeysRoute,
+  AppDeveloperRoute: AppDeveloperRoute,
   AppLoginRoute: AppLoginRoute,
   AppMeRoute: AppMeRoute,
   AppCallbacksOauthGithubRoute: AppCallbacksOauthGithubRoute,

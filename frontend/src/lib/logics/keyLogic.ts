@@ -13,6 +13,7 @@ import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { authLogic } from "./authLogic";
 import { UserApi, type User } from "../api/user.api";
+import { subscriptions } from "kea-subscriptions";
 
 export const keyLogic = kea<keyLogicType>([
   path(["src", "lib", "logics", "keyLogic"]),
@@ -49,6 +50,9 @@ export const keyLogic = kea<keyLogicType>([
     ],
     privateKeyDecrypted: [
       null as string | null,
+      {
+        persist: true,
+      },
       {
         setPrivateKeyDecrypted: (
           _: string | null,
@@ -99,7 +103,15 @@ export const keyLogic = kea<keyLogicType>([
     decryptPrivateKey: async (): Promise<void> => {
       const encrypted = values.userData?.privateKeyEncrypted;
       const passphrase = values.passphrase;
-      if (!encrypted || !passphrase) return;
+      if (!passphrase) {
+        actions.setPrivateKeyDecrypted(null);
+        return;
+      }
+
+      if (!encrypted) {
+        return;
+      }
+
       const base64Key = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
         passphrase
       );
@@ -107,8 +119,15 @@ export const keyLogic = kea<keyLogicType>([
         const decrypted = await SymmetricCrypto.decrypt(encrypted, base64Key);
         actions.setPrivateKeyDecrypted(decrypted);
       } catch (e) {
+        console.log("setting private key decrypted to null");
         actions.setPrivateKeyDecrypted(null);
       }
+    },
+  })),
+
+  subscriptions(({ actions }) => ({
+    passphrase: () => {
+      actions.decryptPrivateKey();
     },
   })),
 ]);
