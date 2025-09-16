@@ -17,6 +17,7 @@ export const projectsLogic = kea<projectsLogicType>([
     addProject: (project: { id: string; name: string }) => ({ project }),
     readProjectById: (projectId: string) => ({ projectId }),
     loadProjects: true,
+    deleteProject: (projectId: string) => ({ projectId }),
   }),
 
   loaders(({ values }) => ({
@@ -52,6 +53,10 @@ export const projectsLogic = kea<projectsLogicType>([
         name: project.name,
       });
 
+      await actions.loadProjects();
+    },
+    deleteProject: async ({ projectId }): Promise<void> => {
+      await ProjectsApi.deleteProject(values.jwtToken!, projectId);
       await actions.loadProjects();
     },
   })),

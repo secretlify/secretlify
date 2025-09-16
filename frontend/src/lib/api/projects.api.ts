@@ -39,4 +39,15 @@ export class ProjectsApi {
 
     return response.data;
   }
+
+  public static async deleteProject(
+    jwtToken: string,
+    projectId: string
+  ): Promise<void> {
+    await axios.delete(`/projects/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+  }
 }

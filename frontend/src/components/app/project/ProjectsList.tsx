@@ -1,15 +1,19 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { cn, randomId } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useActions, useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export function ProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
-  const { addProject } = useActions(projectsLogic);
+  const { deleteProject } = useActions(projectsLogic);
   const navigate = useNavigate();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const { activeProject } = useProjects();
 
@@ -74,34 +78,41 @@ export function ProjectsList() {
             "border border-border bg-secondary text-secondary-foreground",
             "hover:bg-secondary/80 transition"
           )}
-          onClick={() => addProject({ id: randomId(), name: "New Project" })}
+          onClick={() => setAddDialogOpen(true)}
         >
           +
         </button>
       </div>
+      <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
       <motion.nav className="space-y-1" variants={listVariants} layout>
         {projects.map((project) => {
-          const isActive = project.id === activeProject?.id;
           return (
             <motion.div key={project.id} variants={itemVariants} layout>
-              <Link
-                to="/app/project/$projectId"
-                params={{ projectId: project.id }}
-                className={cn(
-                  "block w-full rounded-xl px-3 py-2 text-sm transition",
-                  "border border-transparent",
-                  isActive
-                    ? "bg-primary/10 text-primary border-primary/20"
-                    : "hover:bg-accent hover:text-accent-foreground"
-                )}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{project.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {project.id}
+              <div className="group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border border-transparent hover:bg-accent hover:text-accent-foreground">
+                <Link
+                  to="/app/project/$projectId"
+                  params={{ projectId: project.id }}
+                  className="flex-1 min-w-0"
+                >
+                  <span className="font-medium truncate block">
+                    {project.name}
                   </span>
-                </div>
-              </Link>
+                </Link>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-label={`Delete project ${project.name}`}
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    deleteProject(project.id);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
             </motion.div>
           );
         })}
