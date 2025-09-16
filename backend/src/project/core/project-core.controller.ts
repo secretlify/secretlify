@@ -28,6 +28,13 @@ export class ProjectCoreController {
     private readonly projectReadService: ProjectReadService,
   ) {}
 
+  @Get('users/me/projects')
+  @ApiResponse({ type: [ProjectSerialized] })
+  public async findUserProjects(@CurrentUserId() userId: string): Promise<ProjectSerialized[]> {
+    const projects = await this.projectReadService.findByOwnerId(userId);
+    return projects.map(ProjectSerializer.serialize);
+  }
+
   @Post('projects')
   @ApiResponse({ type: ProjectSerialized })
   public async create(
