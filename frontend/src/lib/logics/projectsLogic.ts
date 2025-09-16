@@ -64,7 +64,7 @@ export const projectsLogic = kea<projectsLogicType>([
       );
 
       await ProjectsApi.createProject(values.jwtToken!, {
-        encryptedServerPassphrases: {
+        encryptedKeyVersions: {
           [values.userData!.id]: projectPassphraseEncrypted,
         },
         encryptedSecrets: contentEncrypted,

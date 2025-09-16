@@ -4,14 +4,14 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
-  encryptedServerPassphrases: Record<string, string>;
+  encryptedKeyVersions: Record<string, string>;
   encryptedSecrets: string;
 }
 
 export interface CreateProjectDto {
   name: string;
   encryptedSecrets: string;
-  encryptedServerPassphrases: Record<string, string>;
+  encryptedKeyVersions: Record<string, string>;
 }
 
 export interface UpdateProjectContentDto {

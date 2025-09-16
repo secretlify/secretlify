@@ -59,6 +59,7 @@ export function ProjectEditor() {
           )}
           initial={{ opacity: 0, x: -50, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: 50, scale: 0.9 }}
           transition={{ duration: 1, ease: [0, 1, 0, 1] }}
         >
           <div className="p-5 ">
