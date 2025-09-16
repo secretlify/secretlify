@@ -16,10 +16,13 @@ export function ProjectsList() {
   const { activeProject } = useProjects();
 
   useEffect(() => {
+    console.log("projects changed in useEffect", projects);
+
     if (
       projects.length &&
       !projects.find((project) => project.id === activeProject?.id)
     ) {
+      console.log("navigate to first project", projects[0].id);
       navigate({
         to: "/app/project/$projectId",
         params: { projectId: projects[0].id },

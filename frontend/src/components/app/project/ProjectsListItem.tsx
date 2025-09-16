@@ -32,7 +32,7 @@ export function ProjectsListItem({ project, isActive }: ProjectsListItemProps) {
   return (
     <div
       className={cn(
-        "group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border",
+        "group relative flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border",
         isActive
           ? "bg-primary/10 text-primary border-primary/20"
           : "border-transparent hover:bg-accent hover:text-accent-foreground"
@@ -41,16 +41,18 @@ export function ProjectsListItem({ project, isActive }: ProjectsListItemProps) {
       <Link
         to="/app/project/$projectId"
         params={{ projectId: project.id }}
-        className="flex-1 min-w-0"
-      >
+        aria-label={`Open project ${project.name}`}
+        className="absolute inset-0 rounded-xl"
+      />
+      <div className="flex-1 min-w-0 pointer-events-none">
         <span className="font-medium truncate block">{project.name}</span>
-      </Link>
+      </div>
       <Button
         type="button"
         variant="ghost"
         size="sm"
         aria-label={`Delete project ${project.name}`}
-        className="opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer"
+        className="relative z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer"
         onClick={onDelete}
         disabled={isDeleting}
       >

@@ -6,6 +6,7 @@ import { authLogic } from "./authLogic";
 import { loaders } from "kea-loaders";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
+import { subscriptions } from "kea-subscriptions";
 
 export const projectsLogic = kea<projectsLogicType>([
   path(["src", "lib", "logics", "projectsLogic"]),
@@ -76,6 +77,15 @@ export const projectsLogic = kea<projectsLogicType>([
     deleteProject: async ({ projectId }): Promise<void> => {
       await ProjectsApi.deleteProject(values.jwtToken!, projectId);
       await actions.loadProjects();
+    },
+  })),
+
+  subscriptions(({ actions }) => ({
+    jwtToken: () => {
+      actions.loadProjects();
+    },
+    userData: () => {
+      actions.loadProjects();
     },
   })),
 
