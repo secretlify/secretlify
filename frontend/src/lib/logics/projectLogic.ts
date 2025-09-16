@@ -6,11 +6,11 @@ import { keyLogic } from "./keyLogic";
 import { authLogic } from "./authLogic";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 
-interface ProjectLogicProps {
+export interface ProjectLogicProps {
   projectId: string;
 }
 
-interface ProjectData {
+export interface ProjectData {
   projectKeyEncrypted: string;
 }
 
@@ -62,7 +62,7 @@ export const projectLogic = kea<projectLogicType>([
       console.log("projectKeyEncrypted", projectKeyEncrypted);
 
       actions.setProjectData({
-        projectKeyEncrypted,
+        projectKeyEncrypted: await projectKeyEncrypted,
       });
     },
   })),
