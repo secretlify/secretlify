@@ -1,21 +1,24 @@
-import { actions, connect, events, kea, key, path, props, reducers } from "kea";
+import { actions, connect, kea, key, listeners, path, props } from "kea";
 
 import type { projectLogicType } from "./projectLogicType";
 import { loaders } from "kea-loaders";
 import { keyLogic } from "./keyLogic";
 import { authLogic } from "./authLogic";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
+import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
+import { ProjectsApi } from "../api/projects.api";
+import { subscriptions } from "kea-subscriptions";
+import { projectsLogic } from "./projectsLogic";
 
 export interface ProjectLogicProps {
   projectId: string;
 }
 
-export interface ProjectData {
-  projectKeyEncrypted: string;
-}
-
-function generate32CharactersRandomString(): string {
-  return Math.random().toString(36).slice(2, 15);
+export interface DecryptedProject {
+  id: string;
+  name: string;
+  content: string;
+  passphraseAsKey: string;
 }
 
 export const projectLogic = kea<projectLogicType>([
@@ -23,47 +26,75 @@ export const projectLogic = kea<projectLogicType>([
 
   props({} as ProjectLogicProps),
 
-  connect({
-    values: [keyLogic, ["privateKeyDecrypted"], authLogic, ["userData"]],
-  }),
-
   key((props) => props.projectId),
 
-  actions({
-    setProjectData: (projectData: ProjectData) => ({ projectData }),
-  }),
-
-  reducers({
-    projectData: [
-      {} as ProjectData,
-      {
-        setProjectData: (_, { projectData }) => projectData,
-      },
+  connect({
+    values: [
+      keyLogic,
+      ["privateKeyDecrypted"],
+      authLogic,
+      ["userData", "jwtToken"],
+      projectsLogic,
+      ["projects"],
     ],
   }),
 
-  loaders({}),
+  actions({
+    updateProjectContent: (content: string) => ({ content }),
+  }),
 
-  events(({ actions, values }) => ({
-    afterMount: async () => {
-      console.log("Mounted");
+  loaders(({ values, props }) => ({
+    projectData: [
+      null as DecryptedProject | null,
+      {
+        loadProjectData: async () => {
+          console.log("loadProjectData", values.jwtToken, props.projectId);
 
-      const projectKey = generate32CharactersRandomString();
+          const projectData = await ProjectsApi.getProject(
+            values.jwtToken!,
+            props.projectId
+          );
 
-      console.log("projectKey", projectKey);
+          const passphraseAsKey = await AsymmetricCrypto.decrypt(
+            projectData?.encryptedServerPassphrases![values.userData!.id]!,
+            values.privateKeyDecrypted!
+          );
 
-      const projectKeyEncrypted = SymmetricCrypto.encrypt(
-        projectKey,
-        await SymmetricCrypto.deriveBase64KeyFromPassphrase(
-          values.privateKeyDecrypted!
-        )
+          const contentDecrypted = await SymmetricCrypto.decrypt(
+            projectData?.encryptedSecrets!,
+            passphraseAsKey
+          );
+
+          return {
+            id: projectData?.id!,
+            name: projectData?.name!,
+            content: contentDecrypted,
+            passphraseAsKey: passphraseAsKey,
+          };
+        },
+      },
+    ],
+  })),
+
+  listeners(({ values, actions, props }) => ({
+    updateProjectContent: async ({ content }) => {
+      const encryptedContent = await SymmetricCrypto.encrypt(
+        content,
+        values.projectData?.passphraseAsKey!
       );
 
-      console.log("projectKeyEncrypted", projectKeyEncrypted);
-
-      actions.setProjectData({
-        projectKeyEncrypted: await projectKeyEncrypted,
+      await ProjectsApi.updateProjectContent(values.jwtToken!, {
+        projectId: props.projectId,
+        encryptedSecrets: encryptedContent,
       });
+
+      await actions.loadProjectData();
+    },
+  })),
+
+  subscriptions(({ actions }) => ({
+    projects: () => {
+      actions.loadProjectData();
     },
   })),
 ]);

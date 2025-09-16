@@ -1,4 +1,4 @@
-import { useActions, useValues } from "kea";
+import { useActions } from "kea";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -8,8 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ProjectsApi } from "@/lib/api/projects.api";
-import { authLogic } from "@/lib/logics/authLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 
 interface AddProjectDialogProps {
@@ -21,8 +19,7 @@ export function AddProjectDialog({
   open,
   onOpenChange,
 }: AddProjectDialogProps) {
-  const { jwtToken } = useValues(authLogic);
-  const { loadProjects } = useActions(projectsLogic);
+  const { loadProjects, addProject } = useActions(projectsLogic);
 
   const [name, setName] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -36,13 +33,11 @@ export function AddProjectDialog({
 
   const onSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault?.();
-    if (!name.trim() || submitting) return;
+    if (!name || submitting) return;
     try {
       setSubmitting(true);
-      await ProjectsApi.createProject(jwtToken!, {
-        name: name.trim(),
-        encryptedPassphrase: "",
-        encryptedSecrets: "",
+      await addProject({
+        name: name,
       });
       await loadProjects();
       onOpenChange?.(false);

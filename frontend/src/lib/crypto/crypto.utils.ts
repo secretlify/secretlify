@@ -60,3 +60,13 @@ export function arrayBufferToBase64(buffer: ArrayBuffer): string {
 export function base64ToArrayBuffer(b64: string): ArrayBuffer {
   return base64ToU8(b64).buffer;
 }
+
+export function createRandomString(length: number): string {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+}

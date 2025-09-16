@@ -6,9 +6,14 @@ import {
   concatBytes,
   u8ToBase64,
   base64ToU8,
+  createRandomString,
 } from "./crypto.utils";
 
 export class SymmetricCrypto {
+  public static generateProjectPassphrase(): string {
+    return createRandomString(64);
+  }
+
   public static async deriveBase64KeyFromPassphrase(
     passphrase: string
   ): Promise<string> {

@@ -4,17 +4,18 @@ import type { projectsLogicType } from "./projectsLogicType";
 import { ProjectsApi, type Project } from "../api/projects.api";
 import { authLogic } from "./authLogic";
 import { loaders } from "kea-loaders";
+import { SymmetricCrypto } from "../crypto/crypto.symmetric";
+import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 
 export const projectsLogic = kea<projectsLogicType>([
   path(["src", "lib", "logics", "projectsLogic"]),
 
   connect({
-    values: [authLogic, ["jwtToken"]],
+    values: [authLogic, ["jwtToken", "userData"]],
   }),
 
   actions({
-    setActiveProjectId: (projectId: string) => ({ projectId }),
-    addProject: (project: { id: string; name: string }) => ({ project }),
+    addProject: (project: { name: string }) => ({ project }),
     readProjectById: (projectId: string) => ({ projectId }),
     loadProjects: true,
     deleteProject: (projectId: string) => ({ projectId }),
@@ -36,10 +37,8 @@ export const projectsLogic = kea<projectsLogicType>([
     readProjectById: [
       (state) => [state.projects],
       (projects) =>
-        (id: string): { id: string; name: string } | undefined =>
+        (id: string): Project | undefined =>
           projects.find((project) => {
-            console.log("Projects", projects);
-            console.log("project", project);
             return project.id === id;
           }),
     ],
@@ -47,9 +46,28 @@ export const projectsLogic = kea<projectsLogicType>([
 
   listeners(({ values, actions }) => ({
     addProject: async ({ project }): Promise<void> => {
+      console.log("Adding project");
+      const projectPassphrase = SymmetricCrypto.generateProjectPassphrase();
+      const asKey = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
+        projectPassphrase
+      );
+
+      console.log("projectPassphrase", projectPassphrase);
+      console.log("asKey", asKey);
+
+      const content = `BEN="dover"`;
+      const contentEncrypted = await SymmetricCrypto.encrypt(content, asKey);
+
+      const projectPassphraseEncrypted = await AsymmetricCrypto.encrypt(
+        asKey,
+        values.userData!.publicKey!
+      );
+
       await ProjectsApi.createProject(values.jwtToken!, {
-        encryptedPassphrase: "",
-        encryptedSecrets: "",
+        encryptedServerPassphrases: {
+          [values.userData!.id]: projectPassphraseEncrypted,
+        },
+        encryptedSecrets: contentEncrypted,
         name: project.name,
       });
 

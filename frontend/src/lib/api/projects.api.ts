@@ -4,25 +4,41 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
-  encryptedPassphrase: string;
+  encryptedServerPassphrases: Record<string, string>;
   encryptedSecrets: string;
 }
 
 export interface CreateProjectDto {
   name: string;
   encryptedSecrets: string;
-  encryptedPassphrase: string;
+  encryptedServerPassphrases: Record<string, string>;
+}
+
+export interface UpdateProjectContentDto {
+  projectId: string;
+  encryptedSecrets: string;
 }
 
 export class ProjectsApi {
+  public static async getProject(
+    jwtToken: string,
+    projectId: string
+  ): Promise<Project> {
+    const response = await axios.get<Project>(`/projects/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    return response.data;
+  }
+
   public static async getProjects(jwtToken: string): Promise<Project[]> {
     const response = await axios.get<Project[]>("/users/me/projects", {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
-
-    console.log("response", response);
 
     return response.data;
   }
@@ -45,6 +61,17 @@ export class ProjectsApi {
     projectId: string
   ): Promise<void> {
     await axios.delete(`/projects/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+  }
+
+  public static async updateProjectContent(
+    jwtToken: string,
+    dto: UpdateProjectContentDto
+  ): Promise<void> {
+    await axios.patch(`/projects/${dto.projectId}`, dto, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },

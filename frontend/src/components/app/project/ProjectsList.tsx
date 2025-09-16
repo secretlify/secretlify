@@ -85,6 +85,7 @@ export function ProjectsList() {
       <motion.nav className="space-y-1" variants={listVariants} layout>
         {projects.map((project) => {
           const isActive = project.id === activeProject?.id;
+
           return (
             <motion.div key={project.id} variants={itemVariants} layout>
               <ProjectsListItem project={project} isActive={isActive} />
