@@ -1,17 +1,15 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import { useActions, useValues } from "kea";
+import { useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useEffect, useState } from "react";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import ProjectsListItem from "@/components/app/project/ProjectsListItem";
 
 export function ProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
-  const { deleteProject } = useActions(projectsLogic);
   const navigate = useNavigate();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
@@ -89,38 +87,7 @@ export function ProjectsList() {
           const isActive = project.id === activeProject?.id;
           return (
             <motion.div key={project.id} variants={itemVariants} layout>
-              <div
-                className={cn(
-                  "group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border",
-                  isActive
-                    ? "bg-primary/10 text-primary border-primary/20"
-                    : "border-transparent hover:bg-accent hover:text-accent-foreground"
-                )}
-              >
-                <Link
-                  to="/app/project/$projectId"
-                  params={{ projectId: project.id }}
-                  className="flex-1 min-w-0"
-                >
-                  <span className="font-medium truncate block">
-                    {project.name}
-                  </span>
-                </Link>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  aria-label={`Delete project ${project.name}`}
-                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    deleteProject(project.id);
-                  }}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
+              <ProjectsListItem project={project} isActive={isActive} />
             </motion.div>
           );
         })}
