@@ -1,5 +1,4 @@
 import { useNavigate } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
@@ -61,41 +60,41 @@ export function ProjectsList() {
 
   return (
     <motion.div
-      className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       layout="position"
     >
-      <div className="px-2 py-2 flex items-center justify-between shrink-0">
-        <h2 className="text-sm font-semibold text-muted-foreground tracking-wide shrink-0">
-          Projects
-        </h2>
+      <h2 className="text-sm font-semibold text-muted-foreground tracking-wide text-center mb-2">
+        Projects
+      </h2>
+      <motion.div
+        className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
+        layout="position"
+      >
+        <motion.nav className="space-y-3" variants={listVariants} layout>
+          {projects.map((project) => {
+            const isActive = project.id === activeProject?.id;
+
+            return (
+              <motion.div key={project.id} variants={itemVariants} layout>
+                <ProjectsListItem project={project} isActive={isActive} />
+              </motion.div>
+            );
+          })}
+        </motion.nav>
+      </motion.div>
+      <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
+      <div className="mt-2">
         <button
           type="button"
           aria-label="Add project"
-          className={cn(
-            "inline-flex h-7 w-7 items-center justify-center rounded-md",
-            "border border-border bg-secondary text-secondary-foreground",
-            "hover:bg-secondary/80 transition"
-          )}
+          className="w-full text-center text-xs text-muted-foreground hover:underline"
           onClick={() => setAddDialogOpen(true)}
         >
-          +
+          Add project
         </button>
       </div>
-      <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-      <motion.nav className="space-y-1" variants={listVariants} layout>
-        {projects.map((project) => {
-          const isActive = project.id === activeProject?.id;
-
-          return (
-            <motion.div key={project.id} variants={itemVariants} layout>
-              <ProjectsListItem project={project} isActive={isActive} />
-            </motion.div>
-          );
-        })}
-      </motion.nav>
     </motion.div>
   );
 }
