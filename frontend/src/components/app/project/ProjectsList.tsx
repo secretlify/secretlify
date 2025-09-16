@@ -86,9 +86,17 @@ export function ProjectsList() {
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
       <motion.nav className="space-y-1" variants={listVariants} layout>
         {projects.map((project) => {
+          const isActive = project.id === activeProject?.id;
           return (
             <motion.div key={project.id} variants={itemVariants} layout>
-              <div className="group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border border-transparent hover:bg-accent hover:text-accent-foreground">
+              <div
+                className={cn(
+                  "group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition border",
+                  isActive
+                    ? "bg-primary/10 text-primary border-primary/20"
+                    : "border-transparent hover:bg-accent hover:text-accent-foreground"
+                )}
+              >
                 <Link
                   to="/app/project/$projectId"
                   params={{ projectId: project.id }}
