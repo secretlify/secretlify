@@ -4,20 +4,26 @@ import { motion } from "motion/react";
 import { useActions, useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
+import { useEffect } from "react";
 
 export function ProjectsList() {
-  const { projects } = useValues(projectsLogic);
+  const { projects, projectsLoading } = useValues(projectsLogic);
   const { addProject } = useActions(projectsLogic);
   const navigate = useNavigate();
 
   const { activeProject } = useProjects();
 
-  if (!projects.find((project) => project.id === activeProject?.id)) {
-    navigate({
-      to: "/app/project/$projectId",
-      params: { projectId: projects[0].id },
-    });
-  }
+  useEffect(() => {
+    if (
+      projects.length &&
+      !projects.find((project) => project.id === activeProject?.id)
+    ) {
+      navigate({
+        to: "/app/project/$projectId",
+        params: { projectId: projects[0].id },
+      });
+    }
+  }, [projects]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 300, scale: 0.5 },
@@ -43,6 +49,10 @@ export function ProjectsList() {
       transition: { type: "spring", stiffness: 500, damping: 30, mass: 0.5 },
     },
   } as const;
+
+  if (!projects.length && projectsLoading) {
+    return null;
+  }
 
   return (
     <motion.div

@@ -13,14 +13,6 @@ function AppNavigationImpl() {
 
   const { isLoggedIn } = useValues(authLogic);
 
-  // Stable random project id stored in localStorage
-  const projectIdKey = "secretlify_demo_project_id";
-  let projectId = localStorage.getItem(projectIdKey);
-  if (!projectId) {
-    projectId = Math.random().toString(36).slice(2, 10);
-    localStorage.setItem(projectIdKey, projectId);
-  }
-
   const navItems = [
     {
       title: "Home",
@@ -34,7 +26,7 @@ function AppNavigationImpl() {
       icon: (
         <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: `/app/project/${projectId}`,
+      href: `/app/project/demo`,
     },
     // Show Login only when user is not logged in
     ...(!isLoggedIn

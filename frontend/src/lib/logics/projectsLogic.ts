@@ -1,19 +1,9 @@
-import {
-  actions,
-  connect,
-  kea,
-  listeners,
-  path,
-  reducers,
-  selectors,
-} from "kea";
+import { actions, connect, events, kea, listeners, path, selectors } from "kea";
 
 import type { projectsLogicType } from "./projectsLogicType";
-import { randomId } from "../utils";
-import { ProjectsApi, type CreateProjectDto } from "../api/projects.api";
+import { ProjectsApi, type Project } from "../api/projects.api";
 import { authLogic } from "./authLogic";
-
-const defaultId = randomId();
+import { loaders } from "kea-loaders";
 
 export const projectsLogic = kea<projectsLogicType>([
   path(["src", "lib", "logics", "projectsLogic"]),
@@ -26,26 +16,17 @@ export const projectsLogic = kea<projectsLogicType>([
     setActiveProjectId: (projectId: string) => ({ projectId }),
     addProject: (project: { id: string; name: string }) => ({ project }),
     readProjectById: (projectId: string) => ({ projectId }),
+    loadProjects: true,
   }),
 
-  reducers(() => ({
+  loaders(({ values }) => ({
     projects: [
-      [
-        {
-          id: defaultId,
-          name: "Logdash",
-        },
-        {
-          id: randomId(),
-          name: "BlueMenu",
-        },
-        {
-          id: randomId(),
-          name: "KiedyKolos",
-        },
-      ] as { id: string; name: string }[],
+      [] as Project[],
       {
-        addProject: (projects, { project }) => [...projects, project],
+        loadProjects: async () => {
+          const projects = await ProjectsApi.getProjects(values.jwtToken!);
+          return projects;
+        },
       },
     ],
   })),
@@ -55,17 +36,29 @@ export const projectsLogic = kea<projectsLogicType>([
       (state) => [state.projects],
       (projects) =>
         (id: string): { id: string; name: string } | undefined =>
-          projects.find((project) => project.id === id),
+          projects.find((project) => {
+            console.log("Projects", projects);
+            console.log("project", project);
+            return project.id === id;
+          }),
     ],
   }),
 
-  listeners(({ values }) => ({
+  listeners(({ values, actions }) => ({
     addProject: async ({ project }): Promise<void> => {
       await ProjectsApi.createProject(values.jwtToken!, {
         encryptedPassphrase: "",
         encryptedSecrets: "",
         name: project.name,
       });
+
+      await actions.loadProjects();
+    },
+  })),
+
+  events(({ actions }) => ({
+    afterMount: async () => {
+      await actions.loadProjects();
     },
   })),
 ]);

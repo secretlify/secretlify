@@ -16,11 +16,13 @@ export interface CreateProjectDto {
 
 export class ProjectsApi {
   public static async getProjects(jwtToken: string): Promise<Project[]> {
-    const response = await axios.get<Project[]>("/projects", {
+    const response = await axios.get<Project[]>("/users/me/projects", {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
+
+    console.log("response", response);
 
     return response.data;
   }
