@@ -67,12 +67,20 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .patch(`/projects/${project.id}`)
         .set('authorization', `Bearer ${token}`)
-        .send({ name: 'new-name', encryptedPassphrase: 'new-passphrase' });
+        .send({
+          name: 'new-name',
+          encryptedPassphrase: 'new-passphrase',
+          encryptedSecrets: 'new-secrets',
+        });
 
       // then
       expect(response.status).toEqual(200);
-      expect(response.body.name).toEqual('new-name');
-      expect(response.body.encryptedPassphrase).toEqual('new-passphrase');
+      expect(response.body).toMatchObject({
+        id: project.id,
+        name: 'new-name',
+        encryptedPassphrase: 'new-passphrase',
+        encryptedSecrets: 'new-secrets',
+      });
     });
 
     it('does not update when not owner', async () => {

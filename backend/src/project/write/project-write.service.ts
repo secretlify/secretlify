@@ -23,9 +23,17 @@ export class ProjectWriteService {
   }
 
   public async update(id: string, dto: UpdateProjectDto): Promise<ProjectNormalized> {
-    const project = await this.projectModel.findOneAndUpdate({ _id: new Types.ObjectId(id) }, dto, {
-      new: true,
-    });
+    const project = await this.projectModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
+      {
+        name: dto.name,
+        encryptedPassphrase: dto.encryptedPassphrase,
+        encryptedSecrets: dto.encryptedSecrets,
+      },
+      {
+        new: true,
+      },
+    );
 
     if (!project) {
       throw new NotFoundException('Project not found');

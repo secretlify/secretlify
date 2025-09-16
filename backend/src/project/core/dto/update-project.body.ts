@@ -11,4 +11,9 @@ export class UpdateProjectBody {
   @IsString()
   @IsOptional()
   public encryptedPassphrase?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  public encryptedSecrets?: string;
 }
