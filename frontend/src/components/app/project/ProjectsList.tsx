@@ -65,14 +65,19 @@ export function ProjectsList() {
       animate="visible"
       layout="position"
     >
-      <h2 className="text-sm font-semibold text-muted-foreground tracking-wide text-center mb-2">
+      <motion.h2
+        className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
+      >
         Projects
-      </h2>
+      </motion.h2>
       <motion.div
         className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
         layout="position"
       >
-        <motion.nav className="space-y-3" variants={listVariants} layout>
+        <motion.nav className="space-y-2" variants={listVariants} layout>
           {projects.map((project) => {
             const isActive = project.id === activeProject?.id;
 
@@ -85,16 +90,21 @@ export function ProjectsList() {
         </motion.nav>
       </motion.div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-      <div className="mt-2">
+      <motion.div
+        className="mt-2"
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
+      >
         <button
           type="button"
           aria-label="Add project"
-          className="w-full text-center text-xs text-muted-foreground hover:underline"
+          className="w-full text-center text-xs text-muted-foreground hover:underline cursor-pointer"
           onClick={() => setAddDialogOpen(true)}
         >
           Add project
         </button>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
