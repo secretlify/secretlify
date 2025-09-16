@@ -1,12 +1,26 @@
-import { actions, kea, path, reducers, selectors } from "kea";
+import {
+  actions,
+  connect,
+  kea,
+  listeners,
+  path,
+  reducers,
+  selectors,
+} from "kea";
 
 import type { projectsLogicType } from "./projectsLogicType";
 import { randomId } from "../utils";
+import { ProjectsApi, type CreateProjectDto } from "../api/projects.api";
+import { authLogic } from "./authLogic";
 
 const defaultId = randomId();
 
 export const projectsLogic = kea<projectsLogicType>([
   path(["src", "lib", "logics", "projectsLogic"]),
+
+  connect({
+    values: [authLogic, ["jwtToken"]],
+  }),
 
   actions({
     setActiveProjectId: (projectId: string) => ({ projectId }),
@@ -44,4 +58,14 @@ export const projectsLogic = kea<projectsLogicType>([
           projects.find((project) => project.id === id),
     ],
   }),
+
+  listeners(({ values }) => ({
+    addProject: async ({ project }): Promise<void> => {
+      await ProjectsApi.createProject(values.jwtToken!, {
+        encryptedPassphrase: "",
+        encryptedSecrets: "",
+        name: project.name,
+      });
+    },
+  })),
 ]);
