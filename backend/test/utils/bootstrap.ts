@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import * as nock from 'nock';
 import { GithubAuthModule } from '../../src/auth/github/github-auth.module';
 import { GoogleAuthModule } from '../../src/auth/google/google-auth.module';
+import { ProjectCoreModule } from '../../src/project/core/project-core.module';
 import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
@@ -15,6 +16,7 @@ import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
 import { LoggerMock } from './mocks/logger-mock';
 import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
+import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
 
 export async function createTestApp() {
@@ -22,6 +24,7 @@ export async function createTestApp() {
     imports: [
       rootMongooseTestModule(),
       UserCoreModule,
+      ProjectCoreModule,
       ScheduleModule.forRoot(),
       EventEmitterModule.forRoot(),
       AuthCoreModule,
@@ -75,6 +78,7 @@ export async function createTestApp() {
     },
     utils: {
       userUtils: new UserUtils(app),
+      projectUtils: new ProjectUtils(app),
     },
     methods: {
       clearDatabase,

@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthCoreModule } from './auth/core/auth-core.module';
 import { GithubAuthModule } from './auth/github/github-auth.module';
 import { GoogleAuthModule } from './auth/google/google-auth.module';
+import { ProjectCoreModule } from './project/core/project-core.module';
 import { getEnvConfig } from './shared/config/env-config';
 import { LogdashModule } from './shared/logdash/logdash.module';
 import { UserCoreModule } from './user/core/user-core.module';
@@ -13,6 +14,7 @@ import { UserCoreModule } from './user/core/user-core.module';
   imports: [
     MongooseModule.forRoot(getEnvConfig().mongo.url),
     UserCoreModule,
+    ProjectCoreModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     AuthCoreModule,
