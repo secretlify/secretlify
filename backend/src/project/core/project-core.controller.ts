@@ -45,7 +45,7 @@ export class ProjectCoreController {
     const project = await this.projectWriteService.create({
       ...body,
       owner: userId,
-      encryptedServerPassphrases: body.encryptedServerPassphrases,
+      encryptedKeyVersions: body.encryptedKeyVersions,
       encryptedSecrets: body.encryptedSecrets,
     });
 

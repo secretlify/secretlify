@@ -9,7 +9,7 @@ export class ProjectSerializer {
       name: entity.name,
       owner: entity.owner.toString() as UserId,
       members: entity.members.map((member) => member.toString() as UserId),
-      encryptedServerPassphrases: entity.encryptedServerPassphrases,
+      encryptedKeyVersions: entity.encryptedSecretsKeys,
       encryptedSecrets: entity.encryptedSecrets,
     };
   }
@@ -20,7 +20,7 @@ export class ProjectSerializer {
       name: normalized.name,
       owner: normalized.owner,
       members: normalized.members,
-      encryptedServerPassphrases: normalized.encryptedServerPassphrases,
+      encryptedKeyVersions: normalized.encryptedKeyVersions,
       encryptedSecrets: normalized.encryptedSecrets,
     };
   }

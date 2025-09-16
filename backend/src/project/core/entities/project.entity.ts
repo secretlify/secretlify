@@ -15,7 +15,7 @@ export class ProjectEntity {
   public members: Types.ObjectId[];
 
   @Prop({ type: MongooseSchema.Types.Map, of: String, default: {} })
-  public encryptedServerPassphrases: Record<string, string>;
+  public encryptedSecretsKeys: Record<string, string>;
 
   @Prop()
   public encryptedSecrets: string;

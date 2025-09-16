@@ -16,7 +16,7 @@ export class ProjectWriteService {
       name: dto.name,
       owner: new Types.ObjectId(dto.owner),
       members: [new Types.ObjectId(dto.owner)],
-      encryptedServerPassphrases: dto.encryptedServerPassphrases,
+      encryptedSecretsKeys: dto.encryptedKeyVersions,
       encryptedSecrets: dto.encryptedSecrets,
     });
 
@@ -28,7 +28,7 @@ export class ProjectWriteService {
       { _id: new Types.ObjectId(id) },
       {
         name: dto.name,
-        encryptedServerPassphrases: dto.encryptedServerPassphrases,
+        encryptedSecretsKeys: dto.encryptedKeyVersions,
         encryptedSecrets: dto.encryptedSecrets,
       },
       {
@@ -52,7 +52,7 @@ export class ProjectWriteService {
       { _id: new Types.ObjectId(projectId) },
       {
         $push: { members: new Types.ObjectId(memberId) },
-        $set: { encryptedServerPassphrases: { [memberId]: serverPassphrase } },
+        $set: { encryptedSecretsKeys: { [memberId]: serverPassphrase } },
       },
     );
   }

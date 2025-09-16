@@ -36,7 +36,7 @@ describe('ProjectCoreController (reads)', () => {
         name: 'test-project',
         owner: user.id,
         members: [user.id],
-        encryptedServerPassphrases: {},
+        encryptedKeyVersions: {},
         encryptedSecrets: '',
       });
     });
@@ -63,7 +63,7 @@ describe('ProjectCoreController (reads)', () => {
         name: 'test-project',
         owner: owner.id,
         members: [owner.id, member.id],
-        encryptedServerPassphrases: {},
+        encryptedKeyVersions: {},
         encryptedSecrets: '',
       });
     });
@@ -103,12 +103,12 @@ describe('ProjectCoreController (reads)', () => {
       });
       const projectA = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-a',
-        encryptedServerPassphrases: {},
+        encryptedKeyVersions: {},
         encryptedSecrets: '',
       });
       const projectB = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-b',
-        encryptedServerPassphrases: {},
+        encryptedKeyVersions: {},
         encryptedSecrets: '',
       });
 
@@ -117,7 +117,7 @@ describe('ProjectCoreController (reads)', () => {
       });
       await bootstrap.utils.projectUtils.createProject(tokenB, {
         name: 'project-c',
-        encryptedServerPassphrases: {},
+        encryptedKeyVersions: {},
         encryptedSecrets: '',
       });
 
@@ -136,7 +136,7 @@ describe('ProjectCoreController (reads)', () => {
             name: 'project-a',
             owner: user.id,
             members: [user.id],
-            encryptedServerPassphrases: {},
+            encryptedKeyVersions: {},
             encryptedSecrets: '',
           },
           {
@@ -144,7 +144,7 @@ describe('ProjectCoreController (reads)', () => {
             name: 'project-b',
             owner: user.id,
             members: [user.id],
-            encryptedServerPassphrases: {},
+            encryptedKeyVersions: {},
             encryptedSecrets: '',
           },
         ]),

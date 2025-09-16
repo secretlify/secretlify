@@ -10,7 +10,7 @@ export class UpdateProjectBody {
   @ApiProperty({ required: false })
   @IsObject()
   @IsOptional()
-  public encryptedServerPassphrases?: Record<string, string>;
+  public encryptedKeyVersions?: Record<string, string>;
 
   @ApiProperty({ required: false })
   @IsString()

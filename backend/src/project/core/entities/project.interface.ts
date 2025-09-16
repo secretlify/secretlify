@@ -9,7 +9,7 @@ export class ProjectNormalized {
   public name: string;
   public owner: UserId;
   public members: UserId[];
-  public encryptedServerPassphrases: Record<string, string>;
+  public encryptedKeyVersions: Record<string, string>;
   public encryptedSecrets: string;
 }
 
@@ -27,7 +27,7 @@ export class ProjectSerialized {
   public members: string[];
 
   @ApiProperty()
-  public encryptedServerPassphrases: Record<string, string>;
+  public encryptedKeyVersions: Record<string, string>;
 
   @ApiProperty()
   public encryptedSecrets: string;
