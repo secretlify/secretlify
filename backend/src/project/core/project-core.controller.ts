@@ -17,6 +17,7 @@ import { CreateProjectBody } from './dto/create-project.body';
 import { UpdateProjectBody } from './dto/update-project.body';
 import { ProjectSerialized } from './entities/project.interface';
 import { ProjectSerializer } from './entities/project.serializer';
+import { ProjectMemberGuard } from './guards/project-member.guard';
 import { ProjectOwnerGuard } from './guards/project-owner.guard';
 
 @Controller('')
@@ -44,7 +45,7 @@ export class ProjectCoreController {
     const project = await this.projectWriteService.create({
       ...body,
       owner: userId,
-      encryptedPassphrase: body.encryptedPassphrase,
+      encryptedServerPassphrases: body.encryptedServerPassphrases,
       encryptedSecrets: body.encryptedSecrets,
     });
 
@@ -52,7 +53,7 @@ export class ProjectCoreController {
   }
 
   @Get('projects/:projectId')
-  @UseGuards(ProjectOwnerGuard)
+  @UseGuards(ProjectMemberGuard)
   @ApiResponse({ type: ProjectSerialized })
   public async findById(@Param('projectId') projectId: string): Promise<ProjectSerialized> {
     const project = await this.projectReadService.findById(projectId);
@@ -60,7 +61,7 @@ export class ProjectCoreController {
   }
 
   @Patch('projects/:projectId')
-  @UseGuards(ProjectOwnerGuard)
+  @UseGuards(ProjectMemberGuard)
   @ApiResponse({ type: ProjectSerialized })
   public async update(
     @Param('projectId') projectId: string,

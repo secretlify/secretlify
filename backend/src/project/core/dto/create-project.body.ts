@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsObject, IsString } from 'class-validator';
 
 export class CreateProjectBody {
   @ApiProperty()
@@ -11,6 +11,6 @@ export class CreateProjectBody {
   public encryptedSecrets: string;
 
   @ApiProperty()
-  @IsString()
-  public encryptedPassphrase: string;
+  @IsObject()
+  public encryptedServerPassphrases: Record<string, string>;
 }

@@ -11,8 +11,11 @@ export class ProjectEntity {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'UserEntity' })
   public owner: Types.ObjectId;
 
-  @Prop()
-  public encryptedPassphrase: string;
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'UserEntity' })
+  public members: Types.ObjectId[];
+
+  @Prop({ type: MongooseSchema.Types.Map, of: String, default: {} })
+  public encryptedServerPassphrases: Record<string, string>;
 
   @Prop()
   public encryptedSecrets: string;

@@ -27,7 +27,7 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .post('/projects')
         .set('authorization', `Bearer ${token}`)
-        .send({ name: 'test-project', encryptedSecrets: '', encryptedPassphrase: '' });
+        .send({ name: 'test-project', encryptedSecrets: '', encryptedServerPassphrases: {} });
 
       // then
       expect(response.status).toEqual(201);
@@ -35,7 +35,8 @@ describe('ProjectCoreController (writes)', () => {
         id: expect.any(String),
         name: 'test-project',
         owner: user.id,
-        encryptedPassphrase: '',
+        members: [user.id],
+        encryptedServerPassphrases: {},
         encryptedSecrets: '',
       });
     });
@@ -54,13 +55,13 @@ describe('ProjectCoreController (writes)', () => {
   describe('PATCH /projects/:projectId', () => {
     it('updates project', async () => {
       // given
-      const { token } = await bootstrap.utils.userUtils.createDefault({
+      const { user, token } = await bootstrap.utils.userUtils.createDefault({
         email: 'test@test.com',
       });
       const project = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'old-name',
         encryptedSecrets: '',
-        encryptedPassphrase: '',
+        encryptedServerPassphrases: {},
       });
 
       // when
@@ -69,7 +70,9 @@ describe('ProjectCoreController (writes)', () => {
         .set('authorization', `Bearer ${token}`)
         .send({
           name: 'new-name',
-          encryptedPassphrase: 'new-passphrase',
+          encryptedServerPassphrases: {
+            [user.id]: 'new-passphrase',
+          },
           encryptedSecrets: 'new-secrets',
         });
 
@@ -78,12 +81,46 @@ describe('ProjectCoreController (writes)', () => {
       expect(response.body).toMatchObject({
         id: project.id,
         name: 'new-name',
-        encryptedPassphrase: 'new-passphrase',
+        encryptedServerPassphrases: {
+          [user.id]: 'new-passphrase',
+        },
         encryptedSecrets: 'new-secrets',
       });
     });
 
-    it('does not update when not owner', async () => {
+    it('updates project when a member', async () => {
+      // given
+      const { token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken, {
+        name: 'old-name',
+        encryptedServerPassphrases: {},
+        encryptedSecrets: '',
+      });
+
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${memberToken}`)
+        .send({
+          name: 'new-name-by-member',
+        });
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject({
+        id: project.id,
+        name: 'new-name-by-member',
+      });
+    });
+
+    it('does not update when not member', async () => {
       // given
       const { token } = await bootstrap.utils.userUtils.createDefault({
         email: 'test@test.com',
@@ -151,6 +188,26 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .delete(`/projects/${project.id}`)
         .set('authorization', `Bearer ${tokenB}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('does not delete when a member', async () => {
+      // given
+      const { token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${memberToken}`);
 
       // then
       expect(response.status).toEqual(403);

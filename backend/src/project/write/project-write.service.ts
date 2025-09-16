@@ -15,7 +15,8 @@ export class ProjectWriteService {
     const project = await this.projectModel.create({
       name: dto.name,
       owner: new Types.ObjectId(dto.owner),
-      encryptedPassphrase: dto.encryptedPassphrase,
+      members: [new Types.ObjectId(dto.owner)],
+      encryptedServerPassphrases: dto.encryptedServerPassphrases,
       encryptedSecrets: dto.encryptedSecrets,
     });
 
@@ -27,7 +28,7 @@ export class ProjectWriteService {
       { _id: new Types.ObjectId(id) },
       {
         name: dto.name,
-        encryptedPassphrase: dto.encryptedPassphrase,
+        encryptedServerPassphrases: dto.encryptedServerPassphrases,
         encryptedSecrets: dto.encryptedSecrets,
       },
       {

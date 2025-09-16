@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsObject, IsOptional, IsString } from 'class-validator';
 
 export class UpdateProjectBody {
   @ApiProperty({ required: false })
@@ -8,9 +8,9 @@ export class UpdateProjectBody {
   public name?: string;
 
   @ApiProperty({ required: false })
-  @IsString()
+  @IsObject()
   @IsOptional()
-  public encryptedPassphrase?: string;
+  public encryptedServerPassphrases?: Record<string, string>;
 
   @ApiProperty({ required: false })
   @IsString()

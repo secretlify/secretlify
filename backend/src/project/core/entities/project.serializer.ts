@@ -1,6 +1,6 @@
 import { UserId } from 'src/shared/types/user-id';
 import { ProjectEntity } from './project.entity';
-import { EnvName, ProjectNormalized, ProjectSerialized } from './project.interface';
+import { ProjectNormalized, ProjectSerialized } from './project.interface';
 
 export class ProjectSerializer {
   public static normalize(entity: ProjectEntity): ProjectNormalized {
@@ -8,7 +8,8 @@ export class ProjectSerializer {
       id: entity._id.toString(),
       name: entity.name,
       owner: entity.owner.toString() as UserId,
-      encryptedPassphrase: entity.encryptedPassphrase,
+      members: entity.members.map((member) => member.toString() as UserId),
+      encryptedServerPassphrases: entity.encryptedServerPassphrases,
       encryptedSecrets: entity.encryptedSecrets,
     };
   }
@@ -18,7 +19,8 @@ export class ProjectSerializer {
       id: normalized.id,
       name: normalized.name,
       owner: normalized.owner,
-      encryptedPassphrase: normalized.encryptedPassphrase,
+      members: normalized.members,
+      encryptedServerPassphrases: normalized.encryptedServerPassphrases,
       encryptedSecrets: normalized.encryptedSecrets,
     };
   }

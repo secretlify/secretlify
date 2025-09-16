@@ -1,16 +1,23 @@
 import { INestApplication } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import * as request from 'supertest';
 import { CreateProjectBody } from '../../src/project/core/dto/create-project.body';
+import { ProjectEntity } from '../../src/project/core/entities/project.entity';
 import { ProjectSerialized } from '../../src/project/core/entities/project.interface';
 
 export class ProjectUtils {
-  constructor(private readonly app: INestApplication) {}
+  private readonly projectModel: Model<ProjectEntity>;
+
+  constructor(private readonly app: INestApplication) {
+    this.projectModel = this.app.get<Model<ProjectEntity>>(getModelToken(ProjectEntity.name));
+  }
 
   public async createProject(
     token: string,
     body: CreateProjectBody = {
       name: 'test-project',
-      encryptedPassphrase: '',
+      encryptedServerPassphrases: {},
       encryptedSecrets: '',
     },
   ): Promise<ProjectSerialized> {
@@ -20,5 +27,12 @@ export class ProjectUtils {
       .send(body);
 
     return response.body;
+  }
+
+  public async addMemberToProject(projectId: string, memberId: string): Promise<void> {
+    await this.projectModel.updateOne(
+      { _id: new Types.ObjectId(projectId) },
+      { $push: { members: new Types.ObjectId(memberId) } },
+    );
   }
 }

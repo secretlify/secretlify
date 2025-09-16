@@ -2,14 +2,14 @@ require('dotenv').config();
 
 const config = {
   mongodb: {
-    url: process.env.MIGRATIONS_MONGO_URL,
+    url: process.env.MONGO_URL,
     databaseName: 'test',
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     },
   },
-  migrationsDir: 'migrations',
+  migrationsDir: 'mongo-migrations',
   changelogCollectionName: 'migrations',
   lockCollectionName: 'migrations_lock',
   lockTtl: 0,

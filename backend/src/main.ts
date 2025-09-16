@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .addBearerAuth()
     .addApiKey({ type: 'apiKey', in: 'header', name: 'project-api-key' }, 'project-api-key')
-    .setTitle('LogDash')
+    .setTitle('Secretlify')
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);

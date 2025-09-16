@@ -3,7 +3,7 @@ import { ProjectReadService } from '../../read/project-read.service';
 
 @Injectable()
 export class ProjectOwnerGuard implements CanActivate {
-  constructor(private readonly projectReadService: ProjectReadService) {}
+  constructor(readonly projectReadService: ProjectReadService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

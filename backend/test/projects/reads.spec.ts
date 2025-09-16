@@ -17,7 +17,7 @@ describe('ProjectCoreController (reads)', () => {
   });
 
   describe('GET /projects/:projectId', () => {
-    it('gets project', async () => {
+    it('gets project when owner', async () => {
       // given
       const { user, token } = await bootstrap.utils.userUtils.createDefault({
         email: 'test@test.com',
@@ -35,12 +35,40 @@ describe('ProjectCoreController (reads)', () => {
         id: project.id,
         name: 'test-project',
         owner: user.id,
-        encryptedPassphrase: '',
+        members: [user.id],
+        encryptedServerPassphrases: {},
         encryptedSecrets: '',
       });
     });
 
-    it('does not get when not an owner', async () => {
+    it('gets project when a member', async () => {
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${memberToken}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        id: project.id,
+        name: 'test-project',
+        owner: owner.id,
+        members: [owner.id, member.id],
+        encryptedServerPassphrases: {},
+        encryptedSecrets: '',
+      });
+    });
+
+    it('does not get when not a member', async () => {
       const { token } = await bootstrap.utils.userUtils.createDefault({ email: 'test@test.com' });
       const { token: otherToken } = await bootstrap.utils.userUtils.createDefault({
         email: 'testB@test.com',
@@ -75,12 +103,12 @@ describe('ProjectCoreController (reads)', () => {
       });
       const projectA = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-a',
-        encryptedPassphrase: '',
+        encryptedServerPassphrases: {},
         encryptedSecrets: '',
       });
       const projectB = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-b',
-        encryptedPassphrase: '',
+        encryptedServerPassphrases: {},
         encryptedSecrets: '',
       });
 
@@ -89,7 +117,7 @@ describe('ProjectCoreController (reads)', () => {
       });
       await bootstrap.utils.projectUtils.createProject(tokenB, {
         name: 'project-c',
-        encryptedPassphrase: '',
+        encryptedServerPassphrases: {},
         encryptedSecrets: '',
       });
 
@@ -107,14 +135,16 @@ describe('ProjectCoreController (reads)', () => {
             id: projectA.id,
             name: 'project-a',
             owner: user.id,
-            encryptedPassphrase: '',
+            members: [user.id],
+            encryptedServerPassphrases: {},
             encryptedSecrets: '',
           },
           {
             id: projectB.id,
             name: 'project-b',
             owner: user.id,
-            encryptedPassphrase: '',
+            members: [user.id],
+            encryptedServerPassphrases: {},
             encryptedSecrets: '',
           },
         ]),
