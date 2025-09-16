@@ -43,6 +43,20 @@ export class ProjectWriteService {
     return ProjectSerializer.normalize(project);
   }
 
+  public async addMember(
+    projectId: string,
+    memberId: string,
+    serverPassphrase: string,
+  ): Promise<void> {
+    await this.projectModel.updateOne(
+      { _id: new Types.ObjectId(projectId) },
+      {
+        $push: { members: new Types.ObjectId(memberId) },
+        $set: { encryptedServerPassphrases: { [memberId]: serverPassphrase } },
+      },
+    );
+  }
+
   public async delete(id: string): Promise<void> {
     await this.projectModel.deleteOne({ _id: new Types.ObjectId(id) });
   }

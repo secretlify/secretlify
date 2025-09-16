@@ -35,4 +35,12 @@ export class ProjectUtils {
       { $push: { members: new Types.ObjectId(memberId) } },
     );
   }
+
+  public async getProject(projectId: string, token: string): Promise<ProjectSerialized> {
+    const response = await request(this.app.getHttpServer())
+      .get(`/projects/${projectId}`)
+      .set('authorization', `Bearer ${token}`);
+
+    return response.body;
+  }
 }
