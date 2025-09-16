@@ -20,4 +20,13 @@ export class InvitationReadService {
 
     return InvitationSerializer.normalize(invitation);
   }
+
+  public async findByAuthorId(authorId: string): Promise<InvitationNormalized[]> {
+    const invitations = await this.invitationModel
+      .find({ authorId })
+      .lean<InvitationEntity[]>()
+      .exec();
+
+    return invitations.map(InvitationSerializer.normalize);
+  }
 }

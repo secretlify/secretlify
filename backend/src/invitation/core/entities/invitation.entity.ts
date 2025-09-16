@@ -1,14 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
 
 @Schema({ collection: 'invitations', timestamps: true })
 export class InvitationEntity {
   _id: Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'ProjectEntity' })
   public projectId: Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'UserEntity' })
   public authorId: Types.ObjectId;
 
   @Prop()

@@ -31,6 +31,15 @@ export class InvitationCoreController {
     return InvitationSerializer.serialize(invitation);
   }
 
+  @Get('invitations/me')
+  @ApiResponse({ type: [InvitationSerialized] })
+  public async findUserInvitations(
+    @CurrentUserId() userId: string,
+  ): Promise<InvitationSerialized[]> {
+    const invitations = await this.invitationReadService.findByAuthorId(userId);
+    return invitations.map(InvitationSerializer.serialize);
+  }
+
   @Get('invitations/:id')
   @ApiResponse({ type: InvitationSerialized })
   public async findById(@Param('id') id: string): Promise<InvitationSerialized> {

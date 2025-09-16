@@ -99,4 +99,67 @@ describe('InvitationCoreController (reads)', () => {
       expect(response.status).toEqual(404);
     });
   });
+
+  describe('GET /invitations/me', () => {
+    it("gets user's sent invitations", async () => {
+      // given
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { token: otherOwnerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'otherowner@test.com',
+      });
+
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      const otherProject = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      const anotherProject = await bootstrap.utils.projectUtils.createProject(otherOwnerToken);
+
+      const invitation1 = await bootstrap.utils.invitationUtils.createInvitation(
+        ownerToken,
+        project.id,
+      );
+      const invitation2 = await bootstrap.utils.invitationUtils.createInvitation(
+        ownerToken,
+        otherProject.id,
+      );
+      await bootstrap.utils.invitationUtils.createInvitation(otherOwnerToken, anotherProject.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/invitations/me`)
+        .set('authorization', `Bearer ${ownerToken}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toHaveLength(2);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: invitation1.id }),
+          expect.objectContaining({ id: invitation2.id }),
+        ]),
+      );
+    });
+
+    it('returns empty array when user has no invitations', async () => {
+      // given
+      const { token } = await bootstrap.utils.userUtils.createDefault();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/invitations/me`)
+        .set('authorization', `Bearer ${token}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual([]);
+    });
+
+    it('does not get when not logged in', async () => {
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).get(`/invitations/me`);
+
+      // then
+      expect(response.status).toEqual(401);
+    });
+  });
 });
