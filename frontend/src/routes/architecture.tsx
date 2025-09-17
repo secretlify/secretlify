@@ -23,8 +23,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-export const Route = createFileRoute("/zero-trust")({
-  component: ZeroTrustPage,
+export const Route = createFileRoute("/architecture")({
+  component: ArchitecturePage,
 });
 
 interface Section {
@@ -35,7 +35,7 @@ interface Section {
   illustration: React.ReactNode;
 }
 
-function ZeroTrustPage() {
+function ArchitecturePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -171,36 +171,29 @@ function ZeroTrustPage() {
       <div className="relative h-screen flex flex-col items-center justify-center px-4">
         <motion.h1
           className="text-6xl md:text-8xl font-bold mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1] }}
         >
           <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Zero Trust
+            Zero knowledge architecture
           </span>
         </motion.h1>
         <motion.p
           className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0, y: -50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.1 }}
         >
           Discover how we achieve true end-to-end encryption where even we can't
           access your secrets
         </motion.p>
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-          className="flex flex-col items-center gap-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2, ease: [0, 1, 0, 1], delay: 1 }}
         >
           <p className="text-sm text-gray-500">Scroll to explore</p>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            <ChevronDown className="w-8 h-8 text-gray-400" />
-          </motion.div>
         </motion.div>
       </div>
 

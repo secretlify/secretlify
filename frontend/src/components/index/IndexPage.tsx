@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useValues } from "kea";
-import { authLogic } from "@/lib/logics/authLogic";
 
 export function IndexPage() {
   return (
@@ -63,7 +61,7 @@ export function IndexPage() {
           Dashboard
         </Link>
         <Link
-          to="/zero-trust"
+          to="/architecture"
           className="rounded-md border border-border px-4 py-2 bg-background text-muted-foreground hover:bg-black/200 hover:text-accent-foreground transition"
         >
           How it works

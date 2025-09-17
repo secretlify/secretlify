@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ZeroTrustRouteImport } from './routes/zero-trust'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
@@ -18,9 +18,9 @@ import { Route as AppProjectProjectIdRouteImport } from './routes/app/project/$p
 import { Route as AppCallbacksOauthGoogleRouteImport } from './routes/app/callbacks/oauth/google'
 import { Route as AppCallbacksOauthGithubRouteImport } from './routes/app/callbacks/oauth/github'
 
-const ZeroTrustRoute = ZeroTrustRouteImport.update({
-  id: '/zero-trust',
-  path: '/zero-trust',
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,7 +61,7 @@ const AppCallbacksOauthGithubRoute = AppCallbacksOauthGithubRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/zero-trust': typeof ZeroTrustRoute
+  '/architecture': typeof ArchitectureRoute
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
@@ -71,7 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/zero-trust': typeof ZeroTrustRoute
+  '/architecture': typeof ArchitectureRoute
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
@@ -82,7 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/zero-trust': typeof ZeroTrustRoute
+  '/architecture': typeof ArchitectureRoute
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
@@ -94,7 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/zero-trust'
+    | '/architecture'
     | '/app/developer'
     | '/app/login'
     | '/app/me'
@@ -104,7 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/zero-trust'
+    | '/architecture'
     | '/app/developer'
     | '/app/login'
     | '/app/me'
@@ -114,7 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/zero-trust'
+    | '/architecture'
     | '/app/developer'
     | '/app/login'
     | '/app/me'
@@ -125,7 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ZeroTrustRoute: typeof ZeroTrustRoute
+  ArchitectureRoute: typeof ArchitectureRoute
   AppDeveloperRoute: typeof AppDeveloperRoute
   AppLoginRoute: typeof AppLoginRoute
   AppMeRoute: typeof AppMeRoute
@@ -136,11 +136,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/zero-trust': {
-      id: '/zero-trust'
-      path: '/zero-trust'
-      fullPath: '/zero-trust'
-      preLoaderRoute: typeof ZeroTrustRouteImport
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,7 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ZeroTrustRoute: ZeroTrustRoute,
+  ArchitectureRoute: ArchitectureRoute,
   AppDeveloperRoute: AppDeveloperRoute,
   AppLoginRoute: AppLoginRoute,
   AppMeRoute: AppMeRoute,
