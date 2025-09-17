@@ -266,13 +266,13 @@ function SectionAnimated({
   const yContent = useTransform(
     scrollProgress,
     [fadeInStart, mid, fadeOutEnd],
-    [200, 0, -200]
+    [75, 0, -75]
   );
 
   const yIllustration = useTransform(
     scrollProgress,
     [fadeInStart, mid, fadeOutEnd],
-    [250, 0, -250]
+    [50, 0, -50]
   );
 
   // Blur for depth perception - quick transitions
