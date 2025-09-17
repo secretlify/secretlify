@@ -1,12 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useSpring,
-} from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
   KeyRound,
@@ -40,27 +34,6 @@ interface Section {
 }
 
 function ZeroTrustPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentSection, setCurrentSection] = useState(0);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  useEffect(() => {
-    const unsubscribe = smoothProgress.on("change", (value) => {
-      const section = Math.min(Math.floor(value * 5), 4);
-      setCurrentSection(section);
-    });
-    return unsubscribe;
-  }, [smoothProgress]);
-
   const sections: Section[] = [
     {
       id: 0,
@@ -346,49 +319,32 @@ function ZeroTrustPage() {
         </motion.div>
       </div>
 
-      {/* Parallax Sections */}
-      <div ref={containerRef} className="relative">
+      {/* Sections */}
+      <div className="relative">
         {sections.map((section, index) => (
           <div
             key={section.id}
-            className="h-screen flex items-center justify-center sticky top-0"
+            className="min-h-screen flex items-center justify-center py-20"
           >
             <div className="container mx-auto px-6 lg:px-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                 {/* Left Side - Illustration */}
                 <motion.div
                   className="relative"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{
-                    opacity: currentSection >= index ? 1 : 0,
-                    x: currentSection >= index ? 0 : -50,
-                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
+                  viewport={{ once: true, amount: 0.3 }}
                 >
-                  <div
-                    className={cn(
-                      "relative z-10 transition-all duration-700",
-                      currentSection === index
-                        ? "scale-100 opacity-100"
-                        : "scale-95 opacity-50"
-                    )}
-                  >
-                    {section.illustration}
-                  </div>
+                  <div className="relative z-10">{section.illustration}</div>
                 </motion.div>
 
                 {/* Right Side - Content */}
                 <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{
-                    opacity: currentSection >= index ? 1 : 0,
-                    x: currentSection >= index ? 0 : 50,
-                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                  className={cn(
-                    "transition-all duration-700",
-                    currentSection === index ? "opacity-100" : "opacity-0"
-                  )}
+                  viewport={{ once: true, amount: 0.3 }}
                 >
                   <div className="mb-6">
                     <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-4">
@@ -403,23 +359,6 @@ function ZeroTrustPage() {
                 </motion.div>
               </div>
             </div>
-
-            {/* Progress Indicator */}
-            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
-              <div className="flex gap-2">
-                {sections.map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-300",
-                      currentSection === i
-                        ? "w-8 bg-gradient-to-r from-blue-400 to-purple-400"
-                        : "w-2 bg-gray-600"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         ))}
       </div>
@@ -431,92 +370,72 @@ function ZeroTrustPage() {
 function KeyPairIllustration() {
   return (
     <div className="relative">
-      <motion.div
-        animate={{
-          rotateY: [0, 360],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="preserve-3d"
-      >
-        <div className="relative w-full max-w-md mx-auto">
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 blur-3xl"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
+      <div className="relative w-full max-w-md mx-auto">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 blur-3xl"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
 
-          {/* Private Key Card */}
-          <motion.div
-            className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8 mb-6 shadow-2xl"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-blue-500/20 rounded-xl">
-                <Lock className="w-8 h-8 text-blue-400" />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold text-white">Private Key</h4>
-                <p className="text-sm text-blue-300">
-                  Kept secret in your browser
-                </p>
-              </div>
+        {/* Private Key Card */}
+        <motion.div
+          className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8 mb-6 shadow-2xl"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-blue-500/20 rounded-xl">
+              <Lock className="w-8 h-8 text-blue-400" />
             </div>
-            <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300 overflow-hidden">
-              <motion.div
-                animate={{ x: [0, -100, 0] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              >
-                -----BEGIN PRIVATE KEY----- MIIEvQIBADANBgkqhkiG9w0BAQE...
-              </motion.div>
+            <div>
+              <h4 className="text-xl font-bold text-white">Private Key</h4>
+              <p className="text-sm text-blue-300">
+                Kept secret in your browser
+              </p>
             </div>
-          </motion.div>
+          </div>
+          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300 overflow-hidden">
+            <motion.div
+              animate={{ x: [0, -100, 0] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            >
+              -----BEGIN PRIVATE KEY----- MIIEvQIBADANBgkqhkiG9w0BAQE...
+            </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Public Key Card */}
-          <motion.div
-            className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 shadow-2xl"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-purple-500/20 rounded-xl">
-                <KeyRound className="w-8 h-8 text-purple-400" />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold text-white">Public Key</h4>
-                <p className="text-sm text-purple-300">
-                  Safe to share with anyone
-                </p>
-              </div>
+        {/* Public Key Card */}
+        <motion.div
+          className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 shadow-2xl"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-purple-500/20 rounded-xl">
+              <KeyRound className="w-8 h-8 text-purple-400" />
             </div>
-            <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-purple-300 overflow-hidden">
-              <motion.div
-                animate={{ x: [0, -100, 0] }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "linear",
-                  delay: 5,
-                }}
-              >
-                -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFA...
-              </motion.div>
+            <div>
+              <h4 className="text-xl font-bold text-white">Public Key</h4>
+              <p className="text-sm text-purple-300">
+                Safe to share with anyone
+              </p>
             </div>
-          </motion.div>
-
-          {/* Connection Line */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-32 bg-gradient-to-b from-blue-400 to-purple-400"
-            animate={{ height: [100, 120, 100] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            style={{ zIndex: -1 }}
-          />
-        </div>
-      </motion.div>
+          </div>
+          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-purple-300 overflow-hidden">
+            <motion.div
+              animate={{ x: [0, -100, 0] }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "linear",
+                delay: 5,
+              }}
+            >
+              -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFA...
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
