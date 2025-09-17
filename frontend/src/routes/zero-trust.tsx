@@ -262,30 +262,17 @@ function SectionAnimated({
     { clamp: true }
   );
 
-  // Y position: unified movement for cleaner transitions
+  // Y position: continuous upward movement throughout visibility
   const yContent = useTransform(
     scrollProgress,
-    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-    [100, 0, 0, -100]
+    [fadeInStart, mid, fadeOutEnd],
+    [200, 0, -200]
   );
 
   const yIllustration = useTransform(
     scrollProgress,
-    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-    [150, 0, 0, -150]
-  );
-
-  // Scale: unified breathing effect
-  const scale = useTransform(
-    scrollProgress,
-    [fadeInStart, fadeInEnd, mid, fadeOutStart, fadeOutEnd],
-    [0.9, 1, 1.02, 1, 0.9]
-  );
-
-  const scaleIllustration = useTransform(
-    scrollProgress,
-    [fadeInStart, fadeInEnd, mid, fadeOutStart, fadeOutEnd],
-    [0.8, 1, 1.05, 1, 0.8]
+    [fadeInStart, mid, fadeOutEnd],
+    [250, 0, -250]
   );
 
   // Blur for depth perception - quick transitions
@@ -314,13 +301,11 @@ function SectionAnimated({
             className="relative"
             style={{
               y: yIllustration,
-              scale: scaleIllustration,
             }}
           >
             {/* Background glow effect that pulses */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl"
-              style={{ scale: scaleIllustration }}
               animate={{
                 opacity: [0.5, 0.8, 0.5],
               }}
@@ -337,7 +322,6 @@ function SectionAnimated({
           <motion.div
             style={{
               y: yContent,
-              scale,
             }}
           >
             <div className="mb-6">
