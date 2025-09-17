@@ -50,54 +50,11 @@ function ZeroTrustPage() {
       title: "Local Key Generation",
       description: "Your journey to zero-trust security begins here",
       content: (
-        <motion.div
-          className="space-y-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-            },
-          }}
-        >
-          <motion.h3
-            className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+        <div className="space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Local Key Generation
-          </motion.h3>
-          <motion.p
-            className="text-lg text-gray-300 leading-relaxed"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.98 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </h3>
+          <p className="text-lg text-gray-300 leading-relaxed">
             After you log in, your browser becomes a secure vault. It locally
             generates a pair of asymmetric cryptographic keys using
             industry-standard algorithms. Your{" "}
@@ -106,8 +63,8 @@ function ZeroTrustPage() {
             <strong className="text-white">public key</strong> can be shared
             safely with anyone. All cryptographic operations happen locally in
             your browser.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       ),
       illustration: <KeyPairIllustration />,
     },
@@ -116,54 +73,11 @@ function ZeroTrustPage() {
       title: "Passphrase Encryption",
       description: "Your master key to unlock everything",
       content: (
-        <motion.div
-          className="space-y-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-            },
-          }}
-        >
-          <motion.h3
-            className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+        <div className="space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
             Passphrase Encryption
-          </motion.h3>
-          <motion.p
-            className="text-lg text-gray-300 leading-relaxed"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.98 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </h3>
+          <p className="text-lg text-gray-300 leading-relaxed">
             You create a strong passphrase that acts as your master key. This
             passphrase encrypts your private key using{" "}
             <strong className="text-white">AES-256-GCM</strong> encryption,
@@ -174,8 +88,8 @@ function ZeroTrustPage() {
               useless without your passphrase
             </strong>
             .
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       ),
       illustration: <PassphraseIllustration />,
     },
@@ -184,54 +98,11 @@ function ZeroTrustPage() {
       title: "Encrypted Storage",
       description: "Your keys travel safely to our servers",
       content: (
-        <motion.div
-          className="space-y-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-            },
-          }}
-        >
-          <motion.h3
-            className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+        <div className="space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             Encrypted Storage
-          </motion.h3>
-          <motion.p
-            className="text-lg text-gray-300 leading-relaxed"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.98 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </h3>
+          <p className="text-lg text-gray-300 leading-relaxed">
             Your encrypted private key and public key are securely transmitted
             to our servers. This enables seamless access from any device while
             maintaining zero-trust security. We store your{" "}
@@ -240,8 +111,8 @@ function ZeroTrustPage() {
             <strong className="text-white">download your keys</strong>. Your
             passphrase unlocks everything{" "}
             <strong className="text-white">locally in your browser</strong>.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       ),
       illustration: <TransferIllustration />,
     },
@@ -250,54 +121,11 @@ function ZeroTrustPage() {
       title: "Project-Level Security",
       description: "Every project gets its own secure vault",
       content: (
-        <motion.div
-          className="space-y-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-            },
-          }}
-        >
-          <motion.h3
-            className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+        <div className="space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
             Project-Level Security
-          </motion.h3>
-          <motion.p
-            className="text-lg text-gray-300 leading-relaxed"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.98 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </h3>
+          <p className="text-lg text-gray-300 leading-relaxed">
             When you create a new project, your browser generates a strong,
             random password. This project key is then encrypted using your
             private key before being sent to our servers. Each project has a{" "}
@@ -306,8 +134,8 @@ function ZeroTrustPage() {
             <strong className="text-white">your private key</strong>. Only
             encrypted project keys are{" "}
             <strong className="text-white">stored on our servers</strong>.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       ),
       illustration: <ProjectKeyIllustration />,
     },
@@ -316,54 +144,11 @@ function ZeroTrustPage() {
       title: "End-to-End Encryption",
       description: "Your secrets remain truly secret",
       content: (
-        <motion.div
-          className="space-y-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-            },
-          }}
-        >
-          <motion.h3
-            className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+        <div className="space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
             End-to-End Encryption
-          </motion.h3>
-          <motion.p
-            className="text-lg text-gray-300 leading-relaxed"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.98 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </h3>
+          <p className="text-lg text-gray-300 leading-relaxed">
             Every change you make is encrypted using the project key before
             leaving your browser. Our servers only ever see encrypted data - we
             have zero knowledge of your actual secrets. We{" "}
@@ -372,29 +157,13 @@ function ZeroTrustPage() {
             <strong className="text-white">in your browser</strong> before
             transmission. Even in a breach, your data remains{" "}
             <strong className="text-white">completely secure</strong>.
-          </motion.p>
-          <motion.div
-            className="mt-8 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl"
-            variants={{
-              hidden: { opacity: 0, y: 20, scale: 0.95 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                  mass: 0.5,
-                },
-              },
-            }}
-          >
+          </p>
+          <div className="mt-8 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl">
             <p className="text-center text-xl font-semibold text-green-400">
               🔒 Your secrets are safe with math, not trust
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       ),
       illustration: <DataEncryptionIllustration />,
     },
@@ -485,63 +254,52 @@ function SectionAnimated({
   const end = (index + 1) * sectionHeight;
   const mid = start + sectionHeight * 0.5;
 
-  // Define transition points
-  const fadeInStart = Math.max(0, start - sectionHeight * 0.3);
-  const fadeInEnd = start + sectionHeight * 0.2;
-  const fadeOutStart = end - sectionHeight * 0.3;
-  const fadeOutEnd = Math.min(1, end + sectionHeight * 0.1);
+  // Define transition points - minimal overlap between sections
+  const transitionZone = sectionHeight * 0.03; // Very small transition zone
+  const fadeInStart = Math.max(0, start - transitionZone);
+  const fadeInEnd = start + transitionZone;
+  const fadeOutStart = end - transitionZone * 2;
+  const fadeOutEnd = Math.min(1, end - transitionZone);
 
-  // Opacity: smooth fade in and out
+  // Opacity: sharp fade in and out to minimize overlap
   const opacity = useTransform(
     scrollProgress,
     [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-    [0, 1, 1, 0]
+    [0, 1, 1, 0],
+    { clamp: true }
   );
 
-  // Y position: elements float and drift
+  // Y position: unified movement for cleaner transitions
   const yContent = useTransform(
     scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [100, 0, -20, -40, -100]
+    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
+    [100, 0, 0, -100]
   );
 
   const yIllustration = useTransform(
     scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [150, 0, -30, -60, -150]
+    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
+    [150, 0, 0, -150]
   );
 
-  // Scale: organic breathing effect
+  // Scale: unified breathing effect
   const scale = useTransform(
     scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [0.8, 1, 1.05, 1, 0.8]
+    [fadeInStart, fadeInEnd, mid, fadeOutStart, fadeOutEnd],
+    [0.9, 1, 1.02, 1, 0.9]
   );
 
   const scaleIllustration = useTransform(
     scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [0.7, 1, 1.1, 1, 0.7]
+    [fadeInStart, fadeInEnd, mid, fadeOutStart, fadeOutEnd],
+    [0.8, 1, 1.05, 1, 0.8]
   );
 
-  // Rotation for organic movement
-  const rotateIllustration = useTransform(
-    scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [-10, 0, 3, -3, 10]
-  );
-
-  const rotateContent = useTransform(
-    scrollProgress,
-    [fadeInStart, start, mid, end, fadeOutEnd],
-    [10, 0, -3, 3, -10]
-  );
-
-  // Blur for depth perception
+  // Blur for depth perception - quick transitions
   const blur = useTransform(
     scrollProgress,
-    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-    [8, 0, 0, 8]
+    [fadeInStart, fadeInStart + 0.02, fadeOutStart - 0.02, fadeOutEnd],
+    [10, 0, 0, 10]
   );
 
   const filter = useMotionTemplate`blur(${blur}px)`;
@@ -564,7 +322,6 @@ function SectionAnimated({
             style={{
               y: yIllustration,
               scale: scaleIllustration,
-              rotate: rotateIllustration,
             }}
           >
             {/* Background glow effect that pulses */}
@@ -587,14 +344,14 @@ function SectionAnimated({
           <motion.div
             style={{
               y: yContent,
-              rotate: rotateContent,
+              scale,
             }}
           >
-            <motion.div className="mb-6" style={{ scale }}>
-              <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-4">
+            <div className="mb-6">
+              <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400">
                 Step {index + 1} of 5
               </span>
-            </motion.div>
+            </div>
             {section.content}
           </motion.div>
         </div>
