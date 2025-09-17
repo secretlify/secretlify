@@ -102,7 +102,7 @@ function ArchitecturePage() {
           <p className="text-lg text-gray-300 leading-relaxed">
             Your encrypted private key and public key are securely transmitted
             to our servers. This enables seamless access from any device while
-            maintaining zero-trust security. We store your{" "}
+            maintaining zero-knowledge security. We store your{" "}
             <strong className="text-white">encrypted private key</strong> - we
             can't decrypt it. Log in from any browser and{" "}
             <strong className="text-white">download your keys</strong>. Your
