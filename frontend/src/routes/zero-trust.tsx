@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+} from "motion/react";
+import { useRef, useState, useEffect } from "react";
 import {
   KeyRound,
   Lock,
@@ -34,6 +38,12 @@ interface Section {
 }
 
 function ZeroTrustPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
   const sections: Section[] = [
     {
       id: 0,
@@ -391,83 +401,205 @@ function ZeroTrustPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
+    <div className="bg-black">
+      {/* Fixed background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-b from-purple-900/10 via-black to-blue-900/10 pointer-events-none" />
+
       {/* Hero Section */}
-      <div className="relative h-screen flex flex-col items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-black to-black" />
-        <motion.div
+      <div className="relative h-screen flex flex-col items-center justify-center px-4">
+        <motion.h1
+          className="text-6xl md:text-8xl font-bold mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 text-center px-4"
         >
-          <h1 className="text-6xl md:text-8xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Zero Trust
-            </span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
-            Discover how we achieve true end-to-end encryption where even we
-            can't access your secrets
-          </p>
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Zero Trust
+          </span>
+        </motion.h1>
+        <motion.p
+          className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          Discover how we achieve true end-to-end encryption where even we can't
+          access your secrets
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <p className="text-sm text-gray-500">Scroll to explore</p>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="flex flex-col items-center gap-4"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
           >
-            <p className="text-sm text-gray-500">Scroll to explore</p>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-            >
-              <ChevronDown className="w-8 h-8 text-gray-400" />
-            </motion.div>
+            <ChevronDown className="w-8 h-8 text-gray-400" />
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Sections */}
-      <div className="relative">
+      {/* Main scrollable content */}
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ minHeight: `${sections.length * 150}vh` }}
+      >
         {sections.map((section, index) => (
-          <div
+          <SectionAnimated
             key={section.id}
-            className="min-h-screen flex items-center justify-center py-20"
-          >
-            <div className="container mx-auto px-6 lg:px-12">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-                {/* Left Side - Illustration */}
-                <motion.div
-                  className="relative"
-                  initial={{ opacity: 0, x: -50, scale: 0.9 }}
-                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                  transition={{ duration: 1, ease: [0, 1, 0, 1] }}
-                  viewport={{ once: true, amount: 0.3 }}
-                >
-                  <div className="relative z-10">{section.illustration}</div>
-                </motion.div>
-
-                {/* Right Side - Content */}
-                <div>
-                  <motion.div
-                    className="mb-6"
-                    initial={{ opacity: 0, y: 16, scale: 0.98 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 1, ease: [0, 1, 0, 1] }}
-                    viewport={{ once: true, amount: 0.3 }}
-                  >
-                    <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-4">
-                      Step {index + 1} of 5
-                    </span>
-                  </motion.div>
-                  {section.content}
-                </div>
-              </div>
-            </div>
-          </div>
+            section={section}
+            index={index}
+            scrollProgress={scrollYProgress}
+            totalSections={sections.length}
+          />
         ))}
       </div>
+
+      {/* Extra space at the bottom */}
+      <div className="h-screen" />
     </div>
+  );
+}
+
+// Animated Section Component
+function SectionAnimated({
+  section,
+  index,
+  scrollProgress,
+  totalSections,
+}: {
+  section: Section;
+  index: number;
+  scrollProgress: any;
+  totalSections: number;
+}) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Calculate animation values based on scroll position
+  const sectionHeight = 1 / totalSections;
+  const start = index * sectionHeight;
+  const end = (index + 1) * sectionHeight;
+  const mid = start + sectionHeight * 0.5;
+
+  // Define transition points
+  const fadeInStart = Math.max(0, start - sectionHeight * 0.3);
+  const fadeInEnd = start + sectionHeight * 0.2;
+  const fadeOutStart = end - sectionHeight * 0.3;
+  const fadeOutEnd = Math.min(1, end + sectionHeight * 0.1);
+
+  // Opacity: smooth fade in and out
+  const opacity = useTransform(
+    scrollProgress,
+    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
+    [0, 1, 1, 0]
+  );
+
+  // Y position: elements float and drift
+  const yContent = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [100, 0, -20, -40, -100]
+  );
+
+  const yIllustration = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [150, 0, -30, -60, -150]
+  );
+
+  // Scale: organic breathing effect
+  const scale = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [0.8, 1, 1.05, 1, 0.8]
+  );
+
+  const scaleIllustration = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [0.7, 1, 1.1, 1, 0.7]
+  );
+
+  // Rotation for organic movement
+  const rotateIllustration = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [-10, 0, 3, -3, 10]
+  );
+
+  const rotateContent = useTransform(
+    scrollProgress,
+    [fadeInStart, start, mid, end, fadeOutEnd],
+    [10, 0, -3, 3, -10]
+  );
+
+  // Blur for depth perception
+  const blur = useTransform(
+    scrollProgress,
+    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
+    [8, 0, 0, 8]
+  );
+
+  const filter = useMotionTemplate`blur(${blur}px)`;
+
+  return (
+    <motion.div
+      ref={sectionRef}
+      className="fixed inset-0 flex items-center justify-center pointer-events-none"
+      style={{
+        opacity,
+        filter,
+        zIndex: 10 + index,
+      }}
+    >
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+          {/* Left Side - Illustration */}
+          <motion.div
+            className="relative"
+            style={{
+              y: yIllustration,
+              scale: scaleIllustration,
+              rotate: rotateIllustration,
+            }}
+          >
+            {/* Background glow effect that pulses */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl"
+              style={{ scale: scaleIllustration }}
+              animate={{
+                opacity: [0.5, 0.8, 0.5],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <div className="relative z-10">{section.illustration}</div>
+          </motion.div>
+
+          {/* Right Side - Content */}
+          <motion.div
+            style={{
+              y: yContent,
+              rotate: rotateContent,
+            }}
+          >
+            <motion.div className="mb-6" style={{ scale }}>
+              <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-4">
+                Step {index + 1} of 5
+              </span>
+            </motion.div>
+            {section.content}
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
