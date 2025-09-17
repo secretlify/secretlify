@@ -14,14 +14,12 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Cloud,
   Database,
   Fingerprint,
   ShieldCheck,
   FileKey,
   FolderLock,
   Terminal,
-  Sparkles,
   ChevronDown,
 } from "lucide-react";
 
@@ -158,11 +156,6 @@ function ZeroTrustPage() {
             transmission. Even in a breach, your data remains{" "}
             <strong className="text-white">completely secure</strong>.
           </p>
-          <div className="mt-8 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl">
-            <p className="text-center text-xl font-semibold text-green-400">
-              🔒 Your secrets are safe with math, not trust
-            </p>
-          </div>
         </div>
       ),
       illustration: <DataEncryptionIllustration />,
@@ -371,64 +364,41 @@ function KeyPairIllustration() {
           transition={{ duration: 3, repeat: Infinity }}
         />
 
-        {/* Private Key Card */}
-        <motion.div
-          className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8 mb-6 shadow-2xl"
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Lock className="w-8 h-8 text-blue-400" />
-            </div>
-            <div>
-              <h4 className="text-xl font-bold text-white">Private Key</h4>
-              <p className="text-sm text-blue-300">
-                Kept secret in your browser
-              </p>
-            </div>
+        {/* Browser Container */}
+        <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-xl border border-gray-500/30 rounded-2xl p-6 shadow-2xl">
+          <div className="flex items-center gap-3 mb-6">
+            <Terminal className="w-6 h-6 text-gray-400" />
+            <h3 className="text-lg font-bold text-white">Your Browser</h3>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300 overflow-hidden">
-            <motion.div
-              animate={{ x: [0, -100, 0] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            >
-              -----BEGIN PRIVATE KEY----- MIIEvQIBADANBgkqhkiG9w0BAQE...
-            </motion.div>
-          </div>
-        </motion.div>
 
-        {/* Public Key Card */}
-        <motion.div
-          className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 shadow-2xl"
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <KeyRound className="w-8 h-8 text-purple-400" />
+          <div className="space-y-4">
+            {/* Private Key Card */}
+            <div className="bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-3 ">
+                <div className="p-2 bg-blue-500/20 rounded-lg">
+                  <Lock className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white">Private Key</h4>
+                  <p className="text-xs text-blue-300">Secret - never shared</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xl font-bold text-white">Public Key</h4>
-              <p className="text-sm text-purple-300">
-                Safe to share with anyone
-              </p>
+
+            {/* Public Key Card */}
+            <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-3 ">
+                <div className="p-2 bg-purple-500/20 rounded-lg">
+                  <KeyRound className="w-5 h-5 text-purple-400" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white">Public Key</h4>
+                  <p className="text-xs text-purple-300">Safe to share</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-purple-300 overflow-hidden">
-            <motion.div
-              animate={{ x: [0, -100, 0] }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "linear",
-                delay: 5,
-              }}
-            >
-              -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFA...
-            </motion.div>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -447,16 +417,13 @@ function PassphraseIllustration() {
         />
 
         {/* Passphrase Input */}
-        <motion.div
-          className="relative bg-gradient-to-br from-green-900/50 to-green-800/50 backdrop-blur-xl border border-green-500/30 rounded-2xl p-8 mb-6 shadow-2xl"
-          whileHover={{ scale: 1.02 }}
-        >
-          <div className="flex items-center gap-4 mb-6">
+        <div className="relative bg-gradient-to-br from-green-900/50 to-green-800/50 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
+          <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-green-500/20 rounded-xl">
-              <Fingerprint className="w-8 h-8 text-green-400" />
+              <Fingerprint className="w-7 h-7 text-green-400" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white">Your Passphrase</h4>
+              <h4 className="text-lg font-bold text-white">Your Passphrase</h4>
               <p className="text-sm text-green-300">Master key to everything</p>
             </div>
           </div>
@@ -478,47 +445,47 @@ function PassphraseIllustration() {
               )}
             </button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Encryption Process */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="relative w-32 h-32 mx-auto mb-6"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur-xl opacity-50" />
-          <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
-            <Lock className="w-12 h-12 text-green-400" />
+        {/* Encryption Process with Lock */}
+        <div className="relative flex items-center justify-center mb-6">
+          <div className="relative">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur-2xl opacity-30"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <div className="relative bg-black/50 backdrop-blur rounded-full p-6">
+              <Lock className="w-10 h-10 text-green-400" />
+            </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Encrypted Private Key */}
-        <motion.div
-          className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8 shadow-2xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
+        <div className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Shield className="w-8 h-8 text-blue-400" />
+              <Shield className="w-7 h-7 text-blue-400" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white">
+              <h4 className="text-lg font-bold text-white">
                 Encrypted Private Key
               </h4>
               <p className="text-sm text-blue-300">AES-256 encrypted</p>
             </div>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300 overflow-hidden">
-            <motion.div
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              U2FsdGVkX1+iX5Fy6v3LOhKxT4A2R8mZ9B...
-            </motion.div>
+          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300">
+            U2FsdGVkX1+iX5Fy6v3LOhKxT4A2R8mZ9B...
           </div>
-        </motion.div>
+
+          {/* Green Shield - Only you can decrypt */}
+          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+            <ShieldCheck className="w-5 h-5 text-green-400" />
+            <p className="text-sm text-green-400 font-medium">
+              Only you can decrypt this
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -535,88 +502,80 @@ function TransferIllustration() {
         />
 
         {/* Browser Side */}
-        <motion.div
-          className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 mb-8 shadow-2xl"
-          whileHover={{ scale: 1.02 }}
-        >
+        <div className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 mb-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Terminal className="w-6 h-6 text-purple-400" />
             <h4 className="text-lg font-bold text-white">Your Browser</h4>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="bg-black/50 rounded-lg p-3">
               <Lock className="w-5 h-5 text-blue-400 mb-2" />
-              <p className="text-xs text-gray-300">Encrypted Private Key</p>
+              <p className="text-xs text-gray-300">Private Key</p>
             </div>
             <div className="bg-black/50 rounded-lg p-3">
               <KeyRound className="w-5 h-5 text-purple-400 mb-2" />
               <p className="text-xs text-gray-300">Public Key</p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Transfer Animation */}
-        <div className="relative h-24 mb-8">
+        <div className="relative h-20 mb-8">
           <motion.div
             className="absolute left-1/2 -translate-x-1/2"
-            animate={{ y: [0, 60, 0] }}
+            animate={{ y: [0, 40, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <div className="flex flex-col items-center gap-2">
-              <ArrowRight className="w-6 h-6 text-pink-400 rotate-90" />
-              <motion.div
-                className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
-                animate={{ scale: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
+            <ArrowRight className="w-6 h-6 text-pink-400 rotate-90" />
           </motion.div>
 
           {/* Data Particles */}
-          {[...Array(5)].map((_, i) => (
+          {[...Array(3)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute left-1/2 w-2 h-2 bg-purple-400 rounded-full"
               animate={{
-                y: [0, 80],
-                x: ["-50%", `${(i - 2) * 20}px`],
+                y: [0, 60],
+                x: ["-50%", `${(i - 1) * 20}px`],
                 opacity: [0, 1, 0],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                delay: i * 0.2,
+                delay: i * 0.3,
               }}
             />
           ))}
         </div>
 
         {/* Server Side */}
-        <motion.div
-          className="relative bg-gradient-to-br from-pink-900/50 to-pink-800/50 backdrop-blur-xl border border-pink-500/30 rounded-2xl p-6 shadow-2xl"
-          whileHover={{ scale: 1.02 }}
-        >
+        <div className="relative bg-gradient-to-br from-pink-900/50 to-pink-800/50 backdrop-blur-xl border border-pink-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Server className="w-6 h-6 text-pink-400" />
             <h4 className="text-lg font-bold text-white">Our Servers</h4>
           </div>
-          <div className="bg-black/50 rounded-lg p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <Cloud className="w-5 h-5 text-green-400" />
-              <p className="text-sm text-green-300">Securely Stored:</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-black/50 rounded-lg p-3">
+              <Lock className="w-5 h-5 text-blue-400 mb-2" />
+              <p className="text-xs text-gray-300">
+                <span className="text-red-400 font-semibold">ENCRYPTED</span>{" "}
+                Private Key
+              </p>
             </div>
-            <ul className="space-y-2 text-xs text-gray-300">
-              <li className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-blue-400" />
-                <span>Encrypted private key (can't decrypt)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-purple-400" />
-                <span>Public key for verification</span>
-              </li>
-            </ul>
+            <div className="bg-black/50 rounded-lg p-3">
+              <KeyRound className="w-5 h-5 text-purple-400 mb-2" />
+              <p className="text-xs text-gray-300">Public Key</p>
+            </div>
           </div>
-        </motion.div>
+
+          {/* Green Shield - Only you can decrypt */}
+          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+            <ShieldCheck className="w-5 h-5 text-green-400" />
+            <p className="text-sm text-green-400 font-medium">
+              Only you can decrypt this
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -658,25 +617,38 @@ function ProjectKeyIllustration() {
             </motion.div>
           </div>
 
-          {/* Project Key */}
-          <motion.div
-            className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 rounded-lg p-3"
-            animate={{
-              borderColor: [
-                "rgba(251, 146, 60, 0.3)",
-                "rgba(251, 146, 60, 0.6)",
-                "rgba(251, 146, 60, 0.3)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <div className="flex items-center gap-2">
-              <FileKey className="w-5 h-5 text-yellow-400" />
-              <span className="text-sm text-white font-semibold">
-                Project Encryption Key
-              </span>
+          {/* Project Key + Public Key */}
+          <div className="flex items-center gap-3">
+            <motion.div
+              className="bg-black/50 border border-orange-500/30 rounded-lg p-3 flex-1"
+              animate={{
+                borderColor: [
+                  "rgba(251, 146, 60, 0.3)",
+                  "rgba(251, 146, 60, 0.6)",
+                  "rgba(251, 146, 60, 0.3)",
+                ],
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className="flex items-center gap-2">
+                <FileKey className="w-5 h-5 text-yellow-400" />
+                <span className="text-sm text-white font-semibold">
+                  Project Key
+                </span>
+              </div>
+            </motion.div>
+
+            <span className="text-white text-lg font-bold">+</span>
+
+            <div className="bg-black/50 border border-purple-500/30 rounded-lg p-3 flex-1">
+              <div className="flex items-center gap-2">
+                <KeyRound className="w-5 h-5 text-purple-400" />
+                <span className="text-sm text-white font-semibold">
+                  Your Public Key
+                </span>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* Encryption Process */}
@@ -710,19 +682,23 @@ function ProjectKeyIllustration() {
             <h4 className="text-lg font-bold text-white">Stored on Server</h4>
           </div>
 
-          <div className="bg-black/50 rounded-lg p-4">
-            <p className="text-xs text-gray-400 mb-2">Encrypted project key:</p>
-            <div className="font-mono text-xs text-red-300 break-all">
-              <motion.span
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
-              </motion.span>
+          <div className="flex flex-col gap-4">
+            <div className="bg-black/50 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Lock className="w-5 h-5 text-red-400" />
+                <p className="text-sm text-gray-300">
+                  <span className="text-red-400 font-semibold">ENCRYPTED</span>{" "}
+                  Project Key
+                </p>
+              </div>
             </div>
-            <div className="mt-3 flex items-center gap-2 text-green-400">
-              <ShieldCheck className="w-4 h-4" />
-              <span className="text-xs">Only you can decrypt this</span>
+            <div className="bg-black/50 rounded-lg p-3">
+              <div className="flex flex-row gap-2">
+                <ShieldCheck className="w-5 h-5 text-green-400" />
+                <p className="text-sm text-green-400 font-medium">
+                  Only you can decrypt this
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -746,15 +722,12 @@ function DataEncryptionIllustration() {
       <div className="relative w-full max-w-md mx-auto">
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"
-          animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 360] }}
-          transition={{ duration: 10, repeat: Infinity }}
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 4, repeat: Infinity }}
         />
 
         {/* Your Changes */}
-        <motion.div
-          className="relative bg-gradient-to-br from-cyan-900/50 to-cyan-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 mb-4 shadow-2xl"
-          whileHover={{ scale: 1.02 }}
-        >
+        <div className="relative bg-gradient-to-br from-cyan-900/50 to-cyan-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Terminal className="w-6 h-6 text-cyan-400" />
             <h4 className="text-lg font-bold text-white">Your Secret Data</h4>
@@ -762,56 +735,27 @@ function DataEncryptionIllustration() {
           <div className="bg-black/50 rounded-lg p-3 font-mono text-sm text-cyan-300">
             API_KEY=sk-1234567890abcdef
           </div>
-        </motion.div>
+        </div>
 
-        {/* Encryption Animation */}
-        <div className="relative h-32 flex items-center justify-center">
+        {/* Encryption Process with Shield */}
+        <div className="relative h-20 flex items-center justify-center mb-6">
           <motion.div
             className="absolute"
             animate={{
-              scale: [1, 1.5, 1],
-              rotate: [0, 360],
+              scale: [1, 1.2, 1],
             }}
             transition={{ duration: 3, repeat: Infinity }}
           >
             <div className="w-24 h-24 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-20 blur-2xl" />
           </motion.div>
 
-          {/* Encryption Process Visualization */}
-          <div className="relative grid grid-cols-3 gap-2">
-            {[...Array(9)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="w-3 h-3 bg-blue-400 rounded-sm"
-                animate={{
-                  scale: [0, 1, 0],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: i * 0.1,
-                }}
-              />
-            ))}
-          </div>
-
-          <motion.div
-            className="absolute"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
+          <div className="relative bg-black/50 backdrop-blur rounded-full p-5">
             <Shield className="w-8 h-8 text-cyan-400" />
-          </motion.div>
+          </div>
         </div>
 
         {/* Encrypted Result */}
-        <motion.div
-          className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
+        <div className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Database className="w-6 h-6 text-blue-400" />
             <h4 className="text-lg font-bold text-white">What We Store</h4>
@@ -819,28 +763,16 @@ function DataEncryptionIllustration() {
           <div className="bg-black/50 rounded-lg p-3 font-mono text-sm text-blue-300 break-all">
             {encryptedData || "Loading..."}
           </div>
-          <div className="mt-4 flex items-center justify-center gap-3 text-green-400">
-            <EyeOff className="w-5 h-5" />
-            <span className="text-sm font-semibold">
-              Zero Knowledge Architecture
-            </span>
-          </div>
-        </motion.div>
 
-        {/* Security Badge */}
-        <motion.div
-          className="mt-6 mx-auto w-fit"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        >
-          <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full px-6 py-3 flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-green-400" />
-            <span className="text-green-400 font-semibold">
-              Mathematically Secure
-            </span>
-            <Sparkles className="w-5 h-5 text-green-400" />
+          {/* Green Shield - Only you can decrypt */}
+          {/* Green Shield - Only you can decrypt */}
+          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+            <ShieldCheck className="w-5 h-5 text-green-400" />
+            <p className="text-sm text-green-400 font-medium">
+              Only you can decrypt this
+            </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
