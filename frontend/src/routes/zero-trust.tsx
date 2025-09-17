@@ -37,246 +37,354 @@ function ZeroTrustPage() {
   const sections: Section[] = [
     {
       id: 0,
-      title: "Asymmetric Key Generation",
+      title: "Local Key Generation",
       description: "Your journey to zero-trust security begins here",
       content: (
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <motion.div
+          className="space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
+        >
+          <motion.h3
+            className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Local Key Generation
-          </h3>
-          <p className="text-lg text-gray-300 leading-relaxed">
+          </motion.h3>
+          <motion.p
+            className="text-lg text-gray-300 leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             After you log in, your browser becomes a secure vault. It locally
             generates a pair of asymmetric cryptographic keys using
-            industry-standard algorithms.
-          </p>
-          <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl p-6">
-            <h4 className="text-xl font-semibold text-blue-400 mb-3">
-              How it works:
-            </h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-start gap-3">
-                <span className="text-blue-400 mt-1">•</span>
-                <span>
-                  Your <strong className="text-white">private key</strong> never
-                  leaves your browser in plaintext
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-purple-400 mt-1">•</span>
-                <span>
-                  The <strong className="text-white">public key</strong> can be
-                  shared safely with anyone
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-green-400 mt-1">•</span>
-                <span>
-                  All cryptographic operations happen locally in your browser
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+            industry-standard algorithms. Your{" "}
+            <strong className="text-white">private key</strong> never leaves
+            your browser in plaintext, while the{" "}
+            <strong className="text-white">public key</strong> can be shared
+            safely with anyone. All cryptographic operations happen locally in
+            your browser.
+          </motion.p>
+        </motion.div>
       ),
       illustration: <KeyPairIllustration />,
     },
     {
       id: 1,
-      title: "Passphrase Protection",
+      title: "Passphrase Encryption",
       description: "Your master key to unlock everything",
       content: (
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+        <motion.div
+          className="space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
+        >
+          <motion.h3
+            className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Passphrase Encryption
-          </h3>
-          <p className="text-lg text-gray-300 leading-relaxed">
+          </motion.h3>
+          <motion.p
+            className="text-lg text-gray-300 leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             You create a strong passphrase that acts as your master key. This
-            passphrase encrypts your private key using AES-256 encryption,
-            adding an extra layer of security.
-          </p>
-          <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-xl p-6">
-            <h4 className="text-xl font-semibold text-green-400 mb-3">
-              Security features:
-            </h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-start gap-3">
-                <Shield className="w-5 h-5 text-green-400 mt-1" />
-                <span>
-                  Your passphrase{" "}
-                  <strong className="text-white">
-                    never leaves your device
-                  </strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Lock className="w-5 h-5 text-blue-400 mt-1" />
-                <span>
-                  Private key is encrypted with{" "}
-                  <strong className="text-white">AES-256-GCM</strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Fingerprint className="w-5 h-5 text-purple-400 mt-1" />
-                <span>
-                  Even if someone accesses your encrypted key, it's{" "}
-                  <strong className="text-white">
-                    useless without your passphrase
-                  </strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+            passphrase encrypts your private key using{" "}
+            <strong className="text-white">AES-256-GCM</strong> encryption,
+            adding an extra layer of security. Your passphrase{" "}
+            <strong className="text-white">never leaves your device</strong>.
+            Even if someone accesses your encrypted key, it's{" "}
+            <strong className="text-white">
+              useless without your passphrase
+            </strong>
+            .
+          </motion.p>
+        </motion.div>
       ),
       illustration: <PassphraseIllustration />,
     },
     {
       id: 2,
-      title: "Secure Key Transfer",
+      title: "Encrypted Storage",
       description: "Your keys travel safely to our servers",
       content: (
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <motion.div
+          className="space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
+        >
+          <motion.h3
+            className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Encrypted Storage
-          </h3>
-          <p className="text-lg text-gray-300 leading-relaxed">
+          </motion.h3>
+          <motion.p
+            className="text-lg text-gray-300 leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Your encrypted private key and public key are securely transmitted
             to our servers. This enables seamless access from any device while
-            maintaining zero-trust security.
-          </p>
-          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
-            <h4 className="text-xl font-semibold text-purple-400 mb-3">
-              What this means:
-            </h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-start gap-3">
-                <Server className="w-5 h-5 text-purple-400 mt-1" />
-                <span>
-                  We store your{" "}
-                  <strong className="text-white">encrypted private key</strong>{" "}
-                  - we can't decrypt it
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Cloud className="w-5 h-5 text-pink-400 mt-1" />
-                <span>
-                  Log in from any browser and{" "}
-                  <strong className="text-white">download your keys</strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-green-400 mt-1" />
-                <span>
-                  Your passphrase unlocks everything{" "}
-                  <strong className="text-white">
-                    locally in your browser
-                  </strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+            maintaining zero-trust security. We store your{" "}
+            <strong className="text-white">encrypted private key</strong> - we
+            can't decrypt it. Log in from any browser and{" "}
+            <strong className="text-white">download your keys</strong>. Your
+            passphrase unlocks everything{" "}
+            <strong className="text-white">locally in your browser</strong>.
+          </motion.p>
+        </motion.div>
       ),
       illustration: <TransferIllustration />,
     },
     {
       id: 3,
-      title: "Project Key Encryption",
+      title: "Project-Level Security",
       description: "Every project gets its own secure vault",
       content: (
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+        <motion.div
+          className="space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
+        >
+          <motion.h3
+            className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Project-Level Security
-          </h3>
-          <p className="text-lg text-gray-300 leading-relaxed">
+          </motion.h3>
+          <motion.p
+            className="text-lg text-gray-300 leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             When you create a new project, your browser generates a strong,
             random password. This project key is then encrypted using your
-            private key before being sent to our servers.
-          </p>
-          <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-xl p-6">
-            <h4 className="text-xl font-semibold text-orange-400 mb-3">
-              Multi-layer encryption:
-            </h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-start gap-3">
-                <FileKey className="w-5 h-5 text-orange-400 mt-1" />
-                <span>
-                  Each project has a{" "}
-                  <strong className="text-white">unique encryption key</strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <FolderLock className="w-5 h-5 text-red-400 mt-1" />
-                <span>
-                  Project keys are encrypted with{" "}
-                  <strong className="text-white">your private key</strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Database className="w-5 h-5 text-yellow-400 mt-1" />
-                <span>
-                  Only encrypted project keys are{" "}
-                  <strong className="text-white">stored on our servers</strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+            private key before being sent to our servers. Each project has a{" "}
+            <strong className="text-white">unique encryption key</strong>.
+            Project keys are encrypted with{" "}
+            <strong className="text-white">your private key</strong>. Only
+            encrypted project keys are{" "}
+            <strong className="text-white">stored on our servers</strong>.
+          </motion.p>
+        </motion.div>
       ),
       illustration: <ProjectKeyIllustration />,
     },
     {
       id: 4,
-      title: "Zero-Trust Data Storage",
+      title: "End-to-End Encryption",
       description: "Your secrets remain truly secret",
       content: (
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+        <motion.div
+          className="space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+            },
+          }}
+        >
+          <motion.h3
+            className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             End-to-End Encryption
-          </h3>
-          <p className="text-lg text-gray-300 leading-relaxed">
+          </motion.h3>
+          <motion.p
+            className="text-lg text-gray-300 leading-relaxed"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             Every change you make is encrypted using the project key before
             leaving your browser. Our servers only ever see encrypted data - we
-            have zero knowledge of your actual secrets.
-          </p>
-          <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-xl p-6">
-            <h4 className="text-xl font-semibold text-cyan-400 mb-3">
-              True zero-trust architecture:
-            </h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-start gap-3">
-                <EyeOff className="w-5 h-5 text-cyan-400 mt-1" />
-                <span>
-                  We{" "}
-                  <strong className="text-white">
-                    cannot access your secrets
-                  </strong>{" "}
-                  - it's mathematically impossible
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Terminal className="w-5 h-5 text-blue-400 mt-1" />
-                <span>
-                  All encryption happens{" "}
-                  <strong className="text-white">in your browser</strong> before
-                  transmission
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-purple-400 mt-1" />
-                <span>
-                  Even in a breach, your data remains{" "}
-                  <strong className="text-white">completely secure</strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div className="mt-8 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl">
+            have zero knowledge of your actual secrets. We{" "}
+            <strong className="text-white">cannot access your secrets</strong> -
+            it's mathematically impossible. All encryption happens{" "}
+            <strong className="text-white">in your browser</strong> before
+            transmission. Even in a breach, your data remains{" "}
+            <strong className="text-white">completely secure</strong>.
+          </motion.p>
+          <motion.div
+            className="mt-8 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl"
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.95 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                  mass: 0.5,
+                },
+              },
+            }}
+          >
             <p className="text-center text-xl font-semibold text-green-400">
               🔒 Your secrets are safe with math, not trust
             </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       ),
       illustration: <DataEncryptionIllustration />,
     },
@@ -331,32 +439,29 @@ function ZeroTrustPage() {
                 {/* Left Side - Illustration */}
                 <motion.div
                   className="relative"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  initial={{ opacity: 0, x: -50, scale: 0.9 }}
+                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ duration: 1, ease: [0, 1, 0, 1] }}
                   viewport={{ once: true, amount: 0.3 }}
                 >
                   <div className="relative z-10">{section.illustration}</div>
                 </motion.div>
 
                 {/* Right Side - Content */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                >
-                  <div className="mb-6">
+                <div>
+                  <motion.div
+                    className="mb-6"
+                    initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 1, ease: [0, 1, 0, 1] }}
+                    viewport={{ once: true, amount: 0.3 }}
+                  >
                     <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-4">
                       Step {index + 1} of 5
                     </span>
-                    <h2 className="text-4xl font-bold text-white mb-2">
-                      {section.title}
-                    </h2>
-                    <p className="text-gray-400">{section.description}</p>
-                  </div>
+                  </motion.div>
                   {section.content}
-                </motion.div>
+                </div>
               </div>
             </div>
           </div>
