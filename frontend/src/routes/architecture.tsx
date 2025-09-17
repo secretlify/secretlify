@@ -20,7 +20,6 @@ import {
   FileKey,
   FolderLock,
   Terminal,
-  ChevronDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/architecture")({
@@ -169,21 +168,63 @@ function ArchitecturePage() {
 
       {/* Hero Section */}
       <div className="relative h-screen flex flex-col items-center justify-center px-4">
-        <motion.h1
-          className="text-6xl md:text-8xl font-bold mb-6"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0, 1, 0, 1] }}
-        >
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Zero knowledge architecture
-          </span>
-        </motion.h1>
+        <div className="relative">
+          {/* Multiple random background glow effects */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-pink-500/30 blur-2xl"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+              scaleY: [1, 2, 1],
+              scaleX: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-pink-500/25 via-blue-500/25 to-purple-500/25 blur-3xl"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+              scaleY: [1, 2, 1],
+              scaleX: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-tl from-purple-500/20 via-pink-500/20 to-blue-500/20 blur-xl"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+              scaleY: [1, 2, 1],
+              scaleX: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.h1
+            className="relative z-10 text-6xl md:text-8xl font-bold mb-6"
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 3, ease: [0, 1, 0, 1] }}
+          >
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Zero knowledge architecture
+            </span>
+          </motion.h1>
+        </div>
         <motion.p
           className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: -50, scale: 0.95 }}
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.1 }}
+          transition={{ duration: 3, ease: [0, 1, 0, 1], delay: 0.2 }}
         >
           Discover how we achieve true end-to-end encryption where even we can't
           access your secrets
