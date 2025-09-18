@@ -23,6 +23,7 @@
     "axios": "^1.12.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "diff": "^8.0.2",
     "kea": "^3.1.7",
     "kea-loaders": "^3.1.1",
     "kea-localstorage": "^3.1.0",

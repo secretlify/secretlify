@@ -31,6 +31,7 @@ export function FileEditor({
           { token: "comment", foreground: "6A9955", fontStyle: "italic" },
         ],
         colors: {
+          "editor.background": "#0a0a0a",
           focusBorder: "#00000000",
         },
       });

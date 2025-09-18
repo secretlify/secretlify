@@ -1,4 +1,13 @@
-import { actions, connect, kea, key, listeners, path, props } from "kea";
+import {
+  actions,
+  connect,
+  kea,
+  key,
+  listeners,
+  path,
+  props,
+  reducers,
+} from "kea";
 
 import type { projectLogicType } from "./projectLogicType";
 import { loaders } from "kea-loaders";
@@ -41,6 +50,16 @@ export const projectLogic = kea<projectLogicType>([
 
   actions({
     updateProjectContent: (content: string) => ({ content }),
+    toggleHistoryView: true,
+  }),
+
+  reducers({
+    isShowingHistory: [
+      false,
+      {
+        toggleHistoryView: (state) => !state,
+      },
+    ],
   }),
 
   loaders(({ values, props }) => ({
@@ -48,8 +67,6 @@ export const projectLogic = kea<projectLogicType>([
       null as DecryptedProject | null,
       {
         loadProjectData: async () => {
-          console.log("loadProjectData", values.jwtToken, props.projectId);
-
           const projectData = await ProjectsApi.getProject(
             values.jwtToken!,
             props.projectId
