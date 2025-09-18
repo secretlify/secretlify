@@ -15,7 +15,7 @@ import { ProjectReadService } from '../read/project-read.service';
 import { ProjectWriteService } from '../write/project-write.service';
 import { CreateProjectBody } from './dto/create-project.body';
 import { UpdateProjectBody } from './dto/update-project.body';
-import { ProjectSerialized } from './entities/project.interface';
+import { ProjectHistorySerialized, ProjectSerialized } from './entities/project.interface';
 import { ProjectSerializer } from './entities/project.serializer';
 import { ProjectMemberGuard } from './guards/project-member.guard';
 import { ProjectOwnerGuard } from './guards/project-owner.guard';
@@ -58,6 +58,16 @@ export class ProjectCoreController {
   public async findById(@Param('projectId') projectId: string): Promise<ProjectSerialized> {
     const project = await this.projectReadService.findById(projectId);
     return ProjectSerializer.serialize(project);
+  }
+
+  @Get('projects/:projectId/history')
+  @UseGuards(ProjectMemberGuard)
+  @ApiResponse({ type: ProjectHistorySerialized })
+  public async findHistoryById(
+    @Param('projectId') projectId: string,
+  ): Promise<ProjectHistorySerialized> {
+    const project = await this.projectReadService.findById(projectId);
+    return ProjectSerializer.serializeHistory(project);
   }
 
   @Patch('projects/:projectId')

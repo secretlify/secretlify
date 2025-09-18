@@ -17,8 +17,8 @@ export class ProjectEntity {
   @Prop({ type: MongooseSchema.Types.Map, of: String, default: {} })
   public encryptedSecretsKeys: Record<string, string>;
 
-  @Prop()
-  public encryptedSecrets: string;
+  @Prop({ type: [String], default: [] })
+  public encryptedSecretsHistory: string[];
 
   @Prop()
   public createdAt: Date;

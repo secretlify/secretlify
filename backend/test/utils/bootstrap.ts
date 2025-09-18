@@ -10,6 +10,7 @@ import { GithubAuthModule } from '../../src/auth/github/github-auth.module';
 import { GoogleAuthModule } from '../../src/auth/google/google-auth.module';
 import { InvitationCoreModule } from '../../src/invitation/core/invitation-core.module';
 import { ProjectCoreModule } from '../../src/project/core/project-core.module';
+import { PROJECT_HISTORY_SIZE } from '../../src/project/write/project-write.constants';
 import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
@@ -40,6 +41,8 @@ export async function createTestApp() {
     .useClass(LoggerMock)
     .overrideProvider(Metrics)
     .useClass(MetricsMock)
+    .overrideProvider(PROJECT_HISTORY_SIZE)
+    .useValue(2)
     .compile();
 
   const app = module.createNestApplication();

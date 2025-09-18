@@ -175,4 +175,43 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.status).toEqual(401);
     });
   });
+
+  describe('GET /projects/:projectId/history', () => {
+    it('gets project history', async () => {
+      // given
+      const { user, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(token, {
+        name: 'test-project',
+        encryptedKeyVersions: {},
+        encryptedSecrets: '',
+      });
+
+      await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({ encryptedSecrets: 'v2' });
+      await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({ encryptedSecrets: 'v3' });
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}/history`)
+        .set('authorization', `Bearer ${token}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        id: project.id,
+        name: 'test-project',
+        owner: user.id,
+        members: [user.id],
+        encryptedKeyVersions: {},
+        encryptedSecretsHistory: ['v3', 'v2'],
+      });
+    });
+  });
 });
