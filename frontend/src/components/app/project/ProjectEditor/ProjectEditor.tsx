@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { FileEditor } from "@/components/app/project/ProjectEditor/FileEditor";
@@ -6,6 +5,8 @@ import { UpdateButton } from "@/components/app/project/ProjectEditor/UpdateButto
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
+import { Button } from "@/components/ui/button";
+import { IconHistory, IconShare } from "@tabler/icons-react";
 
 export function ProjectEditor() {
   const { activeProject } = useProjects();
@@ -76,56 +77,14 @@ export function ProjectEditor() {
         transition={{ duration: 1, ease: [0, 1, 0, 1] }}
       >
         <div className="p-4">
-          <div className="mb-3 relative flex items-center justify-center gap-4">
-            <div className="absolute left-0 flex items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </button>
-              <button className="p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-px w-8 bg-border"></div>
-              <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
-                {activeProject?.name}
-              </h1>
-              <div className="h-px w-8 bg-border"></div>
-            </div>
-            <div className="absolute right-0">
-              <UpdateButton
-                onClick={update}
-                isSubmitting={isSubmitting}
-                isDirty={isDirty}
-                isHovered={isHovered}
-                setIsHovered={setIsHovered}
-              />
-            </div>
-          </div>
+          <ProjectHeader
+            projectName={activeProject?.name || ""}
+            onUpdate={update}
+            isSubmitting={isSubmitting}
+            isDirty={isDirty}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+          />
           <div className="relative rounded-xl overflow-hidden">
             <FileEditor value={value} onChange={(v) => setValue(v)} />
             <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
@@ -145,6 +104,63 @@ export function ProjectEditor() {
           </div>
         </div>
       </motion.div>
+    </div>
+  );
+}
+
+function ProjectHeader({
+  projectName,
+  onUpdate,
+  isSubmitting,
+  isDirty,
+  isHovered,
+  setIsHovered,
+}: {
+  projectName: string;
+  onUpdate: () => void;
+  isSubmitting: boolean;
+  isDirty: boolean;
+  isHovered: boolean;
+  setIsHovered: (val: boolean) => void;
+}) {
+  return (
+    <div className="mb-3 relative flex items-center justify-center gap-4">
+      <div className="absolute left-0 flex items-center gap-2">
+        <div className="relative group">
+          <Button variant="ghost" disabled aria-label="Share project">
+            <IconShare className="size-5" />
+          </Button>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            <div className="font-medium">Share Project</div>
+            <div className="text-xs text-muted-foreground">coming soon</div>
+          </div>
+        </div>
+        <div className="relative group">
+          <Button variant="ghost" disabled aria-label="History">
+            <IconHistory className="size-5" />
+          </Button>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            <div className="font-medium">Project History</div>
+            <div className="text-xs text-muted-foreground">coming soon</div>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="h-px w-8 bg-border"></div>
+        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
+          {projectName}
+        </h1>
+        <div className="h-px w-8 bg-border"></div>
+      </div>
+      <div className="absolute right-0">
+        <UpdateButton
+          onClick={onUpdate}
+          isSubmitting={isSubmitting}
+          isDirty={isDirty}
+          isHovered={isHovered}
+          setIsHovered={setIsHovered}
+        />
+      </div>
     </div>
   );
 }
