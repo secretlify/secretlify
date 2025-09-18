@@ -159,7 +159,7 @@ function ProjectHeader({
           className="transition-all"
         >
           {isShowingHistory ? (
-            <IconEdit className="size-5" />
+            <IconHistory className="size-5" />
           ) : (
             <IconHistory className="size-5" />
           )}
