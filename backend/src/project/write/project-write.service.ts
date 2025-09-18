@@ -27,53 +27,6 @@ export class ProjectWriteService {
     return ProjectSerializer.normalize(project);
   }
 
-  public async update(id: string, dto: UpdateProjectDto): Promise<ProjectNormalized> {
-    const toSet: { name?: string; encryptedSecretsKeys?: Record<string, string> } = {};
-    if (dto.name !== undefined) {
-      toSet.name = dto.name;
-    }
-    if (dto.encryptedKeyVersions !== undefined) {
-      toSet.encryptedSecretsKeys = dto.encryptedKeyVersions;
-    }
-
-    const updateQuery: any = {};
-    if (Object.keys(toSet).length > 0) {
-      updateQuery.$set = toSet;
-    }
-
-    if (dto.encryptedSecrets) {
-      updateQuery.$push = {
-        encryptedSecretsHistory: {
-          $each: [dto.encryptedSecrets],
-          $position: 0,
-          $slice: this.maxSecretsVersions,
-        },
-      };
-    }
-
-    if (Object.keys(updateQuery).length === 0) {
-      const project = await this.projectModel.findById(new Types.ObjectId(id));
-      if (!project) {
-        throw new NotFoundException('Project not found');
-      }
-      return ProjectSerializer.normalize(project);
-    }
-
-    const project = await this.projectModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
-      updateQuery,
-      {
-        new: true,
-      },
-    );
-
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
-
-    return ProjectSerializer.normalize(project);
-  }
-
   public async addMember(
     projectId: string,
     memberId: string,
@@ -90,5 +43,74 @@ export class ProjectWriteService {
 
   public async delete(id: string): Promise<void> {
     await this.projectModel.deleteOne({ _id: new Types.ObjectId(id) });
+  }
+
+  public async update(id: string, dto: UpdateProjectDto): Promise<ProjectNormalized> {
+    const updateQuery = this.buildUpdateQuery(dto);
+
+    if (Object.keys(updateQuery).length === 0) {
+      return this.handleNoUpdate(id);
+    }
+
+    const project = await this.executeUpdate(id, updateQuery);
+    return ProjectSerializer.normalize(project);
+  }
+
+  private buildUpdateQuery(dto: UpdateProjectDto): Record<string, unknown> {
+    const setOperation = this.buildSetNameOrKeys(dto);
+    const pushOperation = this.buildPushSecretsHistory(dto);
+
+    return { ...setOperation, ...pushOperation };
+  }
+
+  private buildSetNameOrKeys(dto: UpdateProjectDto): Record<string, any> {
+    const toSet: { name?: string; encryptedSecretsKeys?: Record<string, string> } = {};
+    if (dto.name !== undefined) {
+      toSet.name = dto.name;
+    }
+    if (dto.encryptedKeyVersions !== undefined) {
+      toSet.encryptedSecretsKeys = dto.encryptedKeyVersions;
+    }
+    return Object.keys(toSet).length > 0 ? { $set: toSet } : {};
+  }
+
+  private buildPushSecretsHistory(dto: UpdateProjectDto): Record<string, any> {
+    if (!dto.encryptedSecrets) {
+      return {};
+    }
+    return {
+      $push: {
+        encryptedSecretsHistory: {
+          $each: [dto.encryptedSecrets],
+          $position: 0,
+          $slice: this.maxSecretsVersions,
+        },
+      },
+    };
+  }
+
+  private async handleNoUpdate(id: string): Promise<ProjectNormalized> {
+    const project = await this.projectModel.findById(new Types.ObjectId(id));
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+    return ProjectSerializer.normalize(project);
+  }
+
+  private async executeUpdate(
+    id: string,
+    updateQuery: Record<string, unknown>,
+  ): Promise<ProjectEntity> {
+    const project = await this.projectModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
+      updateQuery,
+      { new: true },
+    );
+
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    return project;
   }
 }
