@@ -57,7 +57,7 @@ export class InvitationCoreController {
     const invitation = await this.invitationReadService.findById(id);
 
     await this.projectWriteService.addMember(
-      invitation.projectId,
+      invitation.projectId.toString(),
       userId,
       body.newServerPassphrase,
     );
