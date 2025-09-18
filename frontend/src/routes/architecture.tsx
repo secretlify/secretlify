@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionTemplate,
-} from "motion/react";
-import { useRef, useState, useEffect } from "react";
+import { motion } from "motion/react";
+import { useState, useEffect } from "react";
 import {
   KeyRound,
   Lock,
@@ -35,12 +30,6 @@ interface Section {
 }
 
 function ArchitecturePage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
   const sections: Section[] = [
     {
       id: 0,
@@ -162,7 +151,7 @@ function ArchitecturePage() {
   ];
 
   return (
-    <div className="bg-black">
+    <div className="bg-black min-h-screen">
       {/* Fixed background gradient */}
       <div className="fixed inset-0 bg-gradient-to-b from-purple-900/10 via-black to-blue-900/10 pointer-events-none" />
 
@@ -238,136 +227,47 @@ function ArchitecturePage() {
         </motion.div>
       </div>
 
-      {/* Main scrollable content */}
-      <div
-        ref={containerRef}
-        className="relative"
-        style={{ minHeight: `${sections.length * 150}vh` }}
-      >
+      {/* Main content sections */}
+      <div className="relative z-10">
         {sections.map((section, index) => (
-          <SectionAnimated
-            key={section.id}
-            section={section}
-            index={index}
-            scrollProgress={scrollYProgress}
-            totalSections={sections.length}
-          />
+          <div key={section.id} className="py-20 md:py-32">
+            <div className="container mx-auto px-6 lg:px-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                {/* Left Side - Illustration */}
+                <div className="relative">
+                  {/* Background glow effect that pulses */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl"
+                    animate={{
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <div className="relative z-10">{section.illustration}</div>
+                </div>
+
+                {/* Right Side - Content */}
+                <div>
+                  <div className="mb-6">
+                    <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400">
+                      Step {index + 1} of 5
+                    </span>
+                  </div>
+                  {section.content}
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Extra space at the bottom */}
-      <div className="h-screen" />
+      <div className="h-32" />
     </div>
-  );
-}
-
-// Animated Section Component
-function SectionAnimated({
-  section,
-  index,
-  scrollProgress,
-  totalSections,
-}: {
-  section: Section;
-  index: number;
-  scrollProgress: any;
-  totalSections: number;
-}) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Calculate animation values based on scroll position
-  const sectionHeight = 1 / totalSections;
-  const start = index * sectionHeight;
-  const end = (index + 1) * sectionHeight;
-  const mid = start + sectionHeight * 0.5;
-
-  // Define transition points - minimal overlap between sections
-  const transitionZone = sectionHeight * 0.03; // Very small transition zone
-  const fadeInStart = Math.max(0, start - transitionZone);
-  const fadeInEnd = start + transitionZone;
-  const fadeOutStart = end - transitionZone * 2;
-  const fadeOutEnd = Math.min(1, end - transitionZone);
-
-  // Opacity: sharp fade in and out to minimize overlap
-  const opacity = useTransform(
-    scrollProgress,
-    [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-    [0, 1, 1, 0],
-    { clamp: true }
-  );
-
-  // Y position: continuous upward movement throughout visibility
-  const yContent = useTransform(
-    scrollProgress,
-    [fadeInStart, mid, fadeOutEnd],
-    [75, 0, -75]
-  );
-
-  const yIllustration = useTransform(
-    scrollProgress,
-    [fadeInStart, mid, fadeOutEnd],
-    [50, 0, -50]
-  );
-
-  // Blur for depth perception - quick transitions
-  const blur = useTransform(
-    scrollProgress,
-    [fadeInStart, fadeInStart + 0.02, fadeOutStart - 0.02, fadeOutEnd],
-    [10, 0, 0, 10]
-  );
-
-  const filter = useMotionTemplate`blur(${blur}px)`;
-
-  return (
-    <motion.div
-      ref={sectionRef}
-      className="fixed inset-0 flex items-center justify-center pointer-events-none"
-      style={{
-        opacity,
-        filter,
-        zIndex: 10 + index,
-      }}
-    >
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-          {/* Left Side - Illustration */}
-          <motion.div
-            className="relative"
-            style={{
-              y: yIllustration,
-            }}
-          >
-            {/* Background glow effect that pulses */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl"
-              animate={{
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <div className="relative z-10">{section.illustration}</div>
-          </motion.div>
-
-          {/* Right Side - Content */}
-          <motion.div
-            style={{
-              y: yContent,
-            }}
-          >
-            <div className="mb-6">
-              <span className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-sm text-blue-400">
-                Step {index + 1} of 5
-              </span>
-            </div>
-            {section.content}
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
@@ -466,16 +366,9 @@ function PassphraseIllustration() {
         </div>
 
         {/* Encryption Process with Lock */}
-        <div className="relative flex items-center justify-center mb-6">
-          <div className="relative">
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur-2xl opacity-30"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <div className="relative bg-black/50 backdrop-blur rounded-full p-6">
-              <Lock className="w-10 h-10 text-green-400" />
-            </div>
+        <div className="relative flex items-center justify-center mb-6 h-20">
+          <div className="relative bg-black/50 backdrop-blur rounded-full p-6">
+            <Lock className="w-10 h-10 text-green-400" />
           </div>
         </div>
 
@@ -537,33 +430,9 @@ function TransferIllustration() {
           </div>
         </div>
 
-        {/* Transfer Animation */}
-        <div className="relative h-20 mb-8">
-          <motion.div
-            className="absolute left-1/2 -translate-x-1/2"
-            animate={{ y: [0, 40, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <ArrowRight className="w-6 h-6 text-pink-400 rotate-90" />
-          </motion.div>
-
-          {/* Data Particles */}
-          {[...Array(3)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute left-1/2 w-2 h-2 bg-purple-400 rounded-full"
-              animate={{
-                y: [0, 60],
-                x: ["-50%", `${(i - 1) * 20}px`],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-              }}
-            />
-          ))}
+        {/* Transfer Arrow */}
+        <div className="relative h-20 mb-8 flex items-center justify-center">
+          <ArrowRight className="w-6 h-6 text-pink-400 rotate-90" />
         </div>
 
         {/* Server Side */}
@@ -600,6 +469,15 @@ function TransferIllustration() {
 }
 
 function ProjectKeyIllustration() {
+  const [randomKey, setRandomKey] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRandomKey(Math.random().toString(36).substring(2, 15));
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative">
       <div className="relative w-full max-w-md mx-auto">
@@ -610,12 +488,7 @@ function ProjectKeyIllustration() {
         />
 
         {/* Project Creation */}
-        <motion.div
-          className="relative bg-gradient-to-br from-orange-900/50 to-orange-800/50 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-6 mb-6 shadow-2xl"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200 }}
-        >
+        <div className="relative bg-gradient-to-br from-orange-900/50 to-orange-800/50 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <FolderLock className="w-6 h-6 text-orange-400" />
             <h4 className="text-lg font-bold text-white">New Project</h4>
@@ -626,35 +499,19 @@ function ProjectKeyIllustration() {
             <p className="text-xs text-gray-400 mb-2">
               Generating random key...
             </p>
-            <motion.div
-              className="font-mono text-xs text-orange-300"
-              animate={{ opacity: [0, 1, 0, 1] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
-            >
-              {Math.random().toString(36).substring(2, 15)}
-            </motion.div>
+            <div className="font-mono text-xs text-orange-300">{randomKey}</div>
           </div>
 
           {/* Project Key + Public Key */}
           <div className="flex items-center gap-3">
-            <motion.div
-              className="bg-black/50 border border-orange-500/30 rounded-lg p-3 flex-1"
-              animate={{
-                borderColor: [
-                  "rgba(251, 146, 60, 0.3)",
-                  "rgba(251, 146, 60, 0.6)",
-                  "rgba(251, 146, 60, 0.3)",
-                ],
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
+            <div className="bg-black/50 border border-orange-500/30 rounded-lg p-3 flex-1">
               <div className="flex items-center gap-2">
                 <FileKey className="w-5 h-5 text-yellow-400" />
                 <span className="text-sm text-white font-semibold">
                   Project Key
                 </span>
               </div>
-            </motion.div>
+            </div>
 
             <span className="text-white text-lg font-bold">+</span>
 
@@ -667,7 +524,7 @@ function ProjectKeyIllustration() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Encryption Process */}
         <div className="relative mb-6">
@@ -679,22 +536,12 @@ function ProjectKeyIllustration() {
             <div className="w-20 h-20 bg-gradient-to-r from-orange-400 to-red-400 rounded-full opacity-20 blur-xl" />
           </motion.div>
           <div className="relative flex items-center justify-center h-20">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <Lock className="w-10 h-10 text-red-400" />
-            </motion.div>
+            <Lock className="w-10 h-10 text-red-400" />
           </div>
         </div>
 
         {/* Encrypted Result */}
-        <motion.div
-          className="relative bg-gradient-to-br from-red-900/50 to-red-800/50 backdrop-blur-xl border border-red-500/30 rounded-2xl p-6 shadow-2xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <div className="relative bg-gradient-to-br from-red-900/50 to-red-800/50 backdrop-blur-xl border border-red-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Server className="w-6 h-6 text-red-400" />
             <h4 className="text-lg font-bold text-white">Stored on Server</h4>
@@ -719,7 +566,7 @@ function ProjectKeyIllustration() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -757,16 +604,6 @@ function DataEncryptionIllustration() {
 
         {/* Encryption Process with Shield */}
         <div className="relative h-20 flex items-center justify-center mb-6">
-          <motion.div
-            className="absolute"
-            animate={{
-              scale: [1, 1.2, 1],
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            <div className="w-24 h-24 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-20 blur-2xl" />
-          </motion.div>
-
           <div className="relative bg-black/50 backdrop-blur rounded-full p-5">
             <Shield className="w-8 h-8 text-cyan-400" />
           </div>
@@ -782,7 +619,6 @@ function DataEncryptionIllustration() {
             {encryptedData || "Loading..."}
           </div>
 
-          {/* Green Shield - Only you can decrypt */}
           {/* Green Shield - Only you can decrypt */}
           <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
             <ShieldCheck className="w-5 h-5 text-green-400" />
