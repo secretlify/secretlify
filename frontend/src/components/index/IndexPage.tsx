@@ -55,8 +55,9 @@ export function IndexPage() {
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
-          to="/app/me"
+          to="/app/project/$projectId"
           className="rounded-md border border-border px-4 py-2 bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground transition"
+          params={{ projectId: "demo" }}
         >
           Dashboard
         </Link>

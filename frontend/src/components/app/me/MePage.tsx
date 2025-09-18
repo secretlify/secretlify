@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
 import { useEffect } from "react";
+import { motion } from "motion/react";
 
 export function MePage() {
   const navigate = useNavigate();
@@ -24,10 +25,29 @@ export function MePage() {
     navigate({ to: "/app/login" });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 300, scale: 0.5 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 1, ease: [0, 1, 0, 1] },
+    },
+  } as const;
+
+  if (!userData) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-card rounded-xl shadow-lg border border-border p-8">
+        <motion.div
+          className="bg-card rounded-xl shadow-lg border border-border p-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div className="p-2 bg-muted rounded-full text-muted-foreground">
@@ -43,48 +63,39 @@ export function MePage() {
             </h1>
           </div>
 
-          {userData ? (
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <div className="p-4 bg-muted/50 rounded-lg">
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Email Address
-                  </label>
-                  <p className="text-lg font-medium text-card-foreground mt-1">
-                    {userData.email}
-                  </p>
-                </div>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Email Address
+                </label>
+                <p className="text-lg font-medium text-card-foreground mt-1">
+                  {userData.email}
+                </p>
               </div>
+            </div>
 
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Actions
-                  </span>
-                </div>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border"></div>
               </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Actions
+                </span>
+              </div>
+            </div>
 
-              <Button
-                onClick={handleLogout}
-                variant="secondary"
-                size="lg"
-                className="w-full"
-              >
-                Sign Out
-              </Button>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">
-                Loading your profile...
-              </p>
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            </div>
-          )}
-        </div>
+            <Button
+              onClick={handleLogout}
+              variant="secondary"
+              size="lg"
+              className="w-full"
+            >
+              Sign Out
+            </Button>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
