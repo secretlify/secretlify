@@ -57,6 +57,7 @@ export function FileEditor({
         occurrencesHighlight: "off",
         selectionHighlight: false,
         renderLineHighlight: "none",
+        padding: { top: 16, bottom: 8 },
       }}
     />
   );

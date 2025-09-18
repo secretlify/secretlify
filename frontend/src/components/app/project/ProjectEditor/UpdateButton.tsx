@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { CommandIcon } from "lucide-react";
 import { motion } from "motion/react";
 
 export function UpdateButton({
@@ -54,7 +55,11 @@ export function UpdateButton({
         <span>Saved</span>
       ) : (
         <>
-          <span>Update</span>
+          <span>Update {"("}</span>
+          <span>
+            <CommandIcon />
+          </span>
+          <span>+ Enter )</span>
           <motion.span
             className="inline-flex items-center justify-center overflow-hidden"
             aria-hidden

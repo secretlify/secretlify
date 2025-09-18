@@ -46,6 +46,22 @@ export function ProjectEditor() {
     }
   }, [isSubmitting, isDirty]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!isSubmitting && isDirty) {
+          update();
+        }
+      }
+    };
+
+    // Use capture phase to catch the event before it reaches the editor
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
+  }, [isSubmitting, isDirty, update]);
+
   if (!projectData) {
     return null;
   }
@@ -93,9 +109,13 @@ export function ProjectEditor() {
                 </svg>
               </button>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Project {activeProject?.name}
-            </h1>
+            <div className="flex items-center gap-2">
+              <div className="h-px w-8 bg-border"></div>
+              <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
+                {activeProject?.name}
+              </h1>
+              <div className="h-px w-8 bg-border"></div>
+            </div>
             <div className="absolute right-0">
               <UpdateButton
                 onClick={update}
@@ -106,7 +126,7 @@ export function ProjectEditor() {
               />
             </div>
           </div>
-          <div className={cn("relative rounded-xl overflow-hidden border")}>
+          <div className="relative rounded-xl overflow-hidden">
             <FileEditor value={value} onChange={(v) => setValue(v)} />
             <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
               <AnimatePresence mode="wait">
