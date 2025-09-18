@@ -1,0 +1,1 @@
+export const ENCRYPTED_SECRETS_MAX_LENGTH = 5372;

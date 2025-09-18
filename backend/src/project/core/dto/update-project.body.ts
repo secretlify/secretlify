@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ENCRYPTED_SECRETS_MAX_LENGTH } from 'src/shared/constants/validation';
 
 export class UpdateProjectBody {
   @ApiProperty({ required: false })
@@ -15,6 +16,6 @@ export class UpdateProjectBody {
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  @MaxLength(10704)
+  @MaxLength(ENCRYPTED_SECRETS_MAX_LENGTH)
   public encryptedSecrets?: string;
 }

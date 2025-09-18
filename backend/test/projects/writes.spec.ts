@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { ENCRYPTED_SECRETS_MAX_LENGTH } from '../../src/shared/constants/validation';
 import { createTestApp } from '../utils/bootstrap';
 
 describe('ProjectCoreController (writes)', () => {
@@ -56,7 +57,7 @@ describe('ProjectCoreController (writes)', () => {
       const { token } = await bootstrap.utils.userUtils.createDefault({
         email: 'test@test.com',
       });
-      const longSecrets = 'a'.repeat(10705);
+      const longSecrets = 'a'.repeat(ENCRYPTED_SECRETS_MAX_LENGTH + 1);
 
       // when
       const response = await request(bootstrap.app.getHttpServer())
@@ -179,7 +180,7 @@ describe('ProjectCoreController (writes)', () => {
         email: 'test@test.com',
       });
       const project = await bootstrap.utils.projectUtils.createProject(token);
-      const longSecrets = 'a'.repeat(10705);
+      const longSecrets = 'a'.repeat(ENCRYPTED_SECRETS_MAX_LENGTH + 1);
 
       // when
       const response = await request(bootstrap.app.getHttpServer())
