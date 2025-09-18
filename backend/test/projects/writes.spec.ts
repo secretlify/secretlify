@@ -50,6 +50,23 @@ describe('ProjectCoreController (writes)', () => {
       // then
       expect(response.status).toEqual(401);
     });
+
+    it('does not create when encryptedSecrets is too long', async () => {
+      // given
+      const { token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      const longSecrets = 'a'.repeat(10705);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .post('/projects')
+        .set('authorization', `Bearer ${token}`)
+        .send({ name: 'test-project', encryptedSecrets: longSecrets, encryptedKeyVersions: {} });
+
+      // then
+      expect(response.status).toEqual(400);
+    });
   });
 
   describe('PATCH /projects/:projectId', () => {
@@ -154,6 +171,24 @@ describe('ProjectCoreController (writes)', () => {
 
       // then
       expect(response.status).toEqual(401);
+    });
+
+    it('does not update when encryptedSecrets is too long', async () => {
+      // given
+      const { token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(token);
+      const longSecrets = 'a'.repeat(10705);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({ encryptedSecrets: longSecrets });
+
+      // then
+      expect(response.status).toEqual(400);
     });
   });
 
