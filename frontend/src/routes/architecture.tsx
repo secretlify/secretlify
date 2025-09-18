@@ -283,7 +283,7 @@ function KeyPairIllustration() {
         />
 
         {/* Browser Container */}
-        <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-xl border border-gray-500/30 rounded-2xl p-6 shadow-2xl">
+        <div className="bg-gradient-to-br from-gray-900/20 to-gray-800/20 backdrop-blur-xl border border-gray-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-6">
             <Terminal className="w-6 h-6 text-gray-400" />
             <h3 className="text-lg font-bold text-white">Your Browser</h3>
@@ -291,7 +291,7 @@ function KeyPairIllustration() {
 
           <div className="space-y-4">
             {/* Private Key Card */}
-            <div className="bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4">
+            <div className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4">
               <div className="flex items-center gap-3 ">
                 <div className="p-2 bg-blue-500/20 rounded-lg">
                   <Lock className="w-5 h-5 text-blue-400" />
@@ -304,7 +304,7 @@ function KeyPairIllustration() {
             </div>
 
             {/* Public Key Card */}
-            <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4">
+            <div className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4">
               <div className="flex items-center gap-3 ">
                 <div className="p-2 bg-purple-500/20 rounded-lg">
                   <KeyRound className="w-5 h-5 text-purple-400" />
@@ -335,7 +335,7 @@ function PassphraseIllustration() {
         />
 
         {/* Passphrase Input */}
-        <div className="relative bg-gradient-to-br from-green-900/50 to-green-800/50 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-green-900/30 to-green-800/30 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-green-500/20 rounded-xl">
               <Fingerprint className="w-7 h-7 text-green-400" />
@@ -350,7 +350,7 @@ function PassphraseIllustration() {
               type={showPassword ? "text" : "password"}
               value="MySecurePassphrase#2024!"
               readOnly
-              className="w-full bg-black/50 border border-green-500/30 rounded-lg px-4 py-3 text-white font-mono pr-12"
+              className="w-full bg-black/30 border border-green-500/30 rounded-lg px-4 py-3 text-white font-mono pr-12"
             />
             <button
               onClick={() => setShowPassword(!showPassword)}
@@ -367,13 +367,13 @@ function PassphraseIllustration() {
 
         {/* Encryption Process with Lock */}
         <div className="relative flex items-center justify-center mb-6 h-20">
-          <div className="relative bg-black/50 backdrop-blur rounded-full p-6">
+          <div className="relative bg-black/30 backdrop-blur rounded-full p-6">
             <Lock className="w-10 h-10 text-green-400" />
           </div>
         </div>
 
         {/* Encrypted Private Key */}
-        <div className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-blue-500/20 rounded-xl">
               <Shield className="w-7 h-7 text-blue-400" />
@@ -385,12 +385,12 @@ function PassphraseIllustration() {
               <p className="text-sm text-blue-300">AES-256 encrypted</p>
             </div>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-xs text-blue-300">
+          <div className="bg-black/30 rounded-lg p-3 font-mono text-xs text-blue-300">
             U2FsdGVkX1+iX5Fy6v3LOhKxT4A2R8mZ9B...
           </div>
 
           {/* Green Shield - Only you can decrypt */}
-          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+          <div className="bg-black/30 rounded-lg p-3 mt-4 flex flex-row gap-2">
             <ShieldCheck className="w-5 h-5 text-green-400" />
             <p className="text-sm text-green-400 font-medium">
               Only you can decrypt this
@@ -413,17 +413,17 @@ function TransferIllustration() {
         />
 
         {/* Browser Side */}
-        <div className="relative bg-gradient-to-br from-purple-900/50 to-purple-800/50 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 mb-8 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 mb-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Terminal className="w-6 h-6 text-purple-400" />
             <h4 className="text-lg font-bold text-white">Your Browser</h4>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-black/50 rounded-lg p-3">
+            <div className="bg-black/30 rounded-lg p-3">
               <Lock className="w-5 h-5 text-blue-400 mb-2" />
               <p className="text-xs text-gray-300">Private Key</p>
             </div>
-            <div className="bg-black/50 rounded-lg p-3">
+            <div className="bg-black/30 rounded-lg p-3">
               <KeyRound className="w-5 h-5 text-purple-400 mb-2" />
               <p className="text-xs text-gray-300">Public Key</p>
             </div>
@@ -436,27 +436,27 @@ function TransferIllustration() {
         </div>
 
         {/* Server Side */}
-        <div className="relative bg-gradient-to-br from-pink-900/50 to-pink-800/50 backdrop-blur-xl border border-pink-500/30 rounded-2xl p-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-pink-900/30 to-pink-800/30 backdrop-blur-xl border border-pink-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Server className="w-6 h-6 text-pink-400" />
             <h4 className="text-lg font-bold text-white">Our Servers</h4>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-black/50 rounded-lg p-3">
+            <div className="bg-black/30 rounded-lg p-3">
               <Lock className="w-5 h-5 text-blue-400 mb-2" />
               <p className="text-xs text-gray-300">
                 <span className="text-red-400 font-semibold">ENCRYPTED</span>{" "}
                 Private Key
               </p>
             </div>
-            <div className="bg-black/50 rounded-lg p-3">
+            <div className="bg-black/30 rounded-lg p-3">
               <KeyRound className="w-5 h-5 text-purple-400 mb-2" />
               <p className="text-xs text-gray-300">Public Key</p>
             </div>
           </div>
 
           {/* Green Shield - Only you can decrypt */}
-          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+          <div className="bg-black/30 rounded-lg p-3 mt-4 flex flex-row gap-2">
             <ShieldCheck className="w-5 h-5 text-green-400" />
             <p className="text-sm text-green-400 font-medium">
               Only you can decrypt this
@@ -488,14 +488,14 @@ function ProjectKeyIllustration() {
         />
 
         {/* Project Creation */}
-        <div className="relative bg-gradient-to-br from-orange-900/50 to-orange-800/50 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-orange-900/30 to-orange-800/30 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <FolderLock className="w-6 h-6 text-orange-400" />
             <h4 className="text-lg font-bold text-white">New Project</h4>
           </div>
 
           {/* Random Key Generation Animation */}
-          <div className="bg-black/50 rounded-lg p-4 mb-4">
+          <div className="bg-black/30 rounded-lg p-4 mb-4">
             <p className="text-xs text-gray-400 mb-2">
               Generating random key...
             </p>
@@ -504,7 +504,7 @@ function ProjectKeyIllustration() {
 
           {/* Project Key + Public Key */}
           <div className="flex items-center gap-3">
-            <div className="bg-black/50 border border-orange-500/30 rounded-lg p-3 flex-1">
+            <div className="bg-black/30 border border-orange-500/30 rounded-lg p-3 flex-1">
               <div className="flex items-center gap-2">
                 <FileKey className="w-5 h-5 text-yellow-400" />
                 <span className="text-sm text-white font-semibold">
@@ -515,7 +515,7 @@ function ProjectKeyIllustration() {
 
             <span className="text-white text-lg font-bold">+</span>
 
-            <div className="bg-black/50 border border-purple-500/30 rounded-lg p-3 flex-1">
+            <div className="bg-black/30 border border-purple-500/30 rounded-lg p-3 flex-1">
               <div className="flex items-center gap-2">
                 <KeyRound className="w-5 h-5 text-purple-400" />
                 <span className="text-sm text-white font-semibold">
@@ -541,14 +541,14 @@ function ProjectKeyIllustration() {
         </div>
 
         {/* Encrypted Result */}
-        <div className="relative bg-gradient-to-br from-red-900/50 to-red-800/50 backdrop-blur-xl border border-red-500/30 rounded-2xl p-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-red-900/30 to-red-800/30 backdrop-blur-xl border border-red-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Server className="w-6 h-6 text-red-400" />
             <h4 className="text-lg font-bold text-white">Stored on Server</h4>
           </div>
 
           <div className="flex flex-col gap-4">
-            <div className="bg-black/50 rounded-lg p-4">
+            <div className="bg-black/30 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-1">
                 <Lock className="w-5 h-5 text-red-400" />
                 <p className="text-sm text-gray-300">
@@ -557,7 +557,7 @@ function ProjectKeyIllustration() {
                 </p>
               </div>
             </div>
-            <div className="bg-black/50 rounded-lg p-3">
+            <div className="bg-black/30 rounded-lg p-3">
               <div className="flex flex-row gap-2">
                 <ShieldCheck className="w-5 h-5 text-green-400" />
                 <p className="text-sm text-green-400 font-medium">
@@ -592,35 +592,35 @@ function DataEncryptionIllustration() {
         />
 
         {/* Your Changes */}
-        <div className="relative bg-gradient-to-br from-cyan-900/50 to-cyan-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-cyan-900/30 to-cyan-800/30 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Terminal className="w-6 h-6 text-cyan-400" />
             <h4 className="text-lg font-bold text-white">Your Secret Data</h4>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-sm text-cyan-300">
+          <div className="bg-black/30 rounded-lg p-3 font-mono text-sm text-cyan-300">
             API_KEY=sk-1234567890abcdef
           </div>
         </div>
 
         {/* Encryption Process with Shield */}
         <div className="relative h-20 flex items-center justify-center mb-6">
-          <div className="relative bg-black/50 backdrop-blur rounded-full p-5">
+          <div className="relative bg-black/30 backdrop-blur rounded-full p-5">
             <Shield className="w-8 h-8 text-cyan-400" />
           </div>
         </div>
 
         {/* Encrypted Result */}
-        <div className="relative bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Database className="w-6 h-6 text-blue-400" />
             <h4 className="text-lg font-bold text-white">What We Store</h4>
           </div>
-          <div className="bg-black/50 rounded-lg p-3 font-mono text-sm text-blue-300 break-all">
+          <div className="bg-black/30 rounded-lg p-3 font-mono text-sm text-blue-300 break-all">
             {encryptedData || "Loading..."}
           </div>
 
           {/* Green Shield - Only you can decrypt */}
-          <div className="bg-black/50 rounded-lg p-3 mt-4 flex flex-row gap-2">
+          <div className="bg-black/30 rounded-lg p-3 mt-4 flex flex-row gap-2">
             <ShieldCheck className="w-5 h-5 text-green-400" />
             <p className="text-sm text-green-400 font-medium">
               Only you can decrypt this
