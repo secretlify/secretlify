@@ -175,7 +175,7 @@ export const projectLogic = kea<projectLogicType>([
     ],
   }),
 
-  listeners(({ values, actions, props }) => ({
+  listeners(({ values, actions, props, asyncActions }) => ({
     updateProjectContent: async () => {
       actions.setIsSubmitting(true);
 
@@ -189,10 +189,10 @@ export const projectLogic = kea<projectLogicType>([
         encryptedSecrets: encryptedContent,
       });
 
-      await actions.loadProjectData();
-      await actions.loadProjectVersions();
-
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await Promise.all([
+        asyncActions.loadProjectData(),
+        asyncActions.loadProjectVersions(),
+      ]);
 
       actions.setIsSubmitting(false);
     },

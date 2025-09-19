@@ -124,7 +124,7 @@
   .custom-scrollbar {
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: #374151 transparent;
+    scrollbar-color: #25282c transparent;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -138,13 +138,13 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #374151 !important;
+    background: #25282c !important;
     border-radius: 3px;
     border: none;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #4b5563 !important;
+    background: #25282c !important;
   }
 
   .custom-scrollbar::-webkit-scrollbar-corner {
@@ -153,14 +153,14 @@
 
   /* Dark mode specific styling */
   .dark .custom-scrollbar {
-    scrollbar-color: #374151 transparent;
+    scrollbar-color: #25282c transparent;
   }
 
   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #374151 !important;
+    background: #25282c !important;
   }
 
   .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #4b5563 !important;
+    background: #25282c !important;
   }
 }

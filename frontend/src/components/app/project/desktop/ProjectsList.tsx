@@ -5,7 +5,7 @@ import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useEffect, useState } from "react";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import ProjectsListItem from "@/components/app/project/ProjectsListItem";
+import ProjectsListItem from "./ProjectsListItem";
 
 export function ProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
