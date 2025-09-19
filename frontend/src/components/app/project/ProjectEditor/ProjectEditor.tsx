@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { FileEditor } from "@/components/app/project/ProjectEditor/FileEditor";
 import { UpdateButton } from "@/components/app/project/ProjectEditor/UpdateButton";
-import { DiffEditor } from "@/components/app/project/DiffEditor";
+import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ export function ProjectEditor() {
   const {
     projectData,
     isShowingHistory,
-    selectedHistoryPatch,
     isSubmitting,
     isEditorDirty,
     inputValue,
@@ -24,7 +23,7 @@ export function ProjectEditor() {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
-        if (!isSubmitting && isEditorDirty) {
+        if (!isSubmitting && isEditorDirty && !isShowingHistory) {
           updateProjectContent();
         }
       }
@@ -32,7 +31,13 @@ export function ProjectEditor() {
 
     document.addEventListener("keydown", handleKeyDown, true);
     return () => document.removeEventListener("keydown", handleKeyDown, true);
-  }, [isSubmitting, isEditorDirty, updateProjectContent, inputValue]);
+  }, [
+    isSubmitting,
+    isEditorDirty,
+    updateProjectContent,
+    inputValue,
+    isShowingHistory,
+  ]);
 
   if (!projectData) {
     return null;
@@ -53,24 +58,8 @@ export function ProjectEditor() {
             className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
           >
-            {isShowingHistory && selectedHistoryPatch ? (
-              <div className="h-full">
-                <DiffEditor value={selectedHistoryPatch} />
-                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={"history-mode"}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ ease: "easeInOut", duration: 0.1 }}
-                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
-                    >
-                      Viewing history
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-              </div>
+            {isShowingHistory ? (
+              <HistoryView />
             ) : (
               <div className="h-full">
                 <FileEditor
@@ -116,6 +105,25 @@ function ProjectHeader() {
             <div className="text-xs text-muted-foreground">coming soon</div>
           </div>
         </div>
+        <div className="relative group">
+          <Button
+            variant={isShowingHistory ? "default" : "ghost"}
+            onClick={toggleHistoryView}
+            aria-label={isShowingHistory ? "Exit history mode" : "View history"}
+          >
+            <IconHistory className="size-5" />
+          </Button>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            <div className="font-medium">
+              {isShowingHistory ? "Exit History Mode" : "View History"}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {isShowingHistory
+                ? "Return to edit mode"
+                : "View version history"}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="h-px w-6 bg-border"></div>
@@ -125,27 +133,7 @@ function ProjectHeader() {
         <div className="h-px w-6 bg-border"></div>
       </div>
       <div className="absolute right-0">
-        {isShowingHistory ? (
-          <div className="relative group">
-            <Button
-              variant="default"
-              size="icon"
-              onClick={toggleHistoryView}
-              aria-label="Exit history mode"
-              className="transition-all"
-            >
-              <IconHistory className="size-5" />
-            </Button>
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-              <div className="font-medium">Exit History Mode</div>
-              <div className="text-xs text-muted-foreground">
-                Return to edit mode
-              </div>
-            </div>
-          </div>
-        ) : (
-          <UpdateButton />
-        )}
+        {!isShowingHistory && <UpdateButton />}
       </div>
     </div>
   );

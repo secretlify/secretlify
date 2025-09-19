@@ -1,7 +1,7 @@
-import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useValues, useActions } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
+import { DiffEditor } from "@/components/app/project/DiffEditor";
 
 interface HistoryChange {
   id: string;
@@ -11,7 +11,7 @@ interface HistoryChange {
   avatar?: string;
 }
 
-export function HistorySidePanel() {
+export function HistoryView() {
   const { patches, selectedHistoryChangeId, projectVersionsLoading } =
     useValues(projectLogic);
   const { selectHistoryChange } = useActions(projectLogic);
@@ -32,88 +32,54 @@ export function HistorySidePanel() {
     };
   });
 
+  // Get the currently selected patch
+  const selectedPatch = historyChanges.find(
+    (change) => change.id === selectedHistoryChangeId
+  )?.changes;
+
   // Handle loading state
   if (!historyChanges.length && projectVersionsLoading) {
-    return null;
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-sm text-muted-foreground">Loading history...</div>
+      </div>
+    );
   }
 
   // Handle empty state
   if (!historyChanges.length && !projectVersionsLoading) {
     return (
-      <motion.p
-        className="text-sm text-muted-foreground text-center leading-relaxed"
-        initial={{ opacity: 0, y: 300, scale: 0.5 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1, ease: [0, 1, 0, 1] }}
-      >
-        No history available yet.
-        <br />
-        Make changes to see version history.
-      </motion.p>
+      <div className="h-full flex items-center justify-center">
+        <div className="text-sm text-muted-foreground text-center">
+          <p>No history available yet.</p>
+          <p className="mt-1">Make changes to see version history.</p>
+        </div>
+      </div>
     );
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 300, scale: 0.5 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 1, ease: [0, 1, 0, 1] },
-    },
-  } as const;
-
-  const listVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
-  } as const;
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 16, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { type: "spring", stiffness: 500, damping: 30, mass: 0.5 },
-    },
-  } as const;
-
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      layout="position"
-    >
-      <motion.h2
-        className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
-      >
-        History
-      </motion.h2>
-
-      <motion.div
-        className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
-        layout="position"
-      >
-        <motion.nav
-          className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar"
-          variants={listVariants}
-          layout
-        >
-          {historyChanges.map((change) => (
-            <motion.div key={change.changes} variants={itemVariants} layout>
+    <div className="h-full flex">
+      {/* Left side - List of changes */}
+      <div className="w-80 border-r border-border bg-muted/10 flex flex-col">
+        <div className="px-4 py-3 border-b border-border">
+          <h3 className="text-sm font-semibold text-muted-foreground">
+            Version History
+          </h3>
+        </div>
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-2 space-y-1">
+            {historyChanges.map((change) => (
               <button
+                key={change.id}
                 onClick={() => {
                   selectHistoryChange(change.id, change.changes);
                 }}
                 className={cn(
-                  "w-full text-left px-3 py-2.5 rounded-xl border transition-all duration-200",
+                  "w-full text-left px-3 py-2 rounded-lg transition-all duration-150",
                   selectedHistoryChangeId === change.id
-                    ? "bg-primary/10 text-primary border-primary/20"
-                    : "border-transparent hover:bg-accent hover:text-accent-foreground"
+                    ? "bg-primary/10 border border-primary/20"
+                    : "border border-transparent hover:bg-muted/20"
                 )}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -135,11 +101,24 @@ export function HistorySidePanel() {
                   </span>
                 </div>
               </button>
-            </motion.div>
-          ))}
-        </motion.nav>
-      </motion.div>
-    </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right side - Diff editor */}
+      <div className="flex-1 bg-background">
+        {selectedPatch ? (
+          <DiffEditor value={selectedPatch} />
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-sm text-muted-foreground">
+              Select a version to view changes
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
