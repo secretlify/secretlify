@@ -12,12 +12,8 @@ interface HistoryChange {
 }
 
 export function HistorySidePanel() {
-  const {
-    patches,
-    selectedHistoryChangeId,
-    projectVersionsLoading,
-    isShowingHistory,
-  } = useValues(projectLogic);
+  const { patches, selectedHistoryChangeId, projectVersionsLoading } =
+    useValues(projectLogic);
   const { selectHistoryChange } = useActions(projectLogic);
 
   // Convert patches to HistoryChange format with hardcoded data
@@ -82,10 +78,6 @@ export function HistorySidePanel() {
     },
   } as const;
 
-  if (!isShowingHistory) {
-    return null;
-  }
-
   return (
     <motion.div
       variants={containerVariants}
@@ -112,7 +104,7 @@ export function HistorySidePanel() {
           layout
         >
           {historyChanges.map((change) => (
-            <motion.div key={change.id} variants={itemVariants} layout>
+            <motion.div key={change.changes} variants={itemVariants} layout>
               <button
                 onClick={() => {
                   selectHistoryChange(change.id, change.changes);

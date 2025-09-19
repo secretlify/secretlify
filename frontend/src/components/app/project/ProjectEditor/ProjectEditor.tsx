@@ -156,7 +156,7 @@ function ProjectHeader() {
         <div className="h-px w-6 bg-border"></div>
       </div>
       <div className="absolute right-0">
-        <UpdateButton />
+        {!isShowingHistory && <UpdateButton />}
       </div>
     </div>
   );
