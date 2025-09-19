@@ -6,8 +6,7 @@ import { useProjects } from "@/lib/hooks/useProjects";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
-import { IconHistory, IconShare, IconEdit } from "@tabler/icons-react";
-import { HistoryViewer } from "@/components/app/project/HistoryViewer";
+import { IconHistory, IconShare } from "@tabler/icons-react";
 
 export function ProjectEditor() {
   const { activeProject } = useProjects();
@@ -67,7 +66,7 @@ export function ProjectEditor() {
   }
 
   return (
-    <div className="w-full max-w-5xl">
+    <div className="w-full max-w-5xl px-4">
       <motion.div
         className="rounded-2xl border border-border bg-card/60 backdrop-blur"
         initial={{ opacity: 0, x: -50, scale: 0.9 }}
@@ -90,29 +89,23 @@ export function ProjectEditor() {
             className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
           >
-            {isShowingHistory ? (
-              <div className="h-full">
-                <HistoryViewer />
+            <div className="h-full">
+              <FileEditor value={value} onChange={(v) => setValue(v)} />
+              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={"asd"}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ ease: "easeInOut", duration: 0.1 }}
+                    className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                  >
+                    Changed by you 1 week ago
+                  </motion.span>
+                </AnimatePresence>
               </div>
-            ) : (
-              <div className="h-full">
-                <FileEditor value={value} onChange={(v) => setValue(v)} />
-                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={"asd"}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ ease: "easeInOut", duration: 0.1 }}
-                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
-                    >
-                      Changed by you 1 week ago
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </motion.div>
@@ -151,19 +144,25 @@ function ProjectHeader({
             <div className="text-xs text-muted-foreground">coming soon</div>
           </div>
         </div>
-        <Button
-          variant={isShowingHistory ? "default" : "ghost"}
-          size="icon"
-          onClick={onToggleHistory}
-          aria-label={isShowingHistory ? "Back to editor" : "View history"}
-          className="transition-all"
-        >
-          {isShowingHistory ? (
+        <div className="relative group">
+          <Button
+            variant={isShowingHistory ? "default" : "ghost"}
+            size="icon"
+            onClick={onToggleHistory}
+            aria-label={isShowingHistory ? "Hide history" : "View history"}
+            className="transition-all"
+          >
             <IconHistory className="size-5" />
-          ) : (
-            <IconHistory className="size-5" />
-          )}
-        </Button>
+          </Button>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            <div className="font-medium">
+              {isShowingHistory ? "Hide History" : "View History"}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {isShowingHistory ? "Close version history" : "See all versions"}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="h-px w-6 bg-border"></div>
@@ -173,15 +172,13 @@ function ProjectHeader({
         <div className="h-px w-6 bg-border"></div>
       </div>
       <div className="absolute right-0">
-        {!isShowingHistory && (
-          <UpdateButton
-            onClick={onUpdate}
-            isSubmitting={isSubmitting}
-            isDirty={isDirty}
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
-          />
-        )}
+        <UpdateButton
+          onClick={onUpdate}
+          isSubmitting={isSubmitting}
+          isDirty={isDirty}
+          isHovered={isHovered}
+          setIsHovered={setIsHovered}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import { ProjectsList } from "@/components/app/project/ProjectsList";
 import { ProjectEditor } from "@/components/app/project/ProjectEditor/ProjectEditor";
+import { HistorySidePanel } from "@/components/app/project/HistorySidePanel";
 import { useParams } from "@tanstack/react-router";
-import { BindLogic } from "kea";
+import { BindLogic, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
+import { AnimatePresence } from "motion/react";
 
 export function ProjectPage() {
   const projectId = useParams({
@@ -11,20 +13,39 @@ export function ProjectPage() {
 
   return (
     <BindLogic logic={projectLogic} props={{ projectId: projectId.projectId }}>
-      <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center p-4 md:p-8">
-        {/* Container that holds both elements and is centered */}
-        <div className="relative w-full max-w-5xl h-full flex items-center justify-center">
-          {/* Projects list - positioned relative to the centered container */}
-          {/* On desktop: absolutely positioned to the left of the editor */}
-          {/* On mobile: hidden (or could be shown in a different way if needed) */}
-          <aside className="hidden lg:flex absolute left-0 -translate-x-full h-full w-[280px] overflow-y-auto flex-col justify-center pr-6 pl-4">
-            <ProjectsList />
-          </aside>
-
-          {/* Editor - stays in the center of the container (and screen) */}
-          <ProjectEditor />
-        </div>
-      </div>
+      <ProjectPageContent />
     </BindLogic>
+  );
+}
+
+function ProjectPageContent() {
+  const { isShowingHistory } = useValues(projectLogic);
+
+  return (
+    <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8">
+      {/* Centered container for editor with relative positioning for side panels */}
+      <div className="relative w-full max-w-5xl h-full flex items-center justify-center">
+        {/* Projects list - positioned absolutely to the left of editor */}
+        <aside className="hidden lg:block absolute left-0 -translate-x-[calc(100%+2rem)] h-[80%] w-[280px] overflow-y-auto">
+          <div className="h-full flex flex-col justify-center">
+            <ProjectsList />
+          </div>
+        </aside>
+
+        {/* Editor - centered and responsive */}
+        <ProjectEditor />
+
+        {/* History panel - positioned absolutely to the right of editor */}
+        <AnimatePresence>
+          {isShowingHistory && (
+            <aside className="hidden lg:block absolute right-0 translate-x-[calc(100%+2rem)] h-[80%] w-[280px] overflow-y-auto">
+              <div className="h-full flex flex-col justify-center">
+                <HistorySidePanel />
+              </div>
+            </aside>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }
