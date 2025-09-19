@@ -2,13 +2,12 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { cn } from "@/lib/utils";
 import { useActions, useValues } from "kea";
 import { motion } from "motion/react";
-import { useState } from "react";
 
 export function MobileUpdateButton() {
   const { isSubmitting, isEditorDirty } = useValues(projectLogic);
   const { updateProjectContent } = useActions(projectLogic);
 
-  const [isHovered, setIsHovered] = useState(false);
+  // Remove hover state for mobile
 
   return (
     <motion.button
@@ -27,11 +26,7 @@ export function MobileUpdateButton() {
           mass: 0.5,
         },
       }}
-      animate={{ scale: isHovered ? 1.05 : 1 }}
-      onHoverStart={() => {
-        if (!isSubmitting && isEditorDirty) setIsHovered(true);
-      }}
-      onHoverEnd={() => setIsHovered(false)}
+      // Disable hover animations on mobile
       className={cn(
         "inline-flex h-8 items-center gap-1.5 rounded-md border px-3 font-medium whitespace-nowrap cursor-pointer text-sm",
         "bg-primary text-primary-foreground",
@@ -51,9 +46,7 @@ export function MobileUpdateButton() {
           <span className="">Saved</span>
         </>
       ) : (
-        <>
-          <span className="">Save</span>
-        </>
+        <span>Save</span>
       )}
     </motion.button>
   );

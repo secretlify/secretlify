@@ -125,9 +125,9 @@ function MobileProjectHeader({
   const { toggleHistoryView } = useActions(projectLogic);
 
   return (
-    <div className="flex items-center justify-between p-2 border-b border-border bg-background/80 backdrop-blur">
-      {/* Left side - History button */}
-      <div className="w-10 flex justify-start">
+    <div className="flex items-center p-2 border-b border-border bg-card/60 backdrop-blur">
+      {/* Left side - History button - Fixed width */}
+      <div className="w-20 flex justify-start">
         <Button
           variant={isShowingHistory ? "default" : "ghost"}
           size="sm"
@@ -138,7 +138,7 @@ function MobileProjectHeader({
         </Button>
       </div>
 
-      {/* Center - Project selector */}
+      {/* Center - Project selector - Fixed width, always centered */}
       <div className="flex-1 flex justify-center">
         <Select value={activeProject?.id || ""} onValueChange={onProjectChange}>
           <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 py-1 h-auto bg-transparent hover:bg-accent/50 transition-colors">
@@ -154,9 +154,11 @@ function MobileProjectHeader({
         </Select>
       </div>
 
-      {/* Right side - Save button */}
-      <div className="w-auto flex justify-end">
-        {!isShowingHistory && <MobileUpdateButton />}
+      {/* Right side - Save button - Fixed width to match left */}
+      <div className="w-20 relative h-10 flex items-center">
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+          {!isShowingHistory && <MobileUpdateButton />}
+        </div>
       </div>
     </div>
   );
