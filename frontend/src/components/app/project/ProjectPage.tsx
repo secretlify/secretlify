@@ -26,10 +26,8 @@ function ProjectPageContent() {
       {/* Centered container for editor with relative positioning for side panels */}
       <div className="relative w-full max-w-5xl h-full flex items-center justify-center">
         {/* Projects list - positioned absolutely to the left of editor */}
-        <aside className="hidden lg:block absolute left-0 -translate-x-[calc(100%+2rem)] h-[80%] w-[280px] overflow-y-auto">
-          <div className="h-full flex flex-col justify-center">
-            <ProjectsList />
-          </div>
+        <aside className="hidden lg:block absolute left-0 -translate-x-[calc(100%+2rem)] w-[280px]">
+          <ProjectsList />
         </aside>
 
         {/* Editor - centered and responsive */}
@@ -38,10 +36,8 @@ function ProjectPageContent() {
         {/* History panel - positioned absolutely to the right of editor */}
         <AnimatePresence>
           {isShowingHistory && (
-            <aside className="hidden lg:block absolute right-0 translate-x-[calc(100%+2rem)] h-[80%] w-[280px] overflow-y-auto">
-              <div className="h-full flex flex-col justify-center">
-                <HistorySidePanel />
-              </div>
+            <aside className="hidden lg:block absolute right-0 translate-x-[calc(100%+2rem)] w-[280px]">
+              <HistorySidePanel />
             </aside>
           )}
         </AnimatePresence>

@@ -97,42 +97,48 @@ export function HistorySidePanel() {
   if (!historyChanges.length) {
     return (
       <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 50 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="h-full flex items-center justify-center text-muted-foreground"
+        initial={{ opacity: 0, y: 300, scale: 0.5 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, ease: [0, 1, 0, 1] }}
+        className="text-muted-foreground text-center"
       >
-        <p>No version history available</p>
+        <motion.h2
+          className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
+        >
+          History
+        </motion.h2>
+        <motion.div className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm">
+          <p className="text-sm">No version history available</p>
+        </motion.div>
       </motion.div>
     );
   }
 
   const containerVariants = {
-    hidden: { opacity: 0, x: 50 },
+    hidden: { opacity: 0, y: 300, scale: 0.5 },
     visible: {
       opacity: 1,
-      x: 0,
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-    exit: {
-      opacity: 0,
-      x: 50,
-      transition: { duration: 0.2, ease: "easeInOut" },
+      y: 0,
+      scale: 1,
+      transition: { duration: 1, ease: [0, 1, 0, 1] },
     },
   } as const;
 
   const listVariants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.03 } },
+    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
   } as const;
 
   const itemVariants = {
-    hidden: { opacity: 0, x: 16 },
+    hidden: { opacity: 0, y: 16, scale: 0.98 },
     visible: {
       opacity: 1,
-      x: 0,
-      transition: { duration: 0.2, ease: "easeOut" },
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 500, damping: 30, mass: 0.5 },
     },
   } as const;
 
@@ -141,27 +147,26 @@ export function HistorySidePanel() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      exit="exit"
-      className="w-[280px] h-full flex flex-col"
+      layout="position"
     >
       <motion.h2
         className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
+        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
       >
         History
       </motion.h2>
 
       {!showDiff ? (
         // List view
-        <motion.div className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm flex-1 overflow-hidden">
-          <motion.nav
-            className="space-y-2 h-full overflow-y-auto pr-1"
-            variants={listVariants}
-          >
+        <motion.div
+          className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
+          layout="position"
+        >
+          <motion.nav className="space-y-2" variants={listVariants} layout>
             {historyChanges.map((change) => (
-              <motion.div key={change.id} variants={itemVariants}>
+              <motion.div key={change.id} variants={itemVariants} layout>
                 <button
                   onClick={() => {
                     setSelectedChange(change);
@@ -204,7 +209,7 @@ export function HistorySidePanel() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="flex-1 flex flex-col gap-2"
+          className="space-y-2"
         >
           <button
             onClick={() => setShowDiff(false)}
@@ -213,7 +218,10 @@ export function HistorySidePanel() {
             ← Back to list
           </button>
           {selectedChange && (
-            <div className="flex-1 rounded-xl overflow-hidden border border-border">
+            <div
+              className="rounded-xl overflow-hidden border border-border"
+              style={{ height: "400px" }}
+            >
               <DiffEditor value={selectedChange.changes} />
             </div>
           )}
