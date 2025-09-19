@@ -49,7 +49,7 @@ export function MobileFileEditor({
         wordWrap: "on",
         scrollBeyondLastLine: false,
         lineNumbers: "on",
-        fontSize: 13,
+        fontSize: 16,
         automaticLayout: true,
         overviewRulerBorder: false,
         overviewRulerLanes: 0,
