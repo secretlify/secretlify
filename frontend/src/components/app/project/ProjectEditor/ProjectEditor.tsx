@@ -67,7 +67,7 @@ export function ProjectEditor() {
   }
 
   return (
-    <div className="w-full p-4 max-w-5xl">
+    <div className="w-full max-w-5xl">
       <motion.div
         className="rounded-2xl border border-border bg-card/60 backdrop-blur"
         initial={{ opacity: 0, x: -50, scale: 0.9 }}
