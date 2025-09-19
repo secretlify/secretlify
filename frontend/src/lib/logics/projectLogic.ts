@@ -106,7 +106,7 @@ export const projectLogic = kea<projectLogicType>([
     isShowingHistory: [
       false as boolean,
       {
-        selectHistoryChange: (state) => true,
+        selectHistoryChange: () => true,
         setIsShowingHistory: (_, { isShowingHistory }) => isShowingHistory,
         toggleHistoryView: (state) => !state,
       },
@@ -209,7 +209,6 @@ export const projectLogic = kea<projectLogicType>([
         return;
       }
 
-      // Reverse the array to get chronological order (oldest to newest)
       const chronologicalVersions = [...versions].reverse();
       const patches: string[] = [];
 
@@ -242,7 +241,7 @@ export const projectLogic = kea<projectLogicType>([
         patches.push(cleanPatch);
       }
 
-      actions.setPatches(patches);
+      actions.setPatches(patches.reverse());
     },
   })),
 

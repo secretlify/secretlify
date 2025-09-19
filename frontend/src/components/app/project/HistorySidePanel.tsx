@@ -12,8 +12,12 @@ interface HistoryChange {
 }
 
 export function HistorySidePanel() {
-  const { patches, selectedHistoryChangeId, projectVersionsLoading } =
-    useValues(projectLogic);
+  const {
+    patches,
+    selectedHistoryChangeId,
+    projectVersionsLoading,
+    isShowingHistory,
+  } = useValues(projectLogic);
   const { selectHistoryChange } = useActions(projectLogic);
 
   // Convert patches to HistoryChange format with hardcoded data
@@ -78,6 +82,10 @@ export function HistorySidePanel() {
     },
   } as const;
 
+  if (!isShowingHistory) {
+    return null;
+  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -99,7 +107,7 @@ export function HistorySidePanel() {
         layout="position"
       >
         <motion.nav
-          className="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar"
+          className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar"
           variants={listVariants}
           layout
         >
