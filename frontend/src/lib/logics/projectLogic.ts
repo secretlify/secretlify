@@ -51,14 +51,17 @@ export const projectLogic = kea<projectLogicType>([
   }),
 
   actions({
-    updateProjectContent: (content: string) => ({ content }),
+    updateProjectContent: true,
     toggleHistoryView: true,
+    setIsShowingHistory: (isShowingHistory: boolean) => ({ isShowingHistory }),
     selectHistoryChange: (changeId: string | null, patch: string | null) => ({
       changeId,
       patch,
     }),
     setPatches: (patches: string[]) => ({ patches }),
     computePatches: (versions: string[]) => ({ versions }),
+    setInputValue: (content: string) => ({ content }),
+    setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
   }),
 
   reducers({
@@ -82,17 +85,35 @@ export const projectLogic = kea<projectLogicType>([
         setPatches: (_, { patches }) => patches,
       },
     ],
-  }),
-
-  selectors({
+    inputValue: [
+      "" as string,
+      {
+        setInputValue: (_, { content }) => content,
+      },
+    ],
+    isSubmitting: [
+      false as boolean,
+      {
+        setIsSubmitting: (_, { isSubmitting }) => isSubmitting,
+      },
+    ],
+    projectData: [
+      null as DecryptedProject | null,
+      {
+        setProjectData: (_, { projectData }) => projectData,
+      },
+    ],
     isShowingHistory: [
-      (s) => [s.selectedHistoryChangeId],
-      (selectedHistoryChangeId: string | null) =>
-        selectedHistoryChangeId !== null,
+      false as boolean,
+      {
+        selectHistoryChange: (state) => true,
+        setIsShowingHistory: (_, { isShowingHistory }) => isShowingHistory,
+        toggleHistoryView: (state) => !state,
+      },
     ],
   }),
 
-  loaders(({ values, props }) => ({
+  loaders(({ values, props, actions }) => ({
     projectData: [
       null as DecryptedProject | null,
       {
@@ -111,6 +132,8 @@ export const projectLogic = kea<projectLogicType>([
             projectData?.encryptedSecrets!,
             passphraseAsKey
           );
+
+          actions.setInputValue(contentDecrypted);
 
           return {
             id: projectData?.id!,
@@ -152,10 +175,19 @@ export const projectLogic = kea<projectLogicType>([
     ],
   })),
 
+  selectors({
+    isEditorDirty: [
+      (s) => [s.inputValue, s.projectData],
+      (inputValue, projectData) => inputValue !== projectData?.content,
+    ],
+  }),
+
   listeners(({ values, actions, props }) => ({
-    updateProjectContent: async ({ content }) => {
+    updateProjectContent: async () => {
+      actions.setIsSubmitting(true);
+
       const encryptedContent = await SymmetricCrypto.encrypt(
-        content,
+        values.inputValue,
         values.projectData?.passphraseAsKey!
       );
 
@@ -166,6 +198,10 @@ export const projectLogic = kea<projectLogicType>([
 
       await actions.loadProjectData();
       await actions.loadProjectVersions();
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      actions.setIsSubmitting(false);
     },
     computePatches: ({ versions }) => {
       if (versions.length < 2) {

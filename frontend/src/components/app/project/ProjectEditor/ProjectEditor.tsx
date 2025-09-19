@@ -10,58 +10,39 @@ import { Button } from "@/components/ui/button";
 import { IconHistory, IconShare } from "@tabler/icons-react";
 
 export function ProjectEditor() {
-  const { activeProject } = useProjects();
-  const { projectData, isShowingHistory, selectedHistoryPatch } =
-    useValues(projectLogic);
-  const { updateProjectContent, toggleHistoryView } = useActions(projectLogic);
-
-  useEffect(() => {
-    if (projectData?.content) {
-      setValue(projectData.content);
-      originalValueRef.current = projectData.content;
-    }
-  }, [projectData]);
-
-  const [value, setValue] = useState("");
-
-  const originalValueRef = useRef(value);
-  const isDirty = value !== originalValueRef.current;
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const update = async () => {
-    if (isSubmitting || !isDirty) return;
-    setIsSubmitting(true);
-
-    await updateProjectContent(value);
-
-    // todo: fix this shit
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    setIsSubmitting(false);
-  };
-
-  useEffect(() => {
-    if (isSubmitting || !isDirty) {
-      setIsHovered(false);
-    }
-  }, [isSubmitting, isDirty]);
+  const {
+    projectData,
+    isShowingHistory,
+    selectedHistoryPatch,
+    isSubmitting,
+    isEditorDirty,
+    inputValue,
+  } = useValues(projectLogic);
+  const { updateProjectContent, setInputValue } = useActions(projectLogic);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
-        if (!isSubmitting && isDirty) {
-          update();
+        if (!isSubmitting && isEditorDirty) {
+          updateProjectContent();
         }
       }
     };
 
-    // Use capture phase to catch the event before it reaches the editor
     document.addEventListener("keydown", handleKeyDown, true);
     return () => document.removeEventListener("keydown", handleKeyDown, true);
-  }, [isSubmitting, isDirty, update]);
+  }, [isSubmitting, isEditorDirty, updateProjectContent, inputValue]);
+
+  useEffect(() => {
+    console.log(
+      "Is showing history",
+      isShowingHistory,
+      "selectedHistoryPatch",
+      selectedHistoryPatch
+    );
+  }, [isShowingHistory, selectedHistoryPatch]);
 
   if (!projectData) {
     return null;
@@ -77,16 +58,7 @@ export function ProjectEditor() {
         transition={{ duration: 1, ease: [0, 1, 0, 1] }}
       >
         <div className="p-4">
-          <ProjectHeader
-            projectName={activeProject?.name || ""}
-            onUpdate={update}
-            isSubmitting={isSubmitting}
-            isDirty={isDirty}
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
-            isShowingHistory={isShowingHistory}
-            onToggleHistory={toggleHistoryView}
-          />
+          <ProjectHeader />
           <div
             className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
@@ -111,7 +83,10 @@ export function ProjectEditor() {
               </div>
             ) : (
               <div className="h-full">
-                <FileEditor value={value} onChange={(v) => setValue(v)} />
+                <FileEditor
+                  value={inputValue}
+                  onChange={(v) => setInputValue(v)}
+                />
                 <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -135,25 +110,10 @@ export function ProjectEditor() {
   );
 }
 
-function ProjectHeader({
-  projectName,
-  onUpdate,
-  isSubmitting,
-  isDirty,
-  isHovered,
-  setIsHovered,
-  isShowingHistory,
-  onToggleHistory,
-}: {
-  projectName: string;
-  onUpdate: () => void;
-  isSubmitting: boolean;
-  isDirty: boolean;
-  isHovered: boolean;
-  setIsHovered: (val: boolean) => void;
-  isShowingHistory: boolean;
-  onToggleHistory: () => void;
-}) {
+function ProjectHeader() {
+  const { projectData, isShowingHistory } = useValues(projectLogic);
+  const { toggleHistoryView } = useActions(projectLogic);
+
   return (
     <div className="mb-3 relative flex items-center justify-center gap-4">
       <div className="absolute left-0 flex items-center gap-2">
@@ -170,7 +130,7 @@ function ProjectHeader({
           <Button
             variant={isShowingHistory ? "default" : "ghost"}
             size="icon"
-            onClick={onToggleHistory}
+            onClick={toggleHistoryView}
             aria-label={isShowingHistory ? "Hide history" : "View history"}
             className="transition-all"
           >
@@ -191,20 +151,12 @@ function ProjectHeader({
       <div className="flex items-center gap-4">
         <div className="h-px w-6 bg-border"></div>
         <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
-          {projectName}
+          {projectData?.name}
         </h1>
         <div className="h-px w-6 bg-border"></div>
       </div>
       <div className="absolute right-0">
-        {!isShowingHistory && (
-          <UpdateButton
-            onClick={onUpdate}
-            isSubmitting={isSubmitting}
-            isDirty={isDirty}
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
-          />
-        )}
+        {!isShowingHistory && <UpdateButton />}
       </div>
     </div>
   );

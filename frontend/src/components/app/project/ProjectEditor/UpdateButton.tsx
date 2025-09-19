@@ -1,27 +1,23 @@
+import { projectLogic } from "@/lib/logics/projectLogic";
 import { cn } from "@/lib/utils";
+import { useActions, useValues } from "kea";
 import { CommandIcon } from "lucide-react";
 import { motion } from "motion/react";
+import { useState } from "react";
 
-export function UpdateButton({
-  onClick,
-  isSubmitting,
-  isDirty,
-  isHovered,
-  setIsHovered,
-}: {
-  onClick: () => void;
-  isSubmitting: boolean;
-  isDirty: boolean;
-  isHovered: boolean;
-  setIsHovered: (val: boolean) => void;
-}) {
+export function UpdateButton() {
+  const { isSubmitting, isEditorDirty } = useValues(projectLogic);
+  const { updateProjectContent } = useActions(projectLogic);
+
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.button
       type="button"
       aria-label="Update"
-      onClick={onClick}
-      disabled={isSubmitting || !isDirty}
-      whileTap={isSubmitting || !isDirty ? undefined : { scale: 0.95 }}
+      onClick={updateProjectContent}
+      disabled={isSubmitting || !isEditorDirty}
+      whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
       layout
       transition={{
         layout: { duration: 0.25, ease: [0.2, 0, 0, 1] },
@@ -34,7 +30,7 @@ export function UpdateButton({
       }}
       animate={{ scale: isHovered ? 1.05 : 1 }}
       onHoverStart={() => {
-        if (!isSubmitting && isDirty) setIsHovered(true);
+        if (!isSubmitting && isEditorDirty) setIsHovered(true);
       }}
       onHoverEnd={() => setIsHovered(false)}
       className={cn(
@@ -51,7 +47,7 @@ export function UpdateButton({
           />
           <span>Saving...</span>
         </>
-      ) : !isDirty ? (
+      ) : !isEditorDirty ? (
         <span>Saved</span>
       ) : (
         <>
