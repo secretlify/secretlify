@@ -59,15 +59,10 @@ export function HistoryView() {
   }
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex gap-4">
       {/* Left side - List of changes */}
-      <div className="w-80 border-r border-border flex flex-col">
-        <div className="px-4 py-3">
-          <h3 className="text-sm font-semibold text-muted-foreground text-center">
-            Versions
-          </h3>
-        </div>
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+      <div className="w-80 flex flex-col bg-card rounded-xl">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pl-2 pt-2">
           <div className="space-y-1">
             {historyChanges.map((change) => (
               <button
@@ -76,7 +71,7 @@ export function HistoryView() {
                   selectHistoryChange(change.id, change.changes);
                 }}
                 className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg transition-all duration-150",
+                  "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer",
                   selectedHistoryChangeId === change.id
                     ? "bg-primary/10 border border-primary/20"
                     : "border border-transparent hover:bg-muted/20"
@@ -107,7 +102,7 @@ export function HistoryView() {
       </div>
 
       {/* Right side - Diff editor */}
-      <div className="flex-1 bg-background">
+      <div className="flex-1 bg-editor rounded-xl overflow-hidden">
         {selectedPatch ? (
           <DiffEditor value={selectedPatch} />
         ) : (

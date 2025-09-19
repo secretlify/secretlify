@@ -72,13 +72,6 @@ export const projectLogic = kea<projectLogicType>([
         toggleHistoryView: () => null, // Clear selection when toggling
       },
     ],
-    selectedHistoryPatch: [
-      null as string | null,
-      {
-        selectHistoryChange: (_, { patch }) => patch,
-        toggleHistoryView: () => null, // Clear patch when toggling
-      },
-    ],
     patches: [
       [] as string[],
       {
