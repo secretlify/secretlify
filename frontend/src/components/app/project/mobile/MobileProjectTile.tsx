@@ -1,0 +1,163 @@
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect } from "react";
+import { MobileFileEditor } from "./MobileFileEditor";
+import { MobileUpdateButton } from "./MobileUpdateButton";
+import { HistoryView } from "@/components/app/project/HistoryView";
+import { useActions, useValues } from "kea";
+import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { Button } from "@/components/ui/button";
+import { IconHistory } from "@tabler/icons-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useNavigate } from "@tanstack/react-router";
+import { useProjects } from "@/lib/hooks/useProjects";
+
+export function MobileProjectTile() {
+  const {
+    projectData,
+    isShowingHistory,
+    isSubmitting,
+    isEditorDirty,
+    inputValue,
+  } = useValues(projectLogic);
+  const { projects } = useValues(projectsLogic);
+  const { activeProject } = useProjects();
+  const { updateProjectContent, setInputValue } = useActions(projectLogic);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!isSubmitting && isEditorDirty && !isShowingHistory) {
+          updateProjectContent();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
+  }, [
+    isSubmitting,
+    isEditorDirty,
+    updateProjectContent,
+    inputValue,
+    isShowingHistory,
+  ]);
+
+  const handleProjectChange = (projectId: string) => {
+    navigate({
+      to: "/app/project/$projectId",
+      params: { projectId },
+    });
+  };
+
+  if (!projectData) {
+    return null;
+  }
+
+  return (
+    <div className="h-full flex flex-col">
+      <MobileProjectHeader
+        projects={projects}
+        activeProject={activeProject}
+        onProjectChange={handleProjectChange}
+        isShowingHistory={isShowingHistory}
+      />
+
+      <div className="flex-1 p-2">
+        <motion.div
+          className="rounded-xl border border-border bg-card/60 backdrop-blur h-full flex flex-col overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0, 1, 0, 1] }}
+        >
+          <div className="flex-1 relative">
+            {isShowingHistory ? (
+              <HistoryView />
+            ) : (
+              <div className="h-full">
+                <MobileFileEditor
+                  value={inputValue}
+                  onChange={(v) => setInputValue(v)}
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={"edit-mode"}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ ease: "easeInOut", duration: 0.1 }}
+                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                    >
+                      Changed by you 1 week ago
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function MobileProjectHeader({
+  projects,
+  activeProject,
+  onProjectChange,
+  isShowingHistory,
+}: {
+  projects: any[];
+  activeProject: any;
+  onProjectChange: (projectId: string) => void;
+  isShowingHistory: boolean;
+}) {
+  const { toggleHistoryView } = useActions(projectLogic);
+
+  return (
+    <div className="flex items-center justify-between p-2 border-b border-border bg-background/80 backdrop-blur">
+      {/* Left side - History button */}
+      <div className="w-10 flex justify-start">
+        <Button
+          variant={isShowingHistory ? "default" : "ghost"}
+          size="sm"
+          onClick={toggleHistoryView}
+          aria-label={isShowingHistory ? "Exit history mode" : "View history"}
+        >
+          <IconHistory className="size-4" />
+        </Button>
+      </div>
+
+      {/* Center - Project selector */}
+      <div className="flex-1 flex justify-center">
+        <Select value={activeProject?.id || ""} onValueChange={onProjectChange}>
+          <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 py-1 h-auto bg-transparent hover:bg-accent/50 transition-colors">
+            <SelectValue placeholder="Select project" />
+          </SelectTrigger>
+          <SelectContent>
+            {projects.map((project) => (
+              <SelectItem key={project.id} value={project.id}>
+                {project.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Right side - Save button */}
+      <div className="w-auto flex justify-end">
+        {!isShowingHistory && <MobileUpdateButton />}
+      </div>
+    </div>
+  );
+}
