@@ -7,6 +7,7 @@ import {
   path,
   props,
   reducers,
+  selectors,
 } from "kea";
 
 import type { projectLogicType } from "./projectLogicType";
@@ -52,22 +53,42 @@ export const projectLogic = kea<projectLogicType>([
   actions({
     updateProjectContent: (content: string) => ({ content }),
     toggleHistoryView: true,
+    selectHistoryChange: (changeId: string | null, patch: string | null) => ({
+      changeId,
+      patch,
+    }),
     setPatches: (patches: string[]) => ({ patches }),
     computePatches: (versions: string[]) => ({ versions }),
   }),
 
   reducers({
-    isShowingHistory: [
-      false,
+    selectedHistoryChangeId: [
+      null as string | null,
       {
-        toggleHistoryView: (state) => !state,
+        selectHistoryChange: (_, { changeId }) => changeId,
+        toggleHistoryView: () => null, // Clear selection when toggling
+      },
+    ],
+    selectedHistoryPatch: [
+      null as string | null,
+      {
+        selectHistoryChange: (_, { patch }) => patch,
+        toggleHistoryView: () => null, // Clear patch when toggling
       },
     ],
     patches: [
       [] as string[],
       {
-        setPatches: (state, { patches }) => patches,
+        setPatches: (_, { patches }) => patches,
       },
+    ],
+  }),
+
+  selectors({
+    isShowingHistory: [
+      (s) => [s.selectedHistoryChangeId],
+      (selectedHistoryChangeId: string | null) =>
+        selectedHistoryChangeId !== null,
     ],
   }),
 

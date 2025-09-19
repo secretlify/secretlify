@@ -2,9 +2,8 @@ import { ProjectsList } from "@/components/app/project/ProjectsList";
 import { ProjectEditor } from "@/components/app/project/ProjectEditor/ProjectEditor";
 import { HistorySidePanel } from "@/components/app/project/HistorySidePanel";
 import { useParams } from "@tanstack/react-router";
-import { BindLogic, useValues } from "kea";
+import { BindLogic } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
-import { AnimatePresence } from "motion/react";
 
 export function ProjectPage() {
   const projectId = useParams({
@@ -19,8 +18,6 @@ export function ProjectPage() {
 }
 
 function ProjectPageContent() {
-  const { isShowingHistory } = useValues(projectLogic);
-
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8">
       {/* Centered container for editor with relative positioning for side panels */}
@@ -34,13 +31,9 @@ function ProjectPageContent() {
         <ProjectEditor />
 
         {/* History panel - positioned absolutely to the right of editor */}
-        <AnimatePresence>
-          {isShowingHistory && (
-            <aside className="hidden lg:block absolute right-0 translate-x-[calc(100%+2rem)] w-[280px]">
-              <HistorySidePanel />
-            </aside>
-          )}
-        </AnimatePresence>
+        <aside className="hidden lg:block absolute right-0 translate-x-[calc(100%+2rem)] w-[280px]">
+          <HistorySidePanel />
+        </aside>
       </div>
     </div>
   );

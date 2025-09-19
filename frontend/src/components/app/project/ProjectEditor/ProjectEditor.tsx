@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { FileEditor } from "@/components/app/project/ProjectEditor/FileEditor";
 import { UpdateButton } from "@/components/app/project/ProjectEditor/UpdateButton";
+import { DiffEditor } from "@/components/app/project/DiffEditor";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
@@ -10,7 +11,8 @@ import { IconHistory, IconShare } from "@tabler/icons-react";
 
 export function ProjectEditor() {
   const { activeProject } = useProjects();
-  const { projectData, isShowingHistory } = useValues(projectLogic);
+  const { projectData, isShowingHistory, selectedHistoryPatch } =
+    useValues(projectLogic);
   const { updateProjectContent, toggleHistoryView } = useActions(projectLogic);
 
   useEffect(() => {
@@ -89,23 +91,43 @@ export function ProjectEditor() {
             className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
           >
-            <div className="h-full">
-              <FileEditor value={value} onChange={(v) => setValue(v)} />
-              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={"asd"}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ ease: "easeInOut", duration: 0.1 }}
-                    className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
-                  >
-                    Changed by you 1 week ago
-                  </motion.span>
-                </AnimatePresence>
+            {isShowingHistory && selectedHistoryPatch ? (
+              <div className="h-full">
+                <DiffEditor value={selectedHistoryPatch} />
+                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={"history-mode"}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ ease: "easeInOut", duration: 0.1 }}
+                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                    >
+                      Viewing history
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="h-full">
+                <FileEditor value={value} onChange={(v) => setValue(v)} />
+                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={"edit-mode"}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ ease: "easeInOut", duration: 0.1 }}
+                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                    >
+                      Changed by you 1 week ago
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -156,10 +178,12 @@ function ProjectHeader({
           </Button>
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
             <div className="font-medium">
-              {isShowingHistory ? "Hide History" : "View History"}
+              {isShowingHistory ? "Exit History Mode" : "View History"}
             </div>
             <div className="text-xs text-muted-foreground">
-              {isShowingHistory ? "Close version history" : "See all versions"}
+              {isShowingHistory
+                ? "Return to edit mode"
+                : "Select version to view"}
             </div>
           </div>
         </div>
@@ -172,13 +196,15 @@ function ProjectHeader({
         <div className="h-px w-6 bg-border"></div>
       </div>
       <div className="absolute right-0">
-        <UpdateButton
-          onClick={onUpdate}
-          isSubmitting={isSubmitting}
-          isDirty={isDirty}
-          isHovered={isHovered}
-          setIsHovered={setIsHovered}
-        />
+        {!isShowingHistory && (
+          <UpdateButton
+            onClick={onUpdate}
+            isSubmitting={isSubmitting}
+            isDirty={isDirty}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+          />
+        )}
       </div>
     </div>
   );
