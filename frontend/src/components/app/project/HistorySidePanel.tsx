@@ -81,15 +81,85 @@ export function HistorySidePanel() {
     };
   });
 
-  // Handle empty state
+  // Handle loading state
   if (!historyChanges.length && projectVersionsLoading) {
     return null;
   }
 
+  // Handle empty state
   if (!historyChanges.length && !projectVersionsLoading) {
     return (
-      <motion.div>
-        <p>No version history available</p>
+      <motion.div
+        initial={{ opacity: 0, y: 300, scale: 0.5 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, ease: [0, 1, 0, 1] }}
+        layout="position"
+      >
+        <motion.h2
+          className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
+        >
+          History
+        </motion.h2>
+        <motion.div
+          className="rounded-2xl border border-border bg-card/60 backdrop-blur p-4 shadow-sm"
+          layout="position"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
+        >
+          <motion.div
+            className="flex flex-col items-center justify-center text-center space-y-2"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.4 }}
+          >
+            <motion.div
+              className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30,
+                delay: 0.5,
+              }}
+            >
+              <svg
+                className="w-5 h-5 text-muted-foreground"
+                fill="none"
+                strokeWidth="2"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </motion.div>
+            <motion.p
+              className="text-sm text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+            >
+              No version history
+            </motion.p>
+            <motion.p
+              className="text-xs text-muted-foreground/70"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.7 }}
+            >
+              Changes will appear here
+            </motion.p>
+          </motion.div>
+        </motion.div>
       </motion.div>
     );
   }

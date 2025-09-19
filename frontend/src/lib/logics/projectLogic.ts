@@ -165,6 +165,7 @@ export const projectLogic = kea<projectLogicType>([
       });
 
       await actions.loadProjectData();
+      await actions.loadProjectVersions();
     },
     computePatches: ({ versions }) => {
       if (versions.length < 2) {
