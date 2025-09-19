@@ -1,5 +1,5 @@
 import { ProjectsList } from "@/components/app/project/ProjectsList";
-import { ProjectEditor } from "@/components/app/project/ProjectEditor/ProjectEditor";
+import { ProjectTile } from "@/components/app/project/ProjectTile";
 import { useParams } from "@tanstack/react-router";
 import { BindLogic } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
@@ -26,7 +26,7 @@ function ProjectPageContent() {
           </aside>
 
           <main className="h-full overflow-y-auto flex items-center">
-            <ProjectEditor />
+            <ProjectTile />
           </main>
         </div>
       </div>

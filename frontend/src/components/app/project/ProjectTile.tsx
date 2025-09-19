@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
-import { FileEditor } from "@/components/app/project/ProjectEditor/FileEditor";
-import { UpdateButton } from "@/components/app/project/ProjectEditor/UpdateButton";
+import { FileEditor } from "@/components/app/project/FileEditor";
+import { UpdateButton } from "@/components/app/project/UpdateButton";
 import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
 import { IconHistory, IconShare } from "@tabler/icons-react";
 
-export function ProjectEditor() {
+export function ProjectTile() {
   const {
     projectData,
     isShowingHistory,
