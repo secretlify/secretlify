@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DiffEditor } from "@/components/app/project/DiffEditor";
 import { cn } from "@/lib/utils";
+import { useValues } from "kea";
+import { projectLogic } from "@/lib/logics/projectLogic";
 
 interface HistoryChange {
   id: string;
@@ -59,132 +61,56 @@ function formatDate(dateString: string): string {
 const DEFAULT_AVATAR =
   "https://lh3.googleusercontent.com/a/ACg8ocLTdCSYO1ZsGrEcdHjKzsoi-ZM1fFd8TqoezaiIQXAe3AUwcQ=s96-c";
 
-// Dummy data for demonstration
-const dummyHistory: HistoryChange[] = [
-  {
-    id: "1",
-    email: "john.doe@example.com",
-    date: "2025-09-17T14:23:00",
-    avatar: DEFAULT_AVATAR,
-    changes: `# Database Configuration
-- DB_HOST=localhost
-+ DB_HOST=production.db.server
-- DB_PORT=5432
-+ DB_PORT=5433
-  DB_NAME=myapp
-- DB_USER=developer
-+ DB_USER=prod_user
-  
-# API Keys
-  API_KEY=sk-1234567890
-+ API_SECRET=secret_key_production
-  
-# Feature Flags
-- FEATURE_NEW_UI=false
-+ FEATURE_NEW_UI=true
-+ FEATURE_ANALYTICS=true`,
-  },
-  {
-    id: "2",
-    email: "alice.smith@example.com",
-    date: "2025-09-16T09:45:00",
-    avatar: DEFAULT_AVATAR,
-    changes: `# Redis Configuration
-+ REDIS_HOST=redis.local
-+ REDIS_PORT=6379
-+ REDIS_PASSWORD=redis_pass_123
-  
-# Database Configuration
-  DB_HOST=production.db.server
-  DB_PORT=5433
-  DB_NAME=myapp
-  DB_USER=prod_user
-  
-# API Keys
-  API_KEY=sk-1234567890
-- API_SECRET=old_secret_key
-+ API_SECRET=secret_key_production`,
-  },
-  {
-    id: "3",
-    email: "bob.wilson@example.com",
-    date: "2025-09-15T18:12:00",
-    avatar: DEFAULT_AVATAR,
-    changes: `# Application Settings
-- APP_ENV=development
-+ APP_ENV=production
-- DEBUG=true
-+ DEBUG=false
-  
-# Database Configuration
-  DB_HOST=production.db.server
-  DB_PORT=5433
-  DB_NAME=myapp
-  DB_USER=prod_user
-  
-# Email Configuration
-+ SMTP_HOST=smtp.gmail.com
-+ SMTP_PORT=587
-+ SMTP_USER=noreply@example.com`,
-  },
-  {
-    id: "4",
-    email: "sarah.johnson@example.com",
-    date: "2025-09-14T11:30:00",
-    avatar: DEFAULT_AVATAR,
-    changes: `# Application Settings
-  APP_ENV=production
-  DEBUG=false
-  
-# Security
-+ JWT_SECRET=super_secret_jwt_key_2025
-+ JWT_EXPIRY=3600
-  
-# Database Configuration
-  DB_HOST=production.db.server
-  DB_PORT=5433
-  DB_NAME=myapp
-  DB_USER=prod_user
-  
-# Monitoring
-+ SENTRY_DSN=https://sentry.io/project
-+ SENTRY_ENVIRONMENT=production`,
-  },
-  {
-    id: "5",
-    email: "mike.chen@example.com",
-    date: "2025-09-13T16:45:00",
-    avatar: DEFAULT_AVATAR,
-    changes: `# Initial project setup
-+ # Database Configuration
-+ DB_HOST=localhost
-+ DB_PORT=5432
-+ DB_NAME=myapp
-+ DB_USER=developer
-+ 
-+ # Application Settings
-+ APP_ENV=development
-+ DEBUG=true
-+ 
-+ # API Keys
-+ API_KEY=sk-1234567890`,
-  },
-];
-
 export function HistoryViewer() {
-  const [selectedChange, setSelectedChange] = useState(dummyHistory[0]);
+  const { patches } = useValues(projectLogic);
+
+  // Convert patches to HistoryChange format with hardcoded data
+  const historyChanges: HistoryChange[] = patches.map((patch, index) => {
+    // Generate dates going backwards from now
+    const now = new Date();
+    const daysAgo = patches.length - index - 1;
+    const date = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+
+    return {
+      id: `change-${index + 1}`,
+      email: "john@doe.com",
+      date: date.toISOString(),
+      changes: patch,
+      avatar: DEFAULT_AVATAR,
+    };
+  });
+
+  const [selectedChange, setSelectedChange] = useState<HistoryChange | null>(
+    historyChanges[0] || null
+  );
+
+  // Update selected change when patches change
+  useEffect(() => {
+    if (historyChanges.length > 0 && !selectedChange) {
+      setSelectedChange(historyChanges[0]);
+    }
+  }, [historyChanges, selectedChange]);
+
+  // Handle empty state
+  if (!historyChanges.length) {
+    return (
+      <div className="h-full flex items-center justify-center text-muted-foreground">
+        <p>No version history available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full grid grid-cols-[320px_1fr] gap-4">
       {/* Left column - Changes list */}
       <div className="h-full overflow-y-auto pr-2 space-y-2">
-        {dummyHistory.map((change) => (
+        {historyChanges.map((change) => (
           <button
             key={change.id}
             onClick={() => setSelectedChange(change)}
             className={cn(
               "w-full text-left px-3 py-2.5 rounded-xl border transition",
-              selectedChange.id === change.id
+              selectedChange?.id === change.id
                 ? "bg-primary/10 text-primary border-primary/20"
                 : "border-transparent hover:bg-accent hover:text-accent-foreground"
             )}
@@ -214,7 +140,13 @@ export function HistoryViewer() {
       {/* Right column - Diff viewer */}
       <div className="h-full overflow-hidden">
         <div className="h-full rounded-xl overflow-hidden">
-          <DiffEditor value={selectedChange.changes} />
+          {selectedChange ? (
+            <DiffEditor value={selectedChange.changes} />
+          ) : (
+            <div className="h-full flex items-center justify-center text-muted-foreground">
+              <p>Select a change to view differences</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

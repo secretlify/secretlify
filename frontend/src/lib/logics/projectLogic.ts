@@ -159,24 +159,30 @@ export const projectLogic = kea<projectLogicType>([
         const oldVersion = chronologicalVersions[i];
         const newVersion = chronologicalVersions[i + 1];
 
-        console.log(`=== DEBUG VERSION ${i + 1} ===`);
-        console.log("Old version content:", JSON.stringify(oldVersion));
-        console.log("New version content:", JSON.stringify(newVersion));
-        console.log("================");
-
-        // Create patch between consecutive versions
         const patch = createPatch(
           `version_${i + 1}_to_${i + 2}`,
           oldVersion,
           newVersion
         );
 
-        console.log(patch);
+        const cleanPatch = patch
+          .split("\n")
+          .filter((line) => {
+            if (
+              line.startsWith("---") ||
+              line.startsWith("+++") ||
+              line.startsWith("@@") ||
+              line.startsWith("Index:") ||
+              line.startsWith("\\")
+            ) {
+              return false;
+            }
+            return line.match(/^[\+\-\s]/);
+          })
+          .join("\n");
 
-        patches.push(patch);
+        patches.push(cleanPatch);
       }
-
-      console.log(patches);
 
       actions.setPatches(patches);
     },
