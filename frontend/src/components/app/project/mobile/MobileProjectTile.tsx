@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MobileFileEditor } from "./MobileFileEditor";
 import { MobileUpdateButton } from "./MobileUpdateButton";
 import { HistoryView } from "@/components/app/project/HistoryView";
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "@tanstack/react-router";
 import { useProjects } from "@/lib/hooks/useProjects";
+import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 
 export function MobileProjectTile() {
   const {
@@ -131,6 +132,15 @@ function MobileProjectHeader({
   projectData: any;
 }) {
   const { toggleHistoryView } = useActions(projectLogic);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  const handleSelectChange = (value: string) => {
+    if (value === "add-project") {
+      setAddDialogOpen(true);
+    } else {
+      onProjectChange(value);
+    }
+  };
 
   return (
     <div className="flex items-center px-4 py-3 border-b border-border bg-card/60 backdrop-blur">
@@ -148,7 +158,10 @@ function MobileProjectHeader({
 
       {/* Center - Project selector - Fixed width, always centered */}
       <div className="flex-1 flex justify-center">
-        <Select value={activeProject?.id || ""} onValueChange={onProjectChange}>
+        <Select
+          value={activeProject?.id || ""}
+          onValueChange={handleSelectChange}
+        >
           <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 h-8 bg-transparent">
             <SelectValue placeholder="Select project" />
           </SelectTrigger>
@@ -158,6 +171,9 @@ function MobileProjectHeader({
                 {project.name}
               </SelectItem>
             ))}
+            <SelectItem value="add-project" className="text-muted-foreground">
+              + Add new project
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -168,6 +184,7 @@ function MobileProjectHeader({
           {!isShowingHistory && projectData && <MobileUpdateButton />}
         </div>
       </div>
+      <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
     </div>
   );
 }
