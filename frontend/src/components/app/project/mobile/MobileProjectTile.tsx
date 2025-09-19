@@ -59,10 +59,6 @@ export function MobileProjectTile() {
     });
   };
 
-  if (!projectData) {
-    return null;
-  }
-
   return (
     <div className="h-full flex flex-col">
       <MobileProjectHeader
@@ -70,17 +66,27 @@ export function MobileProjectTile() {
         activeProject={activeProject}
         onProjectChange={handleProjectChange}
         isShowingHistory={isShowingHistory}
+        projectData={projectData}
       />
 
-      <div className="flex-1 p-2">
+      <div className="flex-1">
         <motion.div
-          className="rounded-xl border border-border bg-card/60 backdrop-blur h-full flex flex-col overflow-hidden"
+          className="bg-card/60 backdrop-blur h-full flex flex-col overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0, 1, 0, 1] }}
         >
           <div className="flex-1 relative">
-            {isShowingHistory ? (
+            {!projectData ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/60 border-t-transparent mb-2"></div>
+                  <div className="text-sm text-muted-foreground">
+                    Loading project...
+                  </div>
+                </div>
+              </div>
+            ) : isShowingHistory ? (
               <HistoryView />
             ) : (
               <div className="h-full">
@@ -116,16 +122,18 @@ function MobileProjectHeader({
   activeProject,
   onProjectChange,
   isShowingHistory,
+  projectData,
 }: {
   projects: any[];
   activeProject: any;
   onProjectChange: (projectId: string) => void;
   isShowingHistory: boolean;
+  projectData: any;
 }) {
   const { toggleHistoryView } = useActions(projectLogic);
 
   return (
-    <div className="flex items-center p-2 border-b border-border bg-card/60 backdrop-blur">
+    <div className="flex items-center px-2 py-3 border-b border-border bg-card/60 backdrop-blur">
       {/* Left side - History button - Fixed width */}
       <div className="w-20 flex justify-start">
         <Button
@@ -141,7 +149,7 @@ function MobileProjectHeader({
       {/* Center - Project selector - Fixed width, always centered */}
       <div className="flex-1 flex justify-center">
         <Select value={activeProject?.id || ""} onValueChange={onProjectChange}>
-          <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 py-1 h-auto bg-transparent hover:bg-accent/50 transition-colors">
+          <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 py-1 h-auto bg-transparent">
             <SelectValue placeholder="Select project" />
           </SelectTrigger>
           <SelectContent>
@@ -157,7 +165,7 @@ function MobileProjectHeader({
       {/* Right side - Save button - Fixed width to match left */}
       <div className="w-20 relative h-10 flex items-center">
         <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-          {!isShowingHistory && <MobileUpdateButton />}
+          {!isShowingHistory && projectData && <MobileUpdateButton />}
         </div>
       </div>
     </div>
