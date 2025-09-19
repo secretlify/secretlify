@@ -18,6 +18,7 @@ import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { ProjectsApi } from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
+import { createPatch } from "diff";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -51,6 +52,8 @@ export const projectLogic = kea<projectLogicType>([
   actions({
     updateProjectContent: (content: string) => ({ content }),
     toggleHistoryView: true,
+    setPatches: (patches: string[]) => ({ patches }),
+    computePatches: (versions: string[]) => ({ versions }),
   }),
 
   reducers({
@@ -58,6 +61,12 @@ export const projectLogic = kea<projectLogicType>([
       false,
       {
         toggleHistoryView: (state) => !state,
+      },
+    ],
+    patches: [
+      [] as string[],
+      {
+        setPatches: (state, { patches }) => patches,
       },
     ],
   }),
@@ -91,6 +100,35 @@ export const projectLogic = kea<projectLogicType>([
         },
       },
     ],
+    projectVersions: [
+      [] as string[],
+      {
+        loadProjectVersions: async () => {
+          const projectWithVersions = await ProjectsApi.getProjectVersions(
+            values.jwtToken!,
+            props.projectId
+          );
+
+          const decryptedSecretsVersions: string[] = [];
+
+          for (const version of projectWithVersions.encryptedSecretsHistory) {
+            const passphraseAsKey = await AsymmetricCrypto.decrypt(
+              projectWithVersions.encryptedKeyVersions[values.userData!.id]!,
+              values.privateKeyDecrypted!
+            );
+
+            const contentDecrypted = await SymmetricCrypto.decrypt(
+              version,
+              passphraseAsKey
+            );
+
+            decryptedSecretsVersions.push(contentDecrypted);
+          }
+
+          return decryptedSecretsVersions;
+        },
+      },
+    ],
   })),
 
   listeners(({ values, actions, props }) => ({
@@ -107,11 +145,50 @@ export const projectLogic = kea<projectLogicType>([
 
       await actions.loadProjectData();
     },
+    computePatches: ({ versions }) => {
+      if (versions.length < 2) {
+        actions.setPatches([]);
+        return;
+      }
+
+      // Reverse the array to get chronological order (oldest to newest)
+      const chronologicalVersions = [...versions].reverse();
+      const patches: string[] = [];
+
+      for (let i = 0; i < chronologicalVersions.length - 1; i++) {
+        const oldVersion = chronologicalVersions[i];
+        const newVersion = chronologicalVersions[i + 1];
+
+        console.log(`=== DEBUG VERSION ${i + 1} ===`);
+        console.log("Old version content:", JSON.stringify(oldVersion));
+        console.log("New version content:", JSON.stringify(newVersion));
+        console.log("================");
+
+        // Create patch between consecutive versions
+        const patch = createPatch(
+          `version_${i + 1}_to_${i + 2}`,
+          oldVersion,
+          newVersion
+        );
+
+        console.log(patch);
+
+        patches.push(patch);
+      }
+
+      console.log(patches);
+
+      actions.setPatches(patches);
+    },
   })),
 
   subscriptions(({ actions }) => ({
     projects: () => {
       actions.loadProjectData();
+      actions.loadProjectVersions();
+    },
+    projectVersions: (versions) => {
+      actions.computePatches(versions);
     },
   })),
 ]);
