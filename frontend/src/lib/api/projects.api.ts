@@ -8,6 +8,10 @@ export interface Project {
   encryptedSecrets: string;
 }
 
+export interface ProjectWithVersions extends Project {
+  encryptedSecretsHistory: string[];
+}
+
 export interface CreateProjectDto {
   name: string;
   encryptedSecrets: string;
@@ -29,6 +33,22 @@ export class ProjectsApi {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
+
+    return response.data;
+  }
+
+  public static async getProjectVersions(
+    jwtToken: string,
+    projectId: string
+  ): Promise<ProjectWithVersions> {
+    const response = await axios.get<ProjectWithVersions>(
+      `/projects/${projectId}/history`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
 
     return response.data;
   }
