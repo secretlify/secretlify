@@ -61,14 +61,14 @@ export function HistoryView() {
   return (
     <div className="h-full flex">
       {/* Left side - List of changes */}
-      <div className="w-80 border-r border-border bg-muted/10 flex flex-col">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            Version History
+      <div className="w-80 border-r border-border flex flex-col">
+        <div className="px-4 py-3">
+          <h3 className="text-sm font-semibold text-muted-foreground text-center">
+            Versions
           </h3>
         </div>
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="p-2 space-y-1">
+          <div className="space-y-1">
             {historyChanges.map((change) => (
               <button
                 key={change.id}
