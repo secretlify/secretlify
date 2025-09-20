@@ -68,13 +68,9 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCopyLink = async (linkId: string, link: string) => {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopiedLinkId(linkId);
-      setTimeout(() => setCopiedLinkId(null), 2000);
-    } catch (error) {
-      console.error("Failed to copy link:", error);
-    }
+    await navigator.clipboard.writeText(link);
+    setCopiedLinkId(linkId);
+    setTimeout(() => setCopiedLinkId(null), 1_000);
   };
 
   const handleRevokeLink = async (invitationId: string) => {
@@ -100,7 +96,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           onClick={() =>
             handleCopyLink(
               invitation.id,
-              `${window.location.origin}/invite/${invitation.id}`
+              `${import.meta.env.VITE_APP_URL}/invite/${invitation.id}`
             )
           }
           className="size-8 p-0"
@@ -169,12 +165,8 @@ function GenerateNewInviteLinkSection() {
   const [passphrase, setPassphrase] = useState("");
 
   const handleGenerateLink = async () => {
-    try {
-      await createInvitation(passphrase);
-      setPassphrase("");
-    } catch (error) {
-      console.error("Failed to create invitation:", error);
-    }
+    await createInvitation(passphrase);
+    setPassphrase("");
   };
 
   return (
