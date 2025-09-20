@@ -21,13 +21,6 @@ function AppNavigationImpl() {
       ),
       href: "/",
     },
-    {
-      title: "Project",
-      icon: (
-        <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: `/app/project/demo`,
-    },
     // Show Login only when user is not logged in
     ...(!isLoggedIn
       ? [
@@ -40,9 +33,16 @@ function AppNavigationImpl() {
           },
         ]
       : []),
-    // Show Me only when user is logged in
+    // Show Projects, Developer, and Me only when user is logged in
     ...(isLoggedIn
       ? [
+          {
+            title: "Projects",
+            icon: (
+              <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+            ),
+            href: `/app/project/demo`,
+          },
           {
             title: "Developer",
             icon: (
