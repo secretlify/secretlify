@@ -16,7 +16,10 @@ export const projectsLogic = kea<projectsLogicType>([
   }),
 
   actions({
-    addProject: (project: { name: string }) => ({ project }),
+    addProject: (
+      project: { name: string },
+      navigateCallback?: (projectId: string) => void
+    ) => ({ project, navigateCallback }),
     readProjectById: (projectId: string) => ({ projectId }),
     loadProjects: true,
     deleteProject: (projectId: string) => ({ projectId }),
@@ -45,8 +48,8 @@ export const projectsLogic = kea<projectsLogicType>([
     ],
   }),
 
-  listeners(({ values, actions }) => ({
-    addProject: async ({ project }): Promise<void> => {
+  listeners(({ values, asyncActions, actions }) => ({
+    addProject: async ({ project, navigateCallback }): Promise<void> => {
       const projectKey = await SymmetricCrypto.generateProjectKey();
 
       const content = `BEN="dover"`;
@@ -60,7 +63,7 @@ export const projectsLogic = kea<projectsLogicType>([
         values.userData!.publicKey!
       );
 
-      await ProjectsApi.createProject(values.jwtToken!, {
+      const proj = await ProjectsApi.createProject(values.jwtToken!, {
         encryptedKeyVersions: {
           [values.userData!.id]: projectKeyEncrypted,
         },
@@ -68,7 +71,11 @@ export const projectsLogic = kea<projectsLogicType>([
         name: project.name,
       });
 
-      await actions.loadProjects();
+      await asyncActions.loadProjects();
+
+      if (navigateCallback) {
+        navigateCallback(proj.id);
+      }
     },
     deleteProject: async ({ projectId }): Promise<void> => {
       await ProjectsApi.deleteProject(values.jwtToken!, projectId);

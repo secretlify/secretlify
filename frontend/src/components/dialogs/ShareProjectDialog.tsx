@@ -13,7 +13,7 @@ import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
 import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
 
-interface ShareProjectDialogProps {
+interface ProjectAccessDialogProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
 }
@@ -208,10 +208,10 @@ function GenerateNewInviteLinkSection() {
   );
 }
 
-export function ShareProjectDialog({
+export function ProjectAccessDialog({
   open,
   onOpenChange,
-}: ShareProjectDialogProps) {
+}: ProjectAccessDialogProps) {
   const { projectData } = useValues(projectLogic);
   const { invitationsLoading } = useValues(invitationsLogic);
 
@@ -245,4 +245,4 @@ export function ShareProjectDialog({
   );
 }
 
-export default ShareProjectDialog;
+export default ProjectAccessDialog;

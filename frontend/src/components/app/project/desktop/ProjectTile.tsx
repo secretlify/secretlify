@@ -7,7 +7,7 @@ import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
 import { IconHistory, IconShare, IconUsers } from "@tabler/icons-react";
-import { ShareProjectDialog } from "@/components/dialogs/ShareProjectDialog";
+import { ProjectAccessDialog } from "@/components/dialogs/ShareProjectDialog";
 
 export function ProjectTile() {
   const {
@@ -142,7 +142,7 @@ function ProjectHeader() {
         {!isShowingHistory && <UpdateButton />}
       </div>
 
-      <ShareProjectDialog
+      <ProjectAccessDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
       />
