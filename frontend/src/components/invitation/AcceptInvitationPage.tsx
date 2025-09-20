@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "@tanstack/react-router";
 import { useAsyncActions, useValues } from "kea";
 import { useState } from "react";
-import { IconKey, IconUsers, IconArrowRight } from "@tabler/icons-react";
+import {
+  IconKey,
+  IconUsers,
+  IconArrowRight,
+  IconExclamationMark,
+  IconExclamationCircle,
+} from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { acceptInvitationLogic } from "@/lib/logics/acceptInvitationLogic";
 
@@ -116,17 +122,7 @@ export function AcceptInvitationPage() {
               />
               {isError && (
                 <div className="flex items-center gap-2 p-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded">
-                  <svg
-                    className="size-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zM9.25 14a.75.75 0 001.5 0v.01a.75.75 0 00-1.5 0V14z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <IconExclamationCircle />
                   <span>Incorrect passphrase. Please try again.</span>
                 </div>
               )}
