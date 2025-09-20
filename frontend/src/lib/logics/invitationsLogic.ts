@@ -1,7 +1,6 @@
 import {
   actions,
   connect,
-  events,
   kea,
   key,
   listeners,
@@ -12,11 +11,7 @@ import {
 
 import type { invitationsLogicType } from "./invitationsLogicType";
 import { authLogic } from "./authLogic";
-import {
-  InvitationsApi,
-  type CreateInvitationDto,
-  type Invitation,
-} from "../api/invitations.api";
+import { InvitationsApi, type Invitation } from "../api/invitations.api";
 import { loaders } from "kea-loaders";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
@@ -39,6 +34,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
   actions({
     createInvitation: (passphrase: string) => ({ passphrase }),
     setInvitations: (invitations: Invitation[]) => ({ invitations }),
+    deleteInvitation: (invitationId: string) => ({ invitationId }),
   }),
 
   reducers({
@@ -63,32 +59,23 @@ export const invitationsLogic = kea<invitationsLogicType>([
 
   listeners(({ actions, values, props }) => ({
     createInvitation: async ({ passphrase }) => {
-      console.log("1");
       const keyPair = await AsymmetricCrypto.generateKeyPair();
 
-      console.log("2");
       const keyFromPassphrase =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 
-      console.log("3");
       const encryptedPrivateKey = await SymmetricCrypto.encrypt(
         keyPair.privateKey,
         keyFromPassphrase
       );
-      console.log("4");
 
       const serverKey = await SymmetricCrypto.generateProjectKey();
-
-      console.log("5");
 
       const serverKeyEncrypted = await AsymmetricCrypto.encrypt(
         serverKey,
         keyPair.publicKey
       );
 
-      console.log("6");
-
-      console.log("jwt token in logic", values.jwtToken);
       await InvitationsApi.createInvitation(values.jwtToken!, {
         projectId: props.projectId,
         temporaryPublicKey: keyPair.publicKey,
@@ -96,8 +83,10 @@ export const invitationsLogic = kea<invitationsLogicType>([
         temporaryServerPassphrase: serverKeyEncrypted,
       });
 
-      console.log("7");
-
+      actions.loadInvitations();
+    },
+    deleteInvitation: async ({ invitationId }) => {
+      await InvitationsApi.deleteInvitation(values.jwtToken!, invitationId);
       actions.loadInvitations();
     },
   })),

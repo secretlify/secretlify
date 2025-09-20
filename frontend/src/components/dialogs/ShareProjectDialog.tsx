@@ -1,4 +1,4 @@
-import { useValues, useActions } from "kea";
+import { useValues, useActions, useAsyncActions } from "kea";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -11,7 +11,13 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
-import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
+import {
+  IconUsers,
+  IconCopy,
+  IconCheck,
+  IconTrash,
+  IconLoader2,
+} from "@tabler/icons-react";
 
 interface ShareProjectDialogProps {
   open: boolean;
@@ -27,8 +33,13 @@ export function ShareProjectDialog({
   const { invitations, invitationsLoading } = useValues(invitationsLogic);
   const { createInvitation, loadInvitations } = useActions(invitationsLogic);
 
+  const { deleteInvitation } = useAsyncActions(invitationsLogic);
+
   const [passphrase, setPassphrase] = useState("");
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
+  const [deletingInvitationId, setDeletingInvitationId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     loadInvitations();
@@ -53,9 +64,9 @@ export function ShareProjectDialog({
     }
   };
 
-  const handleRevokeLink = (invitationId: string) => {
-    // TODO: Implement revoke invitation API call
-    console.log("Revoking invitation:", invitationId);
+  const handleRevokeLink = async (invitationId: string) => {
+    setDeletingInvitationId(invitationId);
+    await deleteInvitation(invitationId);
   };
 
   if (!projectData) {
@@ -126,7 +137,7 @@ export function ShareProjectDialog({
           {/* Active Invite Links */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium">Active invite links</h3>
-            {invitationsLoading ? (
+            {invitationsLoading && !invitations ? (
               <div className="text-center py-8 px-4">
                 <div className="text-sm text-muted-foreground">
                   Loading invitations...
@@ -140,11 +151,11 @@ export function ShareProjectDialog({
                     className="flex items-center gap-2 p-3 bg-muted/30 rounded-md"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-mono text-foreground/90 truncate mb-1">
-                        {`${window.location.origin}/invite/${invitation.id}`}
+                      <div className="text-sm font-medium text-foreground/90 mb-1">
+                        Invitation link
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Invitation ID: {invitation.id}
+                        Created • ID: {invitation.id.slice(-8)}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
@@ -172,10 +183,15 @@ export function ShareProjectDialog({
                         size="sm"
                         variant="ghost"
                         onClick={() => handleRevokeLink(invitation.id)}
+                        disabled={deletingInvitationId === invitation.id}
                         className="size-8 p-0 text-destructive hover:text-destructive"
                         aria-label="Revoke link"
                       >
-                        <IconTrash className="size-4" />
+                        {deletingInvitationId === invitation.id ? (
+                          <IconLoader2 className="size-4 animate-spin" />
+                        ) : (
+                          <IconTrash className="size-4" />
+                        )}
                       </Button>
                     </div>
                   </div>

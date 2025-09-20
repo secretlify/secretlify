@@ -38,4 +38,13 @@ export class InvitationsApi {
 
     return response.data;
   }
+
+  public static async deleteInvitation(
+    jwtToken: string,
+    invitationId: string
+  ): Promise<void> {
+    await axios.delete(`/invitations/${invitationId}`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+  }
 }
