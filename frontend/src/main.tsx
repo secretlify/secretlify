@@ -10,6 +10,7 @@ import { routerPlugin } from "kea-router";
 import { loadersPlugin } from "kea-loaders";
 import { subscriptionsPlugin } from "kea-subscriptions";
 import { localStoragePlugin } from "kea-localstorage";
+import { PostHogProvider } from "posthog-js/react";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -27,6 +28,10 @@ resetContext({
   ],
 });
 
+const posthogOptions = {
+  api_host: "https://eu.i.posthog.com",
+};
+
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 // Register the router instance for type safety
@@ -40,5 +45,12 @@ declare module "@tanstack/react-router" {
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
-  root.render(<RouterProvider router={router} />);
+  root.render(
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_POSTHOG_KEY}
+      options={posthogOptions}
+    >
+      <RouterProvider router={router} />
+    </PostHogProvider>
+  );
 }

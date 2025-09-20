@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useActions, useValues } from "kea";
 import { CommandIcon } from "lucide-react";
 import { motion } from "motion/react";
+import posthog from "posthog-js";
 import { useState } from "react";
 
 export function UpdateButton() {
@@ -11,11 +12,16 @@ export function UpdateButton() {
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const update = () => {
+    posthog.capture("update_buttom_clicked");
+    updateProjectContent();
+  };
+
   return (
     <motion.button
       type="button"
       aria-label="Update"
-      onClick={updateProjectContent}
+      onClick={update}
       disabled={isSubmitting || !isEditorDirty}
       whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
       layout

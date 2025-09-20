@@ -58,6 +58,7 @@ export function DiffEditor({ value }: DiffEditorProps) {
 
   return (
     <Editor
+      className="ph-no-capture"
       height="100%"
       language="diff"
       theme="diffTheme"

@@ -2,18 +2,22 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { cn } from "@/lib/utils";
 import { useActions, useValues } from "kea";
 import { motion } from "motion/react";
+import posthog from "posthog-js";
 
 export function MobileUpdateButton() {
   const { isSubmitting, isEditorDirty } = useValues(projectLogic);
   const { updateProjectContent } = useActions(projectLogic);
 
-  // Remove hover state for mobile
+  const update = () => {
+    posthog.capture("update_buttom_clicked");
+    updateProjectContent();
+  };
 
   return (
     <motion.button
       type="button"
       aria-label="Update"
-      onClick={updateProjectContent}
+      onClick={update}
       disabled={isSubmitting || !isEditorDirty}
       whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
       layout
@@ -26,7 +30,6 @@ export function MobileUpdateButton() {
           mass: 0.5,
         },
       }}
-      // Disable hover animations on mobile
       className={cn(
         "inline-flex h-8 items-center gap-1.5 rounded-md border px-3 font-medium whitespace-nowrap cursor-pointer text-sm",
         "bg-primary text-primary-foreground",

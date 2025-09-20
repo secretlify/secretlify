@@ -66,6 +66,7 @@ export function BaseFileEditor({
 
   return (
     <Editor
+      className="ph-no-capture"
       height={height}
       language="dotenv"
       theme="dotenvTheme"

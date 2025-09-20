@@ -6,6 +6,7 @@ import { UserApi, type User } from "../api/user.api";
 import { subscriptions } from "kea-subscriptions";
 
 import type { authLogicType } from "./authLogicType";
+import posthog from "posthog-js";
 
 export const authLogic = kea<authLogicType>([
   path(["src", "lib", "logics", "authLogic"]),
@@ -65,6 +66,10 @@ export const authLogic = kea<authLogicType>([
     userData: {
       loadUserData: async (): Promise<User> => {
         const userDataValue = await UserApi.getMe(values.jwtToken!);
+
+        if (userDataValue.email) {
+          posthog.identify(userDataValue.email);
+        }
 
         return userDataValue;
       },
