@@ -32,7 +32,7 @@ export class ProjectCoreController {
   @Get('users/me/projects')
   @ApiResponse({ type: [ProjectSerialized] })
   public async findUserProjects(@CurrentUserId() userId: string): Promise<ProjectSerialized[]> {
-    const projects = await this.projectReadService.findByOwnerId(userId);
+    const projects = await this.projectReadService.findByMemberId(userId);
     return projects.map(ProjectSerializer.serialize);
   }
 

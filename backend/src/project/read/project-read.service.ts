@@ -19,9 +19,9 @@ export class ProjectReadService {
     return ProjectSerializer.normalize(project);
   }
 
-  public async findByOwnerId(ownerId: string): Promise<ProjectNormalized[]> {
+  public async findByMemberId(memberId: string): Promise<ProjectNormalized[]> {
     const projects = await this.projectModel
-      .find({ owner: ownerId })
+      .find({ members: memberId })
       .lean<ProjectEntity[]>()
       .exec();
     return projects.map(ProjectSerializer.normalize);

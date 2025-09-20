@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteInviteIdRouteImport } from './routes/invite/$inviteId'
 import { Route as AppMeRouteImport } from './routes/app/me'
 import { Route as AppLoginRouteImport } from './routes/app/login'
 import { Route as AppDeveloperRouteImport } from './routes/app/developer'
@@ -26,6 +27,11 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteInviteIdRoute = InviteInviteIdRouteImport.update({
+  id: '/invite/$inviteId',
+  path: '/invite/$inviteId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppMeRoute = AppMeRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/app/developer': typeof AppDeveloperRoute
   '/app/login': typeof AppLoginRoute
   '/app/me': typeof AppMeRoute
+  '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/app/developer'
     | '/app/login'
     | '/app/me'
+    | '/invite/$inviteId'
     | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/app/developer'
     | '/app/login'
     | '/app/me'
+    | '/invite/$inviteId'
     | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/app/developer'
     | '/app/login'
     | '/app/me'
+    | '/invite/$inviteId'
     | '/app/project/$projectId'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   AppDeveloperRoute: typeof AppDeveloperRoute
   AppLoginRoute: typeof AppLoginRoute
   AppMeRoute: typeof AppMeRoute
+  InviteInviteIdRoute: typeof InviteInviteIdRoute
   AppProjectProjectIdRoute: typeof AppProjectProjectIdRoute
   AppCallbacksOauthGithubRoute: typeof AppCallbacksOauthGithubRoute
   AppCallbacksOauthGoogleRoute: typeof AppCallbacksOauthGoogleRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$inviteId': {
+      id: '/invite/$inviteId'
+      path: '/invite/$inviteId'
+      fullPath: '/invite/$inviteId'
+      preLoaderRoute: typeof InviteInviteIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/me': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppDeveloperRoute: AppDeveloperRoute,
   AppLoginRoute: AppLoginRoute,
   AppMeRoute: AppMeRoute,
+  InviteInviteIdRoute: InviteInviteIdRoute,
   AppProjectProjectIdRoute: AppProjectProjectIdRoute,
   AppCallbacksOauthGithubRoute: AppCallbacksOauthGithubRoute,
   AppCallbacksOauthGoogleRoute: AppCallbacksOauthGoogleRoute,
