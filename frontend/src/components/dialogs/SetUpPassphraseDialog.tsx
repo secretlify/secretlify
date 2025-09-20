@@ -42,13 +42,7 @@ export function SetUpPassphraseDialog() {
 
   return (
     <Dialog open={shouldSetUpPassphrase}>
-      <DialogContent
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        showCloseButton={false}
-        className="sm:max-w-md"
-      >
+      <DialogContent showCloseButton={false} className="sm:max-w-md">
         <form onSubmit={onSubmit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>Set up your passphrase</DialogTitle>

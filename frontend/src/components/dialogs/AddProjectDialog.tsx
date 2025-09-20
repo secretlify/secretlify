@@ -51,13 +51,7 @@ export function AddProjectDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        showCloseButton={!submitting}
-        className="sm:max-w-md"
-      >
+      <DialogContent showCloseButton={!submitting} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add a new project</DialogTitle>
           <DialogDescription>

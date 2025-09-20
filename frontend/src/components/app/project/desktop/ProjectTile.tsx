@@ -6,8 +6,8 @@ import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
-import { IconHistory, IconShare, IconUsers } from "@tabler/icons-react";
-import { ProjectAccessDialog } from "@/components/dialogs/ShareProjectDialog";
+import { IconHistory, IconUsers } from "@tabler/icons-react";
+import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 
 export function ProjectTile() {
   const {

@@ -222,9 +222,6 @@ export function ProjectAccessDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
         showCloseButton={!invitationsLoading}
         className="sm:max-w-lg"
       >
