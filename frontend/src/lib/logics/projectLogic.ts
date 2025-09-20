@@ -117,25 +117,34 @@ export const projectLogic = kea<projectLogicType>([
             props.projectId
           );
 
-          const passphraseAsKey = await AsymmetricCrypto.decrypt(
+          const projectKeyDecrypted = await AsymmetricCrypto.decrypt(
             projectData?.encryptedKeyVersions![values.userData!.id]!,
             values.privateKeyDecrypted!
           );
 
-          const contentDecrypted = await SymmetricCrypto.decrypt(
-            projectData?.encryptedSecrets!,
-            passphraseAsKey
-          );
+          console.log("PROJECT KEY DECRYPTED", projectKeyDecrypted);
 
-          actions.setInputValue(contentDecrypted);
+          try {
+            const contentDecrypted = await SymmetricCrypto.decrypt(
+              projectData?.encryptedSecrets!,
+              projectKeyDecrypted
+            );
 
-          return {
-            id: projectData?.id!,
-            name: projectData?.name!,
-            content: contentDecrypted,
-            passphraseAsKey: passphraseAsKey,
-            members: projectData?.members!,
-          };
+            console.log("CONTENT DECRYPTED", contentDecrypted);
+
+            actions.setInputValue(contentDecrypted);
+
+            return {
+              id: projectData?.id!,
+              name: projectData?.name!,
+              content: contentDecrypted,
+              passphraseAsKey: projectKeyDecrypted,
+              members: projectData?.members!,
+            };
+          } catch (e) {
+            console.error("ERROR DECRYPTING CONTENT", e);
+            return null;
+          }
         },
       },
     ],
