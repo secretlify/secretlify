@@ -1,4 +1,4 @@
-import { useValues } from "kea";
+import { useValues, useActions } from "kea";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -9,14 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
+import { invitationsLogic } from "@/lib/logics/invitationsLogic";
+import type { Invitation } from "@/lib/api/invitations.api";
 import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
-
-interface InviteLink {
-  id: string;
-  link: string;
-  passphrase: string;
-  createdAt: Date;
-}
 
 interface ShareProjectDialogProps {
   open: boolean;
@@ -29,41 +24,22 @@ export function ShareProjectDialog({
 }: ShareProjectDialogProps) {
   const { projectData, userData } = useValues(projectLogic);
 
+  const { invitations, invitationsLoading } = useValues(invitationsLogic);
+  const { createInvitation, loadInvitations } = useActions(invitationsLogic);
+
   const [passphrase, setPassphrase] = useState("");
-  const [generating, setGenerating] = useState(false);
-  const [activeInviteLinks, setActiveInviteLinks] = useState<InviteLink[]>([]);
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) {
-      setPassphrase("");
-      setGenerating(false);
-      setCopiedLinkId(null);
-    }
-  }, [open]);
+    loadInvitations();
+  }, []);
 
-  const handleGenerateLink = async (e?: React.FormEvent) => {
-    e?.preventDefault?.();
-    if (!passphrase.trim() || generating) return;
-
+  const handleGenerateLink = async () => {
     try {
-      setGenerating(true);
-      // TODO: Implement actual invite link generation
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-
-      const newInviteLink: InviteLink = {
-        id: Math.random().toString(36).substring(7),
-        link: `${window.location.origin}/invite/${Math.random()
-          .toString(36)
-          .substring(7)}`,
-        passphrase: passphrase,
-        createdAt: new Date(),
-      };
-
-      setActiveInviteLinks((prev) => [newInviteLink, ...prev]);
-      setPassphrase(""); // Clear the passphrase input
-    } finally {
-      setGenerating(false);
+      await createInvitation(passphrase);
+      setPassphrase("");
+    } catch (error) {
+      console.error("Failed to create invitation:", error);
     }
   };
 
@@ -77,8 +53,9 @@ export function ShareProjectDialog({
     }
   };
 
-  const handleRevokeLink = (linkId: string) => {
-    setActiveInviteLinks((prev) => prev.filter((link) => link.id !== linkId));
+  const handleRevokeLink = (invitationId: string) => {
+    // TODO: Implement revoke invitation API call
+    console.log("Revoking invitation:", invitationId);
   };
 
   if (!projectData) {
@@ -91,7 +68,7 @@ export function ShareProjectDialog({
         onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
-        showCloseButton={!generating}
+        showCloseButton={!invitationsLoading}
         className="sm:max-w-lg"
       >
         <div className="grid gap-6">
@@ -149,20 +126,25 @@ export function ShareProjectDialog({
           {/* Active Invite Links */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium">Active invite links</h3>
-            {activeInviteLinks.length > 0 ? (
+            {invitationsLoading ? (
+              <div className="text-center py-8 px-4">
+                <div className="text-sm text-muted-foreground">
+                  Loading invitations...
+                </div>
+              </div>
+            ) : invitations && invitations.length > 0 ? (
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {activeInviteLinks.map((inviteLink) => (
+                {invitations.map((invitation: Invitation) => (
                   <div
-                    key={inviteLink.id}
+                    key={invitation.id}
                     className="flex items-center gap-2 p-3 bg-muted/30 rounded-md"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-mono text-foreground/90 truncate mb-1">
-                        {inviteLink.link}
+                        {`${window.location.origin}/invite/${invitation.id}`}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Created: {inviteLink.createdAt.toLocaleString()} •
-                        Passphrase: {inviteLink.passphrase}
+                        Invitation ID: {invitation.id}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
@@ -171,12 +153,15 @@ export function ShareProjectDialog({
                         size="sm"
                         variant="ghost"
                         onClick={() =>
-                          handleCopyLink(inviteLink.id, inviteLink.link)
+                          handleCopyLink(
+                            invitation.id,
+                            `${window.location.origin}/invite/${invitation.id}`
+                          )
                         }
                         className="size-8 p-0"
                         aria-label="Copy link"
                       >
-                        {copiedLinkId === inviteLink.id ? (
+                        {copiedLinkId === invitation.id ? (
                           <IconCheck className="size-4 text-green-600" />
                         ) : (
                           <IconCopy className="size-4" />
@@ -186,7 +171,7 @@ export function ShareProjectDialog({
                         type="button"
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleRevokeLink(inviteLink.id)}
+                        onClick={() => handleRevokeLink(invitation.id)}
                         className="size-8 p-0 text-destructive hover:text-destructive"
                         aria-label="Revoke link"
                       >
@@ -211,32 +196,30 @@ export function ShareProjectDialog({
           {/* Invite Link Generation */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium">Generate new invite link</h3>
-            <form onSubmit={handleGenerateLink} className="space-y-3">
-              <div className="grid gap-2">
-                <input
-                  id="passphrase"
-                  type="password"
-                  value={passphrase}
-                  onChange={(e) => setPassphrase(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm bg-background"
-                  placeholder="Enter a secure passphrase"
-                  autoComplete="new-password"
-                  required
-                />
-                <div className="text-xs text-muted-foreground">
-                  This passphrase will be required to accept the invitation.
-                  Each invite link can only be used by one person.
-                </div>
+            <div className="grid gap-2">
+              <input
+                id="passphrase"
+                type="password"
+                value={passphrase}
+                onChange={(e) => setPassphrase(e.target.value)}
+                className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+                placeholder="Enter a secure passphrase"
+                autoComplete="new-password"
+                required
+              />
+              <div className="text-xs text-muted-foreground">
+                This passphrase will be required to accept the invitation. Each
+                invite link can only be used by one person.
               </div>
+            </div>
 
-              <Button
-                type="submit"
-                disabled={!passphrase.trim() || generating}
-                className="w-full"
-              >
-                {generating ? "Generating..." : "Generate invite link"}
-              </Button>
-            </form>
+            <Button
+              onClick={handleGenerateLink}
+              disabled={!passphrase.trim() || invitationsLoading}
+              className="w-full"
+            >
+              {invitationsLoading ? "Generating..." : "Generate invite link"}
+            </Button>
           </div>
         </div>
       </DialogContent>

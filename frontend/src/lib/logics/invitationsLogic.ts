@@ -1,6 +1,7 @@
 import {
   actions,
   connect,
+  events,
   kea,
   key,
   listeners,
@@ -62,29 +63,40 @@ export const invitationsLogic = kea<invitationsLogicType>([
 
   listeners(({ actions, values, props }) => ({
     createInvitation: async ({ passphrase }) => {
+      console.log("1");
       const keyPair = await AsymmetricCrypto.generateKeyPair();
 
+      console.log("2");
       const keyFromPassphrase =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 
-      const encryptedPrivateKey = await AsymmetricCrypto.encrypt(
+      console.log("3");
+      const encryptedPrivateKey = await SymmetricCrypto.encrypt(
         keyPair.privateKey,
         keyFromPassphrase
       );
+      console.log("4");
 
       const serverKey = await SymmetricCrypto.generateProjectKey();
 
-      const serverKeyEncrypted = await SymmetricCrypto.encrypt(
+      console.log("5");
+
+      const serverKeyEncrypted = await AsymmetricCrypto.encrypt(
         serverKey,
         keyPair.publicKey
       );
 
+      console.log("6");
+
+      console.log("jwt token in logic", values.jwtToken);
       await InvitationsApi.createInvitation(values.jwtToken!, {
         projectId: props.projectId,
         temporaryPublicKey: keyPair.publicKey,
-        temporaryPrivateKeyEncrypted: encryptedPrivateKey,
+        temporaryPrivateKey: encryptedPrivateKey,
         temporaryServerPassphrase: serverKeyEncrypted,
       });
+
+      console.log("7");
 
       actions.loadInvitations();
     },

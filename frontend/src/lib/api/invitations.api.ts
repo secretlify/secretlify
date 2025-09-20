@@ -12,7 +12,7 @@ export interface Invitation {
 export interface CreateInvitationDto {
   projectId: string;
   temporaryPublicKey: string;
-  temporaryPrivateKeyEncrypted: string;
+  temporaryPrivateKey: string;
   temporaryServerPassphrase: string;
 }
 
@@ -30,11 +30,10 @@ export class InvitationsApi {
     jwtToken: string,
     dto: CreateInvitationDto
   ): Promise<Invitation> {
-    const response = await axios.post<Invitation>(`/invitations`, {
+    const response = await axios.post<Invitation>(`/invitations`, dto, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-      data: dto,
     });
 
     return response.data;
