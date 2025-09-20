@@ -7,7 +7,7 @@ import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { Button } from "@/components/ui/button";
-import { IconHistory } from "@tabler/icons-react";
+import { IconHistory, IconShare } from "@tabler/icons-react";
 import {
   Select,
   SelectContent,
@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { useProjects } from "@/lib/hooks/useProjects";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
+import { ShareProjectDialog } from "@/components/dialogs/ShareProjectDialog";
 
 export function MobileProjectTile() {
   const {
@@ -133,6 +134,7 @@ function MobileProjectHeader({
 }) {
   const { toggleHistoryView } = useActions(projectLogic);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const handleSelectChange = (value: string) => {
     if (value === "add-project") {
@@ -144,8 +146,8 @@ function MobileProjectHeader({
 
   return (
     <div className="flex items-center px-4 py-3 border-b border-border bg-card/60 backdrop-blur">
-      {/* Left side - History button - Fixed width */}
-      <div className="w-20 flex justify-start">
+      {/* Left side - History and Share buttons - Fixed width */}
+      <div className="w-20 flex justify-start gap-1">
         <Button
           variant={isShowingHistory ? "default" : "ghost"}
           size="sm"
@@ -153,6 +155,14 @@ function MobileProjectHeader({
           aria-label={isShowingHistory ? "Exit history mode" : "View history"}
         >
           <IconHistory className="size-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShareDialogOpen(true)}
+          aria-label="Share project"
+        >
+          <IconShare className="size-4" />
         </Button>
       </div>
 
@@ -192,6 +202,10 @@ function MobileProjectHeader({
         </div>
       </div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
+      <ShareProjectDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+      />
     </div>
   );
 }

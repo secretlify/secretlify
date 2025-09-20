@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
+import posthog from "posthog-js";
 
 interface AddProjectDialogProps {
   open: boolean;

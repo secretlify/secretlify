@@ -47,22 +47,22 @@ export const projectsLogic = kea<projectsLogicType>([
 
   listeners(({ values, actions }) => ({
     addProject: async ({ project }): Promise<void> => {
-      const projectPassphrase = SymmetricCrypto.generateProjectPassphrase();
-      const asKey = await SymmetricCrypto.deriveBase64KeyFromPassphrase(
-        projectPassphrase
-      );
+      const projectKey = await SymmetricCrypto.generateProjectKey();
 
       const content = `BEN="dover"`;
-      const contentEncrypted = await SymmetricCrypto.encrypt(content, asKey);
+      const contentEncrypted = await SymmetricCrypto.encrypt(
+        content,
+        projectKey
+      );
 
-      const projectPassphraseEncrypted = await AsymmetricCrypto.encrypt(
-        asKey,
+      const projectKeyEncrypted = await AsymmetricCrypto.encrypt(
+        projectKey,
         values.userData!.publicKey!
       );
 
       await ProjectsApi.createProject(values.jwtToken!, {
         encryptedKeyVersions: {
-          [values.userData!.id]: projectPassphraseEncrypted,
+          [values.userData!.id]: projectKeyEncrypted,
         },
         encryptedSecrets: contentEncrypted,
         name: project.name,

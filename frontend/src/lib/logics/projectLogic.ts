@@ -30,6 +30,7 @@ export interface DecryptedProject {
   name: string;
   content: string;
   passphraseAsKey: string;
+  members: string[];
 }
 
 export const projectLogic = kea<projectLogicType>([
@@ -133,6 +134,7 @@ export const projectLogic = kea<projectLogicType>([
             name: projectData?.name!,
             content: contentDecrypted,
             passphraseAsKey: passphraseAsKey,
+            members: projectData?.members!,
           };
         },
       },

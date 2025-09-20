@@ -5,6 +5,7 @@ import { BindLogic, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { useEffect, useState } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
+import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 
 export function ProjectPage() {
   const navigate = useNavigate();
@@ -22,7 +23,12 @@ export function ProjectPage() {
 
   return (
     <BindLogic logic={projectLogic} props={{ projectId: projectId.projectId }}>
-      <ProjectPageContent />
+      <BindLogic
+        logic={invitationsLogic}
+        props={{ projectId: projectId.projectId }}
+      >
+        <ProjectPageContent />
+      </BindLogic>
     </BindLogic>
   );
 }

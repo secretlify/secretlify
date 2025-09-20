@@ -10,6 +10,11 @@ import {
 } from "./crypto.utils";
 
 export class SymmetricCrypto {
+  public static async generateProjectKey(): Promise<string> {
+    const randomString = createRandomString(64);
+    return this.deriveBase64KeyFromPassphrase(randomString);
+  }
+
   public static generateProjectPassphrase(): string {
     return createRandomString(64);
   }
