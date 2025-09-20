@@ -1,13 +1,12 @@
+import { useAfterLogin } from "@/lib/hooks/useAfterLogin";
 import { authLogic } from "@/lib/logics/authLogic";
-import { useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
 import { useEffect } from "react";
 
 export function GooglePage() {
-  const navigate = useNavigate();
-
   const { exchangeGoogleCodeForJwt } = useActions(authLogic);
   const { userData } = useValues(authLogic);
+  const { afterLogin } = useAfterLogin();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,9 +18,7 @@ export function GooglePage() {
   }, []);
 
   useEffect(() => {
-    if (userData?.email) {
-      navigate({ to: "/app/me" });
-    }
+    afterLogin(userData);
   }, [userData]);
 
   return (

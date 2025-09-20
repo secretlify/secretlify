@@ -1,7 +1,7 @@
 import { authLogic } from "@/lib/logics/authLogic";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useAsyncActions, useValues } from "kea";
+import { useActions, useAsyncActions, useValues } from "kea";
 import { useState } from "react";
 import {
   IconKey,
@@ -12,6 +12,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { acceptInvitationLogic } from "@/lib/logics/acceptInvitationLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { commonLogic } from "@/lib/logics/commonLogic";
 
 export function AcceptInvitationPage() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export function AcceptInvitationPage() {
   const { invitation } = useValues(acceptInvitationLogic);
   const { acceptInvitation } = useAsyncActions(acceptInvitationLogic);
   const { loadProjects } = useAsyncActions(projectsLogic);
+  const { setInviteIdToShowAfterLogin } = useActions(commonLogic);
 
   const handleAcceptInvitation = async () => {
     setIsError(false);
@@ -62,6 +64,7 @@ export function AcceptInvitationPage() {
             <Link
               to="/app/login"
               className="inline-flex items-center justify-center w-full gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              onClick={() => setInviteIdToShowAfterLogin(inviteId)}
             >
               Sign In to Continue
               <IconArrowRight className="size-4" />

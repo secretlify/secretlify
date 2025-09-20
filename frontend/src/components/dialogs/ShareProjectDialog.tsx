@@ -11,13 +11,7 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
-import {
-  IconUsers,
-  IconCopy,
-  IconCheck,
-  IconTrash,
-  IconLoader2,
-} from "@tabler/icons-react";
+import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
 
 interface ShareProjectDialogProps {
   open: boolean;
@@ -119,6 +113,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           )}
         </Button>
         <Button
+          isLoading={isLoading}
           type="button"
           size="sm"
           variant="ghost"
@@ -127,11 +122,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           className="size-8 p-0 text-destructive hover:text-destructive"
           aria-label="Revoke link"
         >
-          {isLoading ? (
-            <IconLoader2 className="size-4 animate-spin" />
-          ) : (
-            <IconTrash className="size-4" />
-          )}
+          <IconTrash className="size-4" />
         </Button>
       </div>
     </div>
@@ -165,9 +156,6 @@ function ActiveInviteLinksSection() {
         <div className="text-center py-8 px-4">
           <div className="text-sm text-muted-foreground mb-2">
             No invite links created yet
-          </div>
-          <div className="text-xs text-muted-foreground">
-            Generate your first invite link below to start collaborating
           </div>
         </div>
       )}
@@ -242,7 +230,7 @@ export function ShareProjectDialog({
       >
         <div className="grid gap-6">
           <DialogHeader>
-            <DialogTitle>Share Project</DialogTitle>
+            <DialogTitle>Project access</DialogTitle>
             <DialogDescription>
               Invite others to collaborate on "{projectData.name}".
             </DialogDescription>
