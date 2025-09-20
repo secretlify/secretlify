@@ -13,6 +13,7 @@ export function AcceptInvitationPage() {
   const { isLoggedIn, userData } = useValues(authLogic);
   const [passphrase, setPassphrase] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const { acceptInvitation } = useAsyncActions(acceptInvitationLogic);
 
@@ -27,17 +28,18 @@ export function AcceptInvitationPage() {
   } as const;
 
   const handleAcceptInvitation = async () => {
+    setIsError(false);
     await setIsLoading(true);
+
     try {
-      acceptInvitation(passphrase);
+      await acceptInvitation(passphrase);
     } catch (e) {
-      console.log("error");
+      setIsError(true);
     } finally {
       await setIsLoading(false);
     }
   };
 
-  // If not logged in, show login prompt
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -82,7 +84,6 @@ export function AcceptInvitationPage() {
     );
   }
 
-  // If logged in, show invitation acceptance form
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <motion.div
@@ -141,7 +142,12 @@ export function AcceptInvitationPage() {
                   id="passphrase"
                   type="password"
                   value={passphrase}
-                  onChange={(e) => setPassphrase(e.target.value)}
+                  onChange={(e) => {
+                    setPassphrase(e.target.value);
+                    if (isError) {
+                      setIsError(false);
+                    }
+                  }}
                   className="w-full rounded-md border border-border px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Enter the passphrase shared with you"
                   autoComplete="new-password"
@@ -150,9 +156,28 @@ export function AcceptInvitationPage() {
                 <p className="text-xs text-muted-foreground">
                   This passphrase was provided by the person who invited you.
                 </p>
+                {isError && (
+                  <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+                    <svg
+                      className="size-4 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zM9.25 14a.75.75 0 001.5 0v.01a.75.75 0 00-1.5 0V14z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>
+                      Incorrect passphrase. Please check and try again.
+                    </span>
+                  </div>
+                )}
               </div>
 
               <Button
+                isLoading={isLoading}
                 onClick={handleAcceptInvitation}
                 disabled={!passphrase.trim()}
                 className="w-full"
