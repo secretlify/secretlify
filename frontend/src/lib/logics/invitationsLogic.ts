@@ -15,6 +15,7 @@ import { InvitationsApi, type Invitation } from "../api/invitations.api";
 import { loaders } from "kea-loaders";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
+import { projectLogic } from "./projectLogic";
 
 export interface InvitationsLogicProps {
   projectId: string;
@@ -28,7 +29,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
   key((props) => props.projectId),
 
   connect({
-    values: [authLogic, ["jwtToken"]],
+    values: [authLogic, ["jwtToken"], projectLogic, ["projectData"]],
   }),
 
   actions({
@@ -61,15 +62,15 @@ export const invitationsLogic = kea<invitationsLogicType>([
     createInvitation: async ({ passphrase }) => {
       const keyPair = await AsymmetricCrypto.generateKeyPair();
 
-      const keyFromPassphrase =
+      const passphraseAsKey =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 
       const encryptedPrivateKey = await SymmetricCrypto.encrypt(
         keyPair.privateKey,
-        keyFromPassphrase
+        passphraseAsKey
       );
 
-      const serverKey = await SymmetricCrypto.generateProjectKey();
+      const serverKey = values.projectData!.passphraseAsKey;
 
       const serverKeyEncrypted = await AsymmetricCrypto.encrypt(
         serverKey,

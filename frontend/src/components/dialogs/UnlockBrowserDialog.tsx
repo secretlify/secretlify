@@ -41,13 +41,7 @@ export function UnlockBrowserDialog() {
 
   return (
     <Dialog open={!browserIsUnlocked && isLoggedIn && !shouldSetUpPassphrase}>
-      <DialogContent
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        showCloseButton={false}
-        className="sm:max-w-md"
-      >
+      <DialogContent showCloseButton={false} className="sm:max-w-md">
         <form onSubmit={onSubmit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>Unlock this browser</DialogTitle>

@@ -18,7 +18,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { useProjects } from "@/lib/hooks/useProjects";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import { ShareProjectDialog } from "@/components/dialogs/ShareProjectDialog";
+import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 
 export function MobileProjectTile() {
   const {
@@ -202,7 +202,7 @@ function MobileProjectHeader({
         </div>
       </div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-      <ShareProjectDialog
+      <ProjectAccessDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
       />

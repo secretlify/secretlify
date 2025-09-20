@@ -117,14 +117,14 @@ export const projectLogic = kea<projectLogicType>([
             props.projectId
           );
 
-          const passphraseAsKey = await AsymmetricCrypto.decrypt(
+          const projectKeyDecrypted = await AsymmetricCrypto.decrypt(
             projectData?.encryptedKeyVersions![values.userData!.id]!,
             values.privateKeyDecrypted!
           );
 
           const contentDecrypted = await SymmetricCrypto.decrypt(
             projectData?.encryptedSecrets!,
-            passphraseAsKey
+            projectKeyDecrypted
           );
 
           actions.setInputValue(contentDecrypted);
@@ -133,7 +133,7 @@ export const projectLogic = kea<projectLogicType>([
             id: projectData?.id!,
             name: projectData?.name!,
             content: contentDecrypted,
-            passphraseAsKey: passphraseAsKey,
+            passphraseAsKey: projectKeyDecrypted,
             members: projectData?.members!,
           };
         },

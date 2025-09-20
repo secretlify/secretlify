@@ -11,15 +11,9 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
-import {
-  IconUsers,
-  IconCopy,
-  IconCheck,
-  IconTrash,
-  IconLoader2,
-} from "@tabler/icons-react";
+import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
 
-interface ShareProjectDialogProps {
+interface ProjectAccessDialogProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
 }
@@ -74,13 +68,9 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCopyLink = async (linkId: string, link: string) => {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopiedLinkId(linkId);
-      setTimeout(() => setCopiedLinkId(null), 2000);
-    } catch (error) {
-      console.error("Failed to copy link:", error);
-    }
+    await navigator.clipboard.writeText(link);
+    setCopiedLinkId(linkId);
+    setTimeout(() => setCopiedLinkId(null), 1_000);
   };
 
   const handleRevokeLink = async (invitationId: string) => {
@@ -106,7 +96,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           onClick={() =>
             handleCopyLink(
               invitation.id,
-              `${window.location.origin}/invite/${invitation.id}`
+              `${import.meta.env.VITE_APP_URL}/invite/${invitation.id}`
             )
           }
           className="size-8 p-0"
@@ -119,6 +109,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           )}
         </Button>
         <Button
+          isLoading={isLoading}
           type="button"
           size="sm"
           variant="ghost"
@@ -127,11 +118,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           className="size-8 p-0 text-destructive hover:text-destructive"
           aria-label="Revoke link"
         >
-          {isLoading ? (
-            <IconLoader2 className="size-4 animate-spin" />
-          ) : (
-            <IconTrash className="size-4" />
-          )}
+          <IconTrash className="size-4" />
         </Button>
       </div>
     </div>
@@ -166,9 +153,6 @@ function ActiveInviteLinksSection() {
           <div className="text-sm text-muted-foreground mb-2">
             No invite links created yet
           </div>
-          <div className="text-xs text-muted-foreground">
-            Generate your first invite link below to start collaborating
-          </div>
         </div>
       )}
     </div>
@@ -181,12 +165,8 @@ function GenerateNewInviteLinkSection() {
   const [passphrase, setPassphrase] = useState("");
 
   const handleGenerateLink = async () => {
-    try {
-      await createInvitation(passphrase);
-      setPassphrase("");
-    } catch (error) {
-      console.error("Failed to create invitation:", error);
-    }
+    await createInvitation(passphrase);
+    setPassphrase("");
   };
 
   return (
@@ -220,10 +200,10 @@ function GenerateNewInviteLinkSection() {
   );
 }
 
-export function ShareProjectDialog({
+export function ProjectAccessDialog({
   open,
   onOpenChange,
-}: ShareProjectDialogProps) {
+}: ProjectAccessDialogProps) {
   const { projectData } = useValues(projectLogic);
   const { invitationsLoading } = useValues(invitationsLogic);
 
@@ -234,15 +214,12 @@ export function ShareProjectDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
         showCloseButton={!invitationsLoading}
         className="sm:max-w-lg"
       >
         <div className="grid gap-6">
           <DialogHeader>
-            <DialogTitle>Share Project</DialogTitle>
+            <DialogTitle>Project access</DialogTitle>
             <DialogDescription>
               Invite others to collaborate on "{projectData.name}".
             </DialogDescription>
@@ -257,4 +234,4 @@ export function ShareProjectDialog({
   );
 }
 
-export default ShareProjectDialog;
+export default ProjectAccessDialog;

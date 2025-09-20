@@ -6,8 +6,8 @@ import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
-import { IconHistory, IconShare } from "@tabler/icons-react";
-import { ShareProjectDialog } from "@/components/dialogs/ShareProjectDialog";
+import { IconHistory, IconUsers } from "@tabler/icons-react";
+import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 
 export function ProjectTile() {
   const {
@@ -104,13 +104,11 @@ function ProjectHeader() {
             onClick={() => setShareDialogOpen(true)}
             aria-label="Share project"
           >
-            <IconShare className="size-5" />
+            <IconUsers className="size-5" />
           </Button>
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-            <div className="font-medium">Share Project</div>
-            <div className="text-xs text-muted-foreground">
-              invite collaborators
-            </div>
+            <div className="font-medium">Members</div>
+            <div className="text-xs text-muted-foreground">invite members</div>
           </div>
         </div>
         <div className="relative group">
@@ -144,7 +142,7 @@ function ProjectHeader() {
         {!isShowingHistory && <UpdateButton />}
       </div>
 
-      <ShareProjectDialog
+      <ProjectAccessDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
       />
