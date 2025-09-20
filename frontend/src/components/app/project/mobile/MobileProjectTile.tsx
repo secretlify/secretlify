@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { MobileFileEditor } from "./MobileFileEditor";
-import { MobileUpdateButton } from "./MobileUpdateButton";
+import { MobileSaveButton } from "./MobileSaveButton";
 import { MobileHistoryView } from "./MobileHistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
@@ -188,7 +188,7 @@ function MobileProjectHeader({
       {/* Right side - Save button - Fixed width to match left */}
       <div className="w-20 relative h-8 flex items-center">
         <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-          {!isShowingHistory && projectData && <MobileUpdateButton />}
+          {!isShowingHistory && projectData && <MobileSaveButton />}
         </div>
       </div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />

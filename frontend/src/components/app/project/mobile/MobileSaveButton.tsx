@@ -4,7 +4,7 @@ import { useActions, useValues } from "kea";
 import { motion } from "motion/react";
 import posthog from "posthog-js";
 
-export function MobileUpdateButton() {
+export function MobileSaveButton() {
   const { isSubmitting, isEditorDirty } = useValues(projectLogic);
   const { updateProjectContent } = useActions(projectLogic);
 

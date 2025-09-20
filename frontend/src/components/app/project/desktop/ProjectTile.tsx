@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { FileEditor } from "@/components/app/project/FileEditor";
-import { UpdateButton } from "@/components/app/project/UpdateButton";
+import { UpdateButton } from "@/components/app/project/SaveButton";
 import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";

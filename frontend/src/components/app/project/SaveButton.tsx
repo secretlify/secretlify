@@ -13,14 +13,14 @@ export function UpdateButton() {
   const [isHovered, setIsHovered] = useState(false);
 
   const update = () => {
-    posthog.capture("update_button_clicked");
+    posthog.capture("save_button_clicked");
     updateProjectContent();
   };
 
   return (
     <motion.button
       type="button"
-      aria-label="Update"
+      aria-label="Save"
       onClick={update}
       disabled={isSubmitting || !isEditorDirty}
       whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
@@ -57,7 +57,7 @@ export function UpdateButton() {
         <span>Saved</span>
       ) : (
         <>
-          <span>Update {"("}</span>
+          <span>Save {"("}</span>
           <span>
             <CommandIcon />
           </span>
