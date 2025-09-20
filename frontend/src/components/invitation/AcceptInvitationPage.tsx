@@ -1,26 +1,29 @@
 import { authLogic } from "@/lib/logics/authLogic";
 import { Button } from "@/components/ui/button";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useAsyncActions, useValues } from "kea";
 import { useState } from "react";
 import {
   IconKey,
   IconUsers,
   IconArrowRight,
-  IconExclamationMark,
   IconExclamationCircle,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { acceptInvitationLogic } from "@/lib/logics/acceptInvitationLogic";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
 
 export function AcceptInvitationPage() {
+  const navigate = useNavigate();
   const { inviteId } = useParams({ from: "/invite/$inviteId" });
   const { isLoggedIn, userData } = useValues(authLogic);
   const [passphrase, setPassphrase] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  const { invitation } = useValues(acceptInvitationLogic);
   const { acceptInvitation } = useAsyncActions(acceptInvitationLogic);
+  const { loadProjects } = useAsyncActions(projectsLogic);
 
   const handleAcceptInvitation = async () => {
     setIsError(false);
@@ -28,10 +31,15 @@ export function AcceptInvitationPage() {
 
     try {
       await acceptInvitation(passphrase);
+      await loadProjects();
+      navigate({
+        to: "/app/project/$projectId",
+        params: { projectId: invitation?.projectId! },
+      });
     } catch (e) {
       setIsError(true);
     } finally {
-      await setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -39,7 +47,7 @@ export function AcceptInvitationPage() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-md">
-          <div className="bg-card border rounded-lg p-6 text-center">
+          <div className="bg-card border rounded-xl p-6 text-center">
             <div className="mb-4">
               <IconUsers className="size-8 mx-auto text-muted-foreground" />
             </div>
@@ -53,7 +61,7 @@ export function AcceptInvitationPage() {
 
             <Link
               to="/app/login"
-              className="inline-flex items-center justify-center w-full gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              className="inline-flex items-center justify-center w-full gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
               Sign In to Continue
               <IconArrowRight className="size-4" />
@@ -71,7 +79,7 @@ export function AcceptInvitationPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        <div className="bg-card border rounded-lg p-6">
+        <div className="bg-card border rounded-xl p-6">
           <div className="text-center mb-6">
             <IconUsers className="size-8 mx-auto text-primary mb-3" />
             <h1 className="text-xl font-bold mb-2">Join Project</h1>
@@ -81,7 +89,7 @@ export function AcceptInvitationPage() {
           </div>
 
           <div className="space-y-4">
-            <div className="p-3 bg-muted/50 rounded border">
+            <div className="p-3 bg-muted/50 rounded-lg border">
               <div className="flex items-center gap-3">
                 <img
                   src={userData?.avatarUrl}
@@ -115,13 +123,13 @@ export function AcceptInvitationPage() {
                     setIsError(false);
                   }
                 }}
-                className="w-full rounded border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                className="w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter passphrase"
                 autoComplete="new-password"
                 autoFocus
               />
               {isError && (
-                <div className="flex items-center gap-2 p-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded">
+                <div className="flex items-center gap-2 p-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
                   <IconExclamationCircle />
                   <span>Incorrect passphrase. Please try again.</span>
                 </div>
