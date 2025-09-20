@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { MobileFileEditor } from "./MobileFileEditor";
 import { MobileUpdateButton } from "./MobileUpdateButton";
-import { HistoryView } from "@/components/app/project/HistoryView";
+import { MobileHistoryView } from "./MobileHistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
@@ -88,7 +88,7 @@ export function MobileProjectTile() {
                 </div>
               </div>
             ) : isShowingHistory ? (
-              <HistoryView />
+              <MobileHistoryView />
             ) : (
               <div className="h-full">
                 <MobileFileEditor
@@ -162,16 +162,23 @@ function MobileProjectHeader({
           value={activeProject?.id || ""}
           onValueChange={handleSelectChange}
         >
-          <SelectTrigger className="w-fit border-none shadow-none text-lg font-semibold px-2 h-8 bg-transparent">
+          <SelectTrigger className="border-none shadow-none text-lg font-semibold bg-transparent hover:bg-accent/30 cursor-pointer">
             <SelectValue placeholder="Select project" />
           </SelectTrigger>
           <SelectContent>
             {projects.map((project) => (
-              <SelectItem key={project.id} value={project.id}>
+              <SelectItem
+                key={project.id}
+                value={project.id}
+                className="cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
+              >
                 {project.name}
               </SelectItem>
             ))}
-            <SelectItem value="add-project" className="text-muted-foreground">
+            <SelectItem
+              value="add-project"
+              className="text-muted-foreground cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
+            >
               + Add new project
             </SelectItem>
           </SelectContent>
