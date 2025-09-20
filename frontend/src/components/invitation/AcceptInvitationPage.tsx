@@ -1,7 +1,7 @@
 import { authLogic } from "@/lib/logics/authLogic";
 import { Button } from "@/components/ui/button";
 import { useParams } from "@tanstack/react-router";
-import { useActions, useValues } from "kea";
+import { useAsyncActions, useValues } from "kea";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { IconKey, IconUsers, IconArrowRight } from "@tabler/icons-react";
@@ -12,8 +12,9 @@ export function AcceptInvitationPage() {
   const { inviteId } = useParams({ from: "/invite/$inviteId" });
   const { isLoggedIn, userData } = useValues(authLogic);
   const [passphrase, setPassphrase] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { acceptInvitation } = useActions(acceptInvitationLogic);
+  const { acceptInvitation } = useAsyncActions(acceptInvitationLogic);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50, scale: 0.95 },
@@ -26,8 +27,14 @@ export function AcceptInvitationPage() {
   } as const;
 
   const handleAcceptInvitation = async () => {
-    // TODO: Implement invitation acceptance logic
-    acceptInvitation(passphrase);
+    await setIsLoading(true);
+    try {
+      acceptInvitation(passphrase);
+    } catch (e) {
+      console.log("error");
+    } finally {
+      await setIsLoading(false);
+    }
   };
 
   // If not logged in, show login prompt

@@ -65,18 +65,12 @@ export const invitationsLogic = kea<invitationsLogicType>([
       const passphraseAsKey =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 
-      console.log("Creating invitation. Passphrase as key", passphraseAsKey);
-
       const encryptedPrivateKey = await SymmetricCrypto.encrypt(
         keyPair.privateKey,
         passphraseAsKey
       );
 
       const serverKey = values.projectData!.passphraseAsKey;
-
-      console.log("Creating invitation. Server key", serverKey);
-
-      console.log("Creating invitation. Private key raw", keyPair.privateKey);
 
       const serverKeyEncrypted = await AsymmetricCrypto.encrypt(
         serverKey,

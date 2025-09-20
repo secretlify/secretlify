@@ -122,29 +122,20 @@ export const projectLogic = kea<projectLogicType>([
             values.privateKeyDecrypted!
           );
 
-          console.log("PROJECT KEY DECRYPTED", projectKeyDecrypted);
+          const contentDecrypted = await SymmetricCrypto.decrypt(
+            projectData?.encryptedSecrets!,
+            projectKeyDecrypted
+          );
 
-          try {
-            const contentDecrypted = await SymmetricCrypto.decrypt(
-              projectData?.encryptedSecrets!,
-              projectKeyDecrypted
-            );
+          actions.setInputValue(contentDecrypted);
 
-            console.log("CONTENT DECRYPTED", contentDecrypted);
-
-            actions.setInputValue(contentDecrypted);
-
-            return {
-              id: projectData?.id!,
-              name: projectData?.name!,
-              content: contentDecrypted,
-              passphraseAsKey: projectKeyDecrypted,
-              members: projectData?.members!,
-            };
-          } catch (e) {
-            console.error("ERROR DECRYPTING CONTENT", e);
-            return null;
-          }
+          return {
+            id: projectData?.id!,
+            name: projectData?.name!,
+            content: contentDecrypted,
+            passphraseAsKey: projectKeyDecrypted,
+            members: projectData?.members!,
+          };
         },
       },
     ],
