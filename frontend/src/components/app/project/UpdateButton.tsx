@@ -13,7 +13,7 @@ export function UpdateButton() {
   const [isHovered, setIsHovered] = useState(false);
 
   const update = () => {
-    posthog.capture("update_buttom_clicked");
+    posthog.capture("update_button_clicked");
     updateProjectContent();
   };
 
