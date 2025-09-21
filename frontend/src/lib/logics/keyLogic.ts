@@ -118,6 +118,8 @@ export const keyLogic = kea<keyLogicType>([
         actions.setPrivateKeyDecrypted(decrypted);
       } catch (e) {
         actions.setPrivateKeyDecrypted(null);
+        console.log("Invalid passphrase");
+        throw Error("Invalid passphrase");
       }
     },
   })),
