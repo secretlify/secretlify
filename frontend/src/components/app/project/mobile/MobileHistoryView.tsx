@@ -62,12 +62,9 @@ export function MobileHistoryView() {
   }
 
   return (
-    <div className="h-full relative">
+    <div className="h-full">
       {/* Top - Version list (30%) */}
-      <div
-        className="absolute top-0 left-0 right-0 border-b border-border overflow-y-auto p-3"
-        style={{ height: "30vh" }}
-      >
+      <div className="border-b border-border overflow-y-auto p-3 h-1/3">
         <div className="space-y-2">
           {historyChanges.map((change) => {
             const changeDate = new Date(change.date);
@@ -104,12 +101,11 @@ export function MobileHistoryView() {
       </div>
 
       {/* Bottom - Diff editor (70%) */}
-      <div
-        className="absolute bottom-0 left-0 right-0"
-        style={{ height: "70vh" }}
-      >
+      <div className="h-2/3">
         {selectedPatch ? (
-          <DiffEditor value={selectedPatch} />
+          <div className="h-full">
+            <DiffEditor value={selectedPatch} />
+          </div>
         ) : (
           <div className="h-full flex items-center justify-center">
             <div className="text-center text-muted-foreground">

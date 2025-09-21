@@ -71,14 +71,14 @@ export function MobileProjectTile() {
         projectData={projectData}
       />
 
-      <div className="flex-1">
+      <div className="flex-1 h-full">
         <motion.div
           className="bg-card/60 backdrop-blur h-full flex flex-col overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0, 1, 0, 1] }}
         >
-          <div className="flex-1 relative">
+          <div className="flex-1 h-full">
             {!projectData ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center">
