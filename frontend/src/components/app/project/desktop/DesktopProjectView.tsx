@@ -1,15 +1,20 @@
 import { useValues } from "kea";
 import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { Button } from "@/components/ui/button";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 import { Meh } from "lucide-react";
+import { useProjects } from "@/lib/hooks/useProjects";
+import { projectLogic } from "@/lib/logics/projectLogic";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
+  const { activeProject } = useProjects();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const { projectData, projectDataLoading } = useValues(projectLogic);
 
   if (!projectsLoading && !projects.length) {
     return (
@@ -39,7 +44,13 @@ export function DesktopProjectView() {
           </aside>
 
           <main className="h-full overflow-y-auto flex items-center">
-            <DesktopProjectTile />
+            <div className="w-full max-w-5xl px-4 relative">
+              <AnimatePresence mode="popLayout">
+                {projectData && !projectDataLoading && (
+                  <DesktopProjectTile key={projectData.id} />
+                )}
+              </AnimatePresence>
+            </div>
           </main>
         </div>
       </div>

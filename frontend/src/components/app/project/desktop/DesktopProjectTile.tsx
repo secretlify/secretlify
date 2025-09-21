@@ -113,84 +113,48 @@ export function DesktopProjectTile() {
   };
 
   return (
-    <div className="w-full max-w-5xl px-4 relative">
-      <AnimatePresence mode="popLayout">
-        {projectData ? (
-          <motion.div
-            key={showDebug ? remountKey : projectData.id} // Use remountKey for debug, project ID for normal transitions
-            className="rounded-2xl border border-border bg-card/60 backdrop-blur"
-            initial={transitionPresets[selectedTransition].initial}
-            animate={transitionPresets[selectedTransition].animate}
-            exit={transitionPresets[selectedTransition].exit}
-            transition={transitionPresets[selectedTransition].transition}
-          >
-            <div className="p-4">
-              <ProjectHeader />
-              <div
-                className="relative rounded-xl overflow-hidden"
-                style={{ height: "55vh" }}
-              >
-                {isShowingHistory ? (
-                  <HistoryView />
-                ) : (
-                  <div className="h-full">
-                    <FileEditor
-                      value={inputValue}
-                      onChange={(v) => setInputValue(v)}
-                    />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={projectData.id}
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -4 }}
-                          transition={{ ease: "easeInOut", duration: 0.1 }}
-                          className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
-                        >
-                          Changed by you{" "}
-                          {getRelativeTime(projectData.updatedAt)}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                )}
+    <motion.div
+      key={showDebug ? remountKey : projectData?.id ?? ""} // Use remountKey for debug, project ID for normal transitions
+      className="rounded-2xl border border-border bg-card/60 backdrop-blur"
+      initial={transitionPresets[selectedTransition].initial}
+      animate={transitionPresets[selectedTransition].animate}
+      exit={transitionPresets[selectedTransition].exit}
+      transition={transitionPresets[selectedTransition].transition}
+    >
+      <div className="p-4">
+        <ProjectHeader />
+        <div
+          className="relative rounded-xl overflow-hidden"
+          style={{ height: "55vh" }}
+        >
+          {isShowingHistory ? (
+            <HistoryView />
+          ) : (
+            <div className="h-full">
+              <FileEditor
+                value={inputValue}
+                onChange={(v) => setInputValue(v)}
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={projectData?.id ?? ""}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ ease: "easeInOut", duration: 0.1 }}
+                    className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                  >
+                    Changed by you{" "}
+                    {getRelativeTime(projectData?.updatedAt ?? "")}
+                  </motion.span>
+                </AnimatePresence>
               </div>
             </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      {/* Debug Panel */}
-      {showDebug && (
-        <div className="fixed top-4 right-4 bg-background border border-border rounded-lg p-4 shadow-lg z-50 min-w-[200px]">
-          <div className="flex items-center gap-2 mb-3">
-            <IconBug className="size-4" />
-            <span className="text-sm font-semibold">Transition Debug</span>
-          </div>
-          <div className="space-y-2">
-            {Object.keys(transitionPresets).map((key) => (
-              <button
-                key={key}
-                onClick={() =>
-                  handleTransitionChange(key as keyof typeof transitionPresets)
-                }
-                className={`w-full text-left px-3 py-2 text-sm rounded border ${
-                  selectedTransition === key
-                    ? "bg-accent border-accent-foreground/20"
-                    : "hover:bg-accent/50 border-transparent"
-                }`}
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-          <div className="text-xs text-muted-foreground mt-3 pt-2 border-t border-border">
-            Press Cmd/Ctrl + D to toggle
-          </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </motion.div>
   );
 }
 
