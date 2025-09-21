@@ -163,4 +163,30 @@
   .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #25282c !important;
   }
+
+  /* Mobile-safe viewport height utilities */
+  .h-screen-mobile {
+    height: 100dvh; /* Dynamic viewport height - accounts for mobile browser UI */
+  }
+
+  .min-h-screen-mobile {
+    min-height: 100dvh;
+  }
+
+  .max-h-screen-mobile {
+    max-height: 100dvh;
+  }
+
+  /* Fallback for browsers that don't support dvh */
+  @supports not (height: 100dvh) {
+    .h-screen-mobile {
+      height: 100vh;
+    }
+    .min-h-screen-mobile {
+      min-height: 100vh;
+    }
+    .max-h-screen-mobile {
+      max-height: 100vh;
+    }
+  }
 }
