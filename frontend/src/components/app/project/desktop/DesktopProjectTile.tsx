@@ -145,7 +145,7 @@ export function DesktopProjectTile() {
             style={{ height: "55vh" }}
           >
             {!projectData || showSkeleton ? (
-              <div className="h-full p-4 space-y-4">
+              <div className="h-full bg-editor p-4 space-y-4">
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-5/6" />
