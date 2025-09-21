@@ -32,7 +32,6 @@ export class ProjectWriteService {
     memberId: string,
     serverPassphrase: string,
   ): Promise<void> {
-    console.log('Adding member to project', projectId, memberId, serverPassphrase);
     await this.projectModel.updateOne(
       { _id: new Types.ObjectId(projectId) },
       {
