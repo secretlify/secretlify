@@ -68,7 +68,7 @@ export function UnlockBrowserDialog() {
                 setIsError(false);
               }
             }}
-            className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+            className="w-full rounded-md border px-3 py-2 text bg-background text-base sm:text-sm"
             autoFocus
             autoComplete="current-password"
             required

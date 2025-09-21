@@ -195,7 +195,7 @@ function GenerateNewInviteLinkSection() {
           type="password"
           value={passphrase}
           onChange={(e) => setPassphrase(e.target.value)}
-          className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+          className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
           placeholder="Enter a secure passphrase"
           autoComplete="new-password"
           required

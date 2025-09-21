@@ -126,7 +126,7 @@ export function AcceptInvitationPage() {
                     setIsError(false);
                   }
                 }}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                className="w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary text-base sm:text-sm"
                 placeholder="Enter passphrase"
                 autoComplete="new-password"
                 autoFocus

@@ -68,7 +68,7 @@ export function AddProjectDialog({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+            className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
             autoFocus
             required
           />

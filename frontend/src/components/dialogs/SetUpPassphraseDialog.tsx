@@ -60,7 +60,7 @@ export function SetUpPassphraseDialog() {
               type="password"
               value={pass1}
               onChange={(e) => setPass1(e.target.value)}
-              className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+              className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
               autoFocus
               autoComplete="new-password"
               required
@@ -76,7 +76,7 @@ export function SetUpPassphraseDialog() {
               type="password"
               value={pass2}
               onChange={(e) => setPass2(e.target.value)}
-              className="w-full rounded-md border px-3 py-2 text-sm bg-background"
+              className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
               autoComplete="new-password"
               required
             />
