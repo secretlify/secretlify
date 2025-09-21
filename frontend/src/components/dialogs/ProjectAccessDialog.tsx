@@ -172,13 +172,15 @@ function ActiveInviteLinksSection() {
 }
 
 function GenerateNewInviteLinkSection() {
-  const { invitationsLoading } = useValues(invitationsLogic);
-  const { createInvitation } = useActions(invitationsLogic);
+  const { createInvitation } = useAsyncActions(invitationsLogic);
   const [passphrase, setPassphrase] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateLink = async () => {
+    setIsLoading(true);
     await createInvitation(passphrase);
     setPassphrase("");
+    setIsLoading(false);
   };
 
   return (
@@ -206,10 +208,11 @@ function GenerateNewInviteLinkSection() {
 
       <Button
         onClick={handleGenerateLink}
-        disabled={!passphrase.trim() || invitationsLoading}
+        isLoading={isLoading}
+        disabled={!passphrase.trim()}
         className="w-full"
       >
-        {invitationsLoading ? "Generating..." : "Generate invite link"}
+        "Generate invite link"
       </Button>
     </div>
   );
