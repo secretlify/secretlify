@@ -49,11 +49,6 @@ export function IndexPage() {
           </span>
         </h1>
       </div>
-      <p className="text-lg md:text-2xl text-muted-foreground">
-        Simple way to share env files and secrets
-        <br />
-        private, fast and free forever
-      </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
           to="/app/project/$projectId"

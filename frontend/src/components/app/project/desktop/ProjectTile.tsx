@@ -8,6 +8,7 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
 import { IconHistory, IconUsers } from "@tabler/icons-react";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
+import { getRelativeTime } from "@/lib/utils";
 
 export function ProjectTile() {
   const {
@@ -70,14 +71,14 @@ export function ProjectTile() {
                 <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
                   <AnimatePresence mode="wait">
                     <motion.span
-                      key={"edit-mode"}
+                      key={projectData.updatedAt}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
                       transition={{ ease: "easeInOut", duration: 0.1 }}
                       className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
                     >
-                      Changed by you 1 week ago
+                      Changed by you {getRelativeTime(projectData.updatedAt)}
                     </motion.span>
                   </AnimatePresence>
                 </div>

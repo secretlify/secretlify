@@ -7,6 +7,8 @@ export interface Invitation {
   temporaryPublicKey: string;
   temporaryPrivateKey: string;
   temporaryServerPassphrase: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateInvitationDto {

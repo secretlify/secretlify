@@ -12,6 +12,7 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
 import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
+import { getRelativeTime } from "@/lib/utils";
 
 interface ProjectAccessDialogProps {
   open: boolean;
@@ -82,10 +83,11 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
     <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-md">
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium text-foreground/90 mb-1">
-          Invitation link
+          Invite link
         </div>
         <div className="text-xs text-muted-foreground">
-          Created • ID: {invitation.id.slice(-8)}
+          Created {getRelativeTime(invitation.createdAt)} • ID:{" "}
+          {invitation.id.slice(-8)}
         </div>
       </div>
       <div className="flex items-center gap-1 shrink-0">

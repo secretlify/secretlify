@@ -7,6 +7,7 @@ export interface Project {
   encryptedKeyVersions: Record<string, string>;
   encryptedSecrets: string;
   members: string[];
+  updatedAt: string;
 }
 
 export interface ProjectWithVersions extends Project {
