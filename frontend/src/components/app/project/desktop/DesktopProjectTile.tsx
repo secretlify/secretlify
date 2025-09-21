@@ -112,53 +112,54 @@ export function DesktopProjectTile() {
     setRemountKey((prev) => prev + 1); // Force re-mount to see transition
   };
 
-  if (!projectData) {
-    return null;
-  }
-
   return (
     <div className="w-full max-w-5xl px-4 relative">
-      <motion.div
-        key={showDebug ? remountKey : projectData.id} // Use remountKey for debug, project ID for normal transitions
-        className="rounded-2xl border border-border bg-card/60 backdrop-blur"
-        initial={transitionPresets[selectedTransition].initial}
-        animate={transitionPresets[selectedTransition].animate}
-        exit={transitionPresets[selectedTransition].exit}
-        transition={transitionPresets[selectedTransition].transition}
-      >
-        <div className="p-4">
-          <ProjectHeader />
-          <div
-            className="relative rounded-xl overflow-hidden"
-            style={{ height: "55vh" }}
+      <AnimatePresence mode="popLayout">
+        {projectData ? (
+          <motion.div
+            key={showDebug ? remountKey : projectData.id} // Use remountKey for debug, project ID for normal transitions
+            className="rounded-2xl border border-border bg-card/60 backdrop-blur"
+            initial={transitionPresets[selectedTransition].initial}
+            animate={transitionPresets[selectedTransition].animate}
+            exit={transitionPresets[selectedTransition].exit}
+            transition={transitionPresets[selectedTransition].transition}
           >
-            {isShowingHistory ? (
-              <HistoryView />
-            ) : (
-              <div className="h-full">
-                <FileEditor
-                  value={inputValue}
-                  onChange={(v) => setInputValue(v)}
-                />
-                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={projectData.id}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ ease: "easeInOut", duration: 0.1 }}
-                      className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
-                    >
-                      Changed by you {getRelativeTime(projectData.updatedAt)}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
+            <div className="p-4">
+              <ProjectHeader />
+              <div
+                className="relative rounded-xl overflow-hidden"
+                style={{ height: "55vh" }}
+              >
+                {isShowingHistory ? (
+                  <HistoryView />
+                ) : (
+                  <div className="h-full">
+                    <FileEditor
+                      value={inputValue}
+                      onChange={(v) => setInputValue(v)}
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={projectData.id}
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ ease: "easeInOut", duration: 0.1 }}
+                          className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm"
+                        >
+                          Changed by you{" "}
+                          {getRelativeTime(projectData.updatedAt)}
+                        </motion.span>
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-      </motion.div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       {/* Debug Panel */}
       {showDebug && (
