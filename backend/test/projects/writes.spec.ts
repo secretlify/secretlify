@@ -39,6 +39,8 @@ describe('ProjectCoreController (writes)', () => {
         members: [user.id],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
       });
     });
 

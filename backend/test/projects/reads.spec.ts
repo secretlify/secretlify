@@ -38,6 +38,8 @@ describe('ProjectCoreController (reads)', () => {
         members: [user.id],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
       });
     });
 
@@ -65,6 +67,8 @@ describe('ProjectCoreController (reads)', () => {
         members: [owner.id, member.id],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
       });
     });
 
@@ -138,6 +142,8 @@ describe('ProjectCoreController (reads)', () => {
             members: [user.id],
             encryptedKeyVersions: {},
             encryptedSecrets: '',
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
           },
           {
             id: projectB.id,
@@ -146,6 +152,8 @@ describe('ProjectCoreController (reads)', () => {
             members: [user.id],
             encryptedKeyVersions: {},
             encryptedSecrets: '',
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
           },
         ]),
       );

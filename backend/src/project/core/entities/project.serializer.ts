@@ -15,6 +15,8 @@ export class ProjectSerializer {
       members: entity.members.map((member) => member.toString() as UserId),
       encryptedKeyVersions: entity.encryptedSecretsKeys,
       encryptedSecretsHistory: entity.encryptedSecretsHistory,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     };
   }
 
@@ -26,6 +28,8 @@ export class ProjectSerializer {
       members: normalized.members,
       encryptedKeyVersions: normalized.encryptedKeyVersions,
       encryptedSecrets: normalized.encryptedSecretsHistory[0],
+      createdAt: normalized.createdAt.toISOString(),
+      updatedAt: normalized.updatedAt.toISOString(),
     };
   }
 

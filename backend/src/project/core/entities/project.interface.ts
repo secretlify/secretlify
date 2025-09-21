@@ -11,6 +11,8 @@ export class ProjectNormalized {
   public members: UserId[];
   public encryptedKeyVersions: Record<string, string>;
   public encryptedSecretsHistory: string[];
+  public createdAt: Date;
+  public updatedAt: Date;
 }
 
 export class ProjectSerialized {
@@ -31,6 +33,12 @@ export class ProjectSerialized {
 
   @ApiProperty()
   public encryptedSecrets: string;
+
+  @ApiProperty()
+  public createdAt: string;
+
+  @ApiProperty()
+  public updatedAt: string;
 }
 
 export class ProjectHistorySerialized {

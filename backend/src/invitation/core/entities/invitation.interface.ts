@@ -7,6 +7,7 @@ export class InvitationNormalized {
   public temporaryPublicKey: string;
   public temporaryPrivateKey: string;
   public temporaryServerPassphrase: string;
+  public createdAt: Date;
 }
 
 export class InvitationSerialized {
@@ -27,4 +28,7 @@ export class InvitationSerialized {
 
   @ApiProperty()
   public temporaryServerPassphrase: string;
+
+  @ApiProperty()
+  public createdAt: string;
 }

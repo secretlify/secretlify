@@ -47,6 +47,7 @@ describe('InvitationCoreController (writes)', () => {
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
         temporaryServerPassphrase: 'test-server-passphrase',
+        createdAt: expect.any(String),
       });
     });
 
