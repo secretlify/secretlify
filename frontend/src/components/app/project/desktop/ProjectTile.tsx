@@ -109,7 +109,7 @@ function ProjectHeader() {
           </Button>
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
             <div className="font-medium">Members</div>
-            <div className="text-xs text-muted-foreground">invite members</div>
+            <div className="text-xs text-muted-foreground">Invite members</div>
           </div>
         </div>
         <div className="relative group">

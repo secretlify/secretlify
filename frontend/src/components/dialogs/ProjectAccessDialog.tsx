@@ -11,7 +11,14 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
-import { IconUsers, IconCopy, IconCheck, IconTrash } from "@tabler/icons-react";
+import {
+  IconUsers,
+  IconCopy,
+  IconCheck,
+  IconTrash,
+  IconLink,
+  IconHexagonalPrism,
+} from "@tabler/icons-react";
 import { getRelativeTime } from "@/lib/utils";
 
 interface ProjectAccessDialogProps {
@@ -137,7 +144,10 @@ function ActiveInviteLinksSection() {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-medium">Active invite links</h3>
+      <div className="flex items-center gap-2">
+        <IconLink className="size-4 text-muted-foreground" />
+        <h3 className="text-sm font-medium">Active invite links</h3>
+      </div>
       {invitationsLoading && !invitations ? (
         <div className="text-center py-8 px-4">
           <div className="text-sm text-muted-foreground">
@@ -173,7 +183,10 @@ function GenerateNewInviteLinkSection() {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-medium">Generate new invite link</h3>
+      <div className="flex items-center gap-2">
+        <IconHexagonalPrism className="size-4 text-muted-foreground" />
+        <h3 className="text-sm font-medium">Generate new invite link</h3>
+      </div>
       <div className="grid gap-2">
         <input
           id="passphrase"
