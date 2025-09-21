@@ -119,7 +119,7 @@ export function DesktopProjectTile() {
   return (
     <div className="w-full max-w-5xl px-4 relative">
       <motion.div
-        key={remountKey}
+        key={showDebug ? remountKey : projectData.id} // Use remountKey for debug, project ID for normal transitions
         className="rounded-2xl border border-border bg-card/60 backdrop-blur"
         initial={transitionPresets[selectedTransition].initial}
         animate={transitionPresets[selectedTransition].animate}
