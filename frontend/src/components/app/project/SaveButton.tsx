@@ -6,13 +6,19 @@ import { motion } from "motion/react";
 import posthog from "posthog-js";
 import { useState } from "react";
 
-export function UpdateButton() {
+export function UpdateButton({
+  disabled: externalDisabled,
+}: { disabled?: boolean } = {}) {
   const { isSubmitting, isEditorDirty } = useValues(projectLogic);
   const { updateProjectContent } = useActions(projectLogic);
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const internalDisabled = isSubmitting || !isEditorDirty;
+  const finalDisabled = externalDisabled || internalDisabled;
+
   const update = () => {
+    if (finalDisabled) return;
     posthog.capture("save_button_clicked");
     updateProjectContent();
   };
@@ -22,8 +28,8 @@ export function UpdateButton() {
       type="button"
       aria-label="Save"
       onClick={update}
-      disabled={isSubmitting || !isEditorDirty}
-      whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
+      disabled={finalDisabled}
+      whileTap={finalDisabled ? undefined : { scale: 0.95 }}
       layout
       transition={{
         layout: { duration: 0.25, ease: [0.2, 0, 0, 1] },
@@ -36,7 +42,7 @@ export function UpdateButton() {
       }}
       animate={{ scale: isHovered ? 1.05 : 1 }}
       onHoverStart={() => {
-        if (!isSubmitting && isEditorDirty) setIsHovered(true);
+        if (!finalDisabled) setIsHovered(true);
       }}
       onHoverEnd={() => setIsHovered(false)}
       className={cn(
@@ -53,6 +59,8 @@ export function UpdateButton() {
           />
           <span>Saving...</span>
         </>
+      ) : externalDisabled ? (
+        <span>Loading...</span>
       ) : !isEditorDirty ? (
         <span>Saved</span>
       ) : (

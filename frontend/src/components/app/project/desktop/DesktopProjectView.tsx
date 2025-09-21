@@ -6,6 +6,7 @@ import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { Button } from "@/components/ui/button";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 import { Meh } from "lucide-react";
+import { motion } from "motion/react";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
@@ -33,7 +34,12 @@ export function DesktopProjectView() {
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8">
       <div className="h-screen w-full overflow-hidden bg-background text-foreground">
-        <div className="mx-auto max-w-7xl h-full grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 p-4 md:p-8">
+        <motion.div
+          className="mx-auto max-w-7xl h-full grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 p-4 md:p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0, 1, 0, 1] }}
+        >
           <aside className="h-full overflow-y-auto flex flex-col justify-center">
             <DesktopProjectsList />
           </aside>
@@ -41,7 +47,7 @@ export function DesktopProjectView() {
           <main className="h-full overflow-y-auto flex items-center">
             <DesktopProjectTile />
           </main>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

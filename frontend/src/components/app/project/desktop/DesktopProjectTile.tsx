@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { IconHistory, IconUsers, IconBug } from "@tabler/icons-react";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 import { getRelativeTime } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const hardcoreEase = [0, 1, 0, 1] as const;
 const differentEase = [0, 0.7, 0.3, 1] as const;
@@ -78,6 +79,7 @@ export function DesktopProjectTile() {
   const [selectedTransition, setSelectedTransition] =
     useState<keyof typeof transitionPresets>("A");
   const [remountKey, setRemountKey] = useState(0);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -112,9 +114,19 @@ export function DesktopProjectTile() {
     setRemountKey((prev) => prev + 1); // Force re-mount to see transition
   };
 
-  if (!projectData) {
-    return null;
-  }
+  // Artificial skeleton delay - keep skeleton visible for 1 second after data loads
+  useEffect(() => {
+    if (projectData && showSkeleton) {
+      const timer = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 1000); // 1 second delay
+
+      return () => clearTimeout(timer);
+    } else if (!projectData) {
+      // Reset skeleton state when project data becomes unavailable
+      setShowSkeleton(true);
+    }
+  }, [projectData, showSkeleton]);
 
   return (
     <div className="w-full max-w-5xl px-4 relative">
@@ -127,12 +139,31 @@ export function DesktopProjectTile() {
         transition={transitionPresets[selectedTransition].transition}
       >
         <div className="p-4">
-          <ProjectHeader />
+          <ProjectHeader showSkeleton={showSkeleton} />
           <div
             className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
           >
-            {isShowingHistory ? (
+            {!projectData || showSkeleton ? (
+              <div className="h-full p-4 space-y-4">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <div className="flex gap-2 mt-6">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <div className="space-y-2 mt-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-4 w-4/5" />
+                </div>
+              </div>
+            ) : isShowingHistory ? (
               <HistoryView />
             ) : (
               <div className="h-full">
@@ -160,8 +191,8 @@ export function DesktopProjectTile() {
         </div>
       </motion.div>
 
-      {/* Debug Panel */}
-      {showDebug && (
+      {/* Debug Panel - Only shows if project data is available and skeleton is done */}
+      {showDebug && projectData && !showSkeleton && (
         <div className="fixed top-4 right-4 bg-background border border-border rounded-lg p-4 shadow-lg z-50 min-w-[200px]">
           <div className="flex items-center gap-2 mb-3">
             <IconBug className="size-4" />
@@ -193,7 +224,7 @@ export function DesktopProjectTile() {
   );
 }
 
-function ProjectHeader() {
+function ProjectHeader({ showSkeleton }: { showSkeleton: boolean }) {
   const { projectData, isShowingHistory } = useValues(projectLogic);
   const { toggleHistoryView } = useActions(projectLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -239,15 +270,21 @@ function ProjectHeader() {
       {/* Center - project name with proper truncation */}
       <div className="flex items-center gap-4 justify-center min-w-0">
         <div className="h-px w-6 bg-border flex-shrink-0"></div>
-        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 truncate min-w-0">
-          {projectData?.name}
-        </h1>
+        {!projectData || showSkeleton ? (
+          <Skeleton className="h-8 w-48" />
+        ) : (
+          <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 truncate min-w-0">
+            {projectData.name}
+          </h1>
+        )}
         <div className="h-px w-6 bg-border flex-shrink-0"></div>
       </div>
 
       {/* Right button - fixed width */}
       <div className="flex justify-self-end">
-        {!isShowingHistory && <UpdateButton />}
+        {!isShowingHistory && (
+          <UpdateButton disabled={!projectData || showSkeleton} />
+        )}
       </div>
 
       <ProjectAccessDialog
