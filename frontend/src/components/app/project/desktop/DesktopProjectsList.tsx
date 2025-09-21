@@ -5,9 +5,9 @@ import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useEffect, useState } from "react";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import ProjectsListItem from "./ProjectsListItem";
+import DesktopProjectsListItem from "./DesktopProjectsListItem";
 
-export function ProjectsList() {
+export function DesktopProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
   const navigate = useNavigate();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -80,7 +80,10 @@ export function ProjectsList() {
 
             return (
               <motion.div key={project.id} variants={itemVariants} layout>
-                <ProjectsListItem project={project} isActive={isActive} />
+                <DesktopProjectsListItem
+                  project={project}
+                  isActive={isActive}
+                />
               </motion.div>
             );
           })}

@@ -10,7 +10,7 @@ import { IconHistory, IconUsers } from "@tabler/icons-react";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 import { getRelativeTime } from "@/lib/utils";
 
-export function ProjectTile() {
+export function DesktopProjectTile() {
   const {
     projectData,
     isShowingHistory,
@@ -71,7 +71,7 @@ export function ProjectTile() {
                 <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
                   <AnimatePresence mode="wait">
                     <motion.span
-                      key={projectData.updatedAt}
+                      key={projectData.id}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}

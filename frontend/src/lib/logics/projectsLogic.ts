@@ -52,7 +52,7 @@ export const projectsLogic = kea<projectsLogicType>([
     addProject: async ({ project, navigateCallback }): Promise<void> => {
       const projectKey = await SymmetricCrypto.generateProjectKey();
 
-      const content = `BEN="dover"`;
+      const content = `KEY="value"`;
       const contentEncrypted = await SymmetricCrypto.encrypt(
         content,
         projectKey
