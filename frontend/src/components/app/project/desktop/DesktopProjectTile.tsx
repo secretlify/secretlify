@@ -15,23 +15,53 @@ const differentEase = [0, 0.7, 0.3, 1] as const;
 
 const transitionPresets = {
   A: {
-    duration: 1,
-    ease: hardcoreEase,
+    initial: { opacity: 0, x: -50, scale: 0.9 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 50, scale: 0.9 },
+    transition: {
+      duration: 1,
+      ease: hardcoreEase,
+    },
   },
   B: {
-    opacity: { duration: 0.2, ease: "easeInOut" as const },
-    x: { duration: 1, ease: hardcoreEase },
-    scale: { duration: 1, ease: hardcoreEase },
+    initial: { opacity: 0, x: -50, scale: 0.9 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 50, scale: 0.9 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      x: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
   },
   C: {
-    opacity: { duration: 0.2, ease: "easeInOut" as const },
-    x: { duration: 1, ease: differentEase },
-    scale: { duration: 1, ease: differentEase },
+    initial: { opacity: 0, x: -100, scale: 0.8 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 100, scale: 0.8 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      x: { duration: 0.5, ease: differentEase },
+      scale: { duration: 0.5, ease: differentEase },
+    },
   },
   D: {
-    opacity: { duration: 0.1, ease: "easeInOut" as const },
-    x: { duration: 1, ease: hardcoreEase },
-    scale: { duration: 1, ease: hardcoreEase },
+    initial: { opacity: 0, x: 0, scale: 0.5 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 0, scale: 0.5 },
+    transition: {
+      opacity: { duration: 0.1, ease: "easeInOut" as const },
+      x: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
+  },
+  E: {
+    initial: { opacity: 0, y: 100, scale: 0.8 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, x: 0, scale: 0.5 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      y: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
   },
 };
 
@@ -91,10 +121,10 @@ export function DesktopProjectTile() {
       <motion.div
         key={remountKey}
         className="rounded-2xl border border-border bg-card/60 backdrop-blur"
-        initial={{ opacity: 0, x: -50, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: 50, scale: 0.9 }}
-        transition={transitionPresets[selectedTransition]}
+        initial={transitionPresets[selectedTransition].initial}
+        animate={transitionPresets[selectedTransition].animate}
+        exit={transitionPresets[selectedTransition].exit}
+        transition={transitionPresets[selectedTransition].transition}
       >
         <div className="p-4">
           <ProjectHeader />
