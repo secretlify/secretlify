@@ -97,8 +97,9 @@ function ProjectHeader() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   return (
-    <div className="mb-3 relative flex items-center justify-center gap-4">
-      <div className="absolute left-0 flex items-center gap-2">
+    <div className="mb-3 grid grid-cols-3 items-center gap-4">
+      {/* Left buttons - fixed width */}
+      <div className="flex items-center gap-2 justify-self-start">
         <div className="relative group">
           <Button
             variant="ghost"
@@ -132,14 +133,18 @@ function ProjectHeader() {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <div className="h-px w-6 bg-border"></div>
-        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
+
+      {/* Center - project name with proper truncation */}
+      <div className="flex items-center gap-4 justify-center min-w-0">
+        <div className="h-px w-6 bg-border flex-shrink-0"></div>
+        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 truncate min-w-0">
           {projectData?.name}
         </h1>
-        <div className="h-px w-6 bg-border"></div>
+        <div className="h-px w-6 bg-border flex-shrink-0"></div>
       </div>
-      <div className="absolute right-0">
+
+      {/* Right button - fixed width */}
+      <div className="flex justify-self-end">
         {!isShowingHistory && <UpdateButton />}
       </div>
 

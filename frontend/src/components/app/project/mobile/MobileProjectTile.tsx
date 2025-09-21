@@ -173,7 +173,7 @@ function MobileProjectHeader({
           onValueChange={handleSelectChange}
         >
           <SelectTrigger className="border-none shadow-none text-lg font-semibold bg-transparent hover:bg-accent/30 cursor-pointer">
-            <SelectValue placeholder="Select project" />
+            <SelectValue placeholder="Select project" className="truncate" />
           </SelectTrigger>
           <SelectContent>
             {projects.map((project) => (
@@ -182,7 +182,7 @@ function MobileProjectHeader({
                 value={project.id}
                 className="cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
               >
-                {project.name}
+                <span className="truncate">{project.name}</span>
               </SelectItem>
             ))}
             <SelectItem
