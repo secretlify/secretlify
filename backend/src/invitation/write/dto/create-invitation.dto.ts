@@ -3,5 +3,5 @@ export class CreateInvitationDto {
   public authorId: string;
   public temporaryPublicKey: string;
   public temporaryPrivateKey: string;
-  public temporaryServerPassphrase: string;
+  public temporarySecretsKey: string;
 }

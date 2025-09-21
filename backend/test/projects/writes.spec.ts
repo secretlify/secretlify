@@ -35,8 +35,7 @@ describe('ProjectCoreController (writes)', () => {
       expect(response.body).toEqual({
         id: expect.any(String),
         name: 'test-project',
-        owner: user.id,
-        members: [user.id],
+        members: { [user.id]: 'owner' },
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -261,6 +260,135 @@ describe('ProjectCoreController (writes)', () => {
       // when
       const response = await request(bootstrap.app.getHttpServer()).delete(
         `/projects/${project.id}`,
+      );
+
+      // then
+      expect(response.status).toEqual(401);
+    });
+  });
+
+  describe('DELETE /projects/:projectId/members/:memberId', () => {
+    it('owner removes a member', async () => {
+      // given
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${ownerToken}`);
+
+      // then
+      expect(response.status).toEqual(204);
+      const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, ownerToken);
+      expect(updatedProject.members).toEqual({ [owner.id]: 'owner' });
+    });
+
+    it('member removes themself', async () => {
+      // given
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${memberToken}`);
+
+      // then
+      expect(response.status).toEqual(204);
+      const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, ownerToken);
+      expect(updatedProject.members).toEqual({ [owner.id]: 'owner' });
+    });
+
+    it('member cannot remove owner', async () => {
+      // given
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${owner.id}`)
+        .set('authorization', `Bearer ${memberToken}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('member cannot remove another member', async () => {
+      // given
+      const { token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: memberA, token: memberAToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'memberA@test.com',
+      });
+      const { user: memberB } = await bootstrap.utils.userUtils.createDefault({
+        email: 'memberB@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, memberA.id);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, memberB.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${memberB.id}`)
+        .set('authorization', `Bearer ${memberAToken}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('random user cannot remove anyone', async () => {
+      // given
+      const { token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: member } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      const { token: randomToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'random@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken);
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${randomToken}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('does not remove when not logged in', async () => {
+      // given
+      const { user: member, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      const project = await bootstrap.utils.projectUtils.createProject(token);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).delete(
+        `/projects/${project.id}/members/${member.id}`,
       );
 
       // then

@@ -17,7 +17,7 @@ export class InvitationUtils {
     data: Partial<CreateInvitationBody> = {
       temporaryPublicKey: 'test-public-key',
       temporaryPrivateKey: 'test-private-key',
-      temporaryServerPassphrase: 'test-server-passphrase',
+      temporarySecretsKey: 'test-server-passphrase',
     },
   ): Promise<InvitationSerialized> {
     const response = await request(this.app.getHttpServer())

@@ -16,5 +16,5 @@ export class CreateInvitationBody {
 
   @ApiProperty()
   @IsString()
-  public temporaryServerPassphrase: string;
+  public temporarySecretsKey: string;
 }

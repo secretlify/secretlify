@@ -34,8 +34,7 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        owner: user.id,
-        members: [user.id],
+        members: { [user.id]: 'owner' },
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -63,8 +62,7 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        owner: owner.id,
-        members: [owner.id, member.id],
+        members: { [owner.id]: 'owner', [member.id]: 'member' },
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -138,8 +136,7 @@ describe('ProjectCoreController (reads)', () => {
           {
             id: projectA.id,
             name: 'project-a',
-            owner: user.id,
-            members: [user.id],
+            members: { [user.id]: 'owner' },
             encryptedKeyVersions: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
@@ -148,8 +145,7 @@ describe('ProjectCoreController (reads)', () => {
           {
             id: projectB.id,
             name: 'project-b',
-            owner: user.id,
-            members: [user.id],
+            members: { [user.id]: 'owner' },
             encryptedKeyVersions: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
@@ -215,8 +211,7 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        owner: user.id,
-        members: [user.id],
+        members: { [user.id]: 'owner' },
         encryptedKeyVersions: {},
         encryptedSecretsHistory: ['v3', 'v2'],
       });

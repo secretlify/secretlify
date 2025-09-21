@@ -19,6 +19,7 @@ import { ProjectHistorySerialized, ProjectSerialized } from './entities/project.
 import { ProjectSerializer } from './entities/project.serializer';
 import { ProjectMemberGuard } from './guards/project-member.guard';
 import { ProjectOwnerGuard } from './guards/project-owner.guard';
+import { RemoveProjectMemberGuard } from './guards/remove-project-member.guard';
 
 @Controller('')
 @ApiTags('Projects')
@@ -32,7 +33,7 @@ export class ProjectCoreController {
   @Get('users/me/projects')
   @ApiResponse({ type: [ProjectSerialized] })
   public async findUserProjects(@CurrentUserId() userId: string): Promise<ProjectSerialized[]> {
-    const projects = await this.projectReadService.findByMemberId(userId);
+    const projects = await this.projectReadService.findUserProjects(userId);
     return projects.map(ProjectSerializer.serialize);
   }
 
@@ -42,12 +43,14 @@ export class ProjectCoreController {
     @CurrentUserId() userId: string,
     @Body() body: CreateProjectBody,
   ): Promise<ProjectSerialized> {
-    const project = await this.projectWriteService.create({
-      ...body,
-      owner: userId,
-      encryptedKeyVersions: body.encryptedKeyVersions,
-      encryptedSecrets: body.encryptedSecrets,
-    });
+    const project = await this.projectWriteService.create(
+      {
+        ...body,
+        encryptedKeyVersions: body.encryptedKeyVersions,
+        encryptedSecrets: body.encryptedSecrets,
+      },
+      userId,
+    );
 
     return ProjectSerializer.serialize(project);
   }
@@ -79,6 +82,16 @@ export class ProjectCoreController {
   ): Promise<ProjectSerialized> {
     const project = await this.projectWriteService.update(projectId, body);
     return ProjectSerializer.serialize(project);
+  }
+
+  @Delete('projects/:projectId/members/:memberId')
+  @UseGuards(RemoveProjectMemberGuard)
+  @HttpCode(204)
+  public async removeMember(
+    @Param('projectId') projectId: string,
+    @Param('memberId') memberId: string,
+  ): Promise<void> {
+    await this.projectWriteService.removeMember(projectId, memberId);
   }
 
   @Delete('projects/:projectId')

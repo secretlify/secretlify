@@ -32,7 +32,7 @@ export class ProjectUtils {
   public async addMemberToProject(projectId: string, memberId: string): Promise<void> {
     await this.projectModel.updateOne(
       { _id: new Types.ObjectId(projectId) },
-      { $push: { members: new Types.ObjectId(memberId) } },
+      { $set: { [`members.${memberId}`]: 'member' } },
     );
   }
 

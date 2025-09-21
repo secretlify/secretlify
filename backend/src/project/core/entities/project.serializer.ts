@@ -1,4 +1,3 @@
-import { UserId } from 'src/shared/types/user-id';
 import { ProjectEntity } from './project.entity';
 import {
   ProjectHistorySerialized,
@@ -11,8 +10,7 @@ export class ProjectSerializer {
     return {
       id: entity._id.toString(),
       name: entity.name,
-      owner: entity.owner.toString() as UserId,
-      members: entity.members.map((member) => member.toString() as UserId),
+      members: entity.members,
       encryptedKeyVersions: entity.encryptedSecretsKeys,
       encryptedSecretsHistory: entity.encryptedSecretsHistory,
       createdAt: entity.createdAt,
@@ -21,11 +19,15 @@ export class ProjectSerializer {
   }
 
   public static serialize(normalized: ProjectNormalized): ProjectSerialized {
+    const members = {};
+    for (const [key, value] of normalized.members.entries()) {
+      members[key] = value;
+    }
+
     return {
       id: normalized.id,
       name: normalized.name,
-      owner: normalized.owner,
-      members: normalized.members,
+      members: members,
       encryptedKeyVersions: normalized.encryptedKeyVersions,
       encryptedSecrets: normalized.encryptedSecretsHistory[0],
       createdAt: normalized.createdAt.toISOString(),
@@ -34,11 +36,15 @@ export class ProjectSerializer {
   }
 
   public static serializeHistory(normalized: ProjectNormalized): ProjectHistorySerialized {
+    const members = {};
+    for (const [key, value] of normalized.members.entries()) {
+      members[key] = value;
+    }
+
     return {
       id: normalized.id,
       name: normalized.name,
-      owner: normalized.owner,
-      members: normalized.members,
+      members: members,
       encryptedKeyVersions: normalized.encryptedKeyVersions,
       encryptedSecretsHistory: normalized.encryptedSecretsHistory,
     };

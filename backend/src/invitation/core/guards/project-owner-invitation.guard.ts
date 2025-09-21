@@ -1,4 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Role } from 'src/shared/types/role.enum';
 import { ProjectReadService } from '../../../project/read/project-read.service';
 import { InvitationReadService } from '../../read/invitation-read.service';
 
@@ -26,7 +27,7 @@ export class ProjectOwnerInvitationGuard implements CanActivate {
 
     const project = await this.projectReadService.findById(projectId);
 
-    if (project.owner !== userId) {
+    if (project.members.get(userId) !== Role.Owner) {
       throw new UnauthorizedException();
     }
 

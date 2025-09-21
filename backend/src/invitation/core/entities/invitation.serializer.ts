@@ -9,7 +9,7 @@ export class InvitationSerializer {
       authorId: entity.authorId.toString(),
       temporaryPublicKey: entity.temporaryPublicKey,
       temporaryPrivateKey: entity.temporaryPrivateKey,
-      temporaryServerPassphrase: entity.temporaryServerPassphrase,
+      temporarySecretsKey: entity.temporarySecretsKey,
       createdAt: entity.createdAt,
     };
   }
@@ -21,7 +21,7 @@ export class InvitationSerializer {
       authorId: normalized.authorId,
       temporaryPublicKey: normalized.temporaryPublicKey,
       temporaryPrivateKey: normalized.temporaryPrivateKey,
-      temporaryServerPassphrase: normalized.temporaryServerPassphrase,
+      temporarySecretsKey: normalized.temporarySecretsKey,
       createdAt: normalized.createdAt.toISOString(),
     };
   }

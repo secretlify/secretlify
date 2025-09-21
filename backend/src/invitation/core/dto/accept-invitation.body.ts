@@ -4,5 +4,5 @@ import { IsString } from 'class-validator';
 export class AcceptInvitationBody {
   @ApiProperty()
   @IsString()
-  public newServerPassphrase: string;
+  public newSecretsKey: string;
 }

@@ -1,12 +1,9 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { ProjectReadService } from '../../read/project-read.service';
-import { ProjectOwnerGuard } from './project-owner.guard';
 
 @Injectable()
-export class ProjectMemberGuard extends ProjectOwnerGuard {
-  constructor(readonly projectReadService: ProjectReadService) {
-    super(projectReadService);
-  }
+export class ProjectMemberGuard implements CanActivate {
+  constructor(readonly projectReadService: ProjectReadService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -18,13 +15,11 @@ export class ProjectMemberGuard extends ProjectOwnerGuard {
     }
 
     const project = await this.projectReadService.findById(projectId);
-    // at the point of writing this, owner is still in members but in case this changes, this class extends owner guard
-    const isMember = project.members.includes(userId);
 
-    if (isMember) {
+    if (project.members.has(userId)) {
       return true;
     }
 
-    return super.canActivate(context);
+    throw new ForbiddenException('You are not a member of this project');
   }
 }

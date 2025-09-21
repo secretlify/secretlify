@@ -35,7 +35,7 @@ describe('InvitationCoreController (writes)', () => {
           projectId: project.id,
           temporaryPublicKey: 'test-public-key',
           temporaryPrivateKey: 'test-private-key',
-          temporaryServerPassphrase: 'test-server-passphrase',
+          temporarySecretsKey: 'test-secrets-key',
         });
 
       // then
@@ -46,7 +46,7 @@ describe('InvitationCoreController (writes)', () => {
         authorId: owner.id,
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
-        temporaryServerPassphrase: 'test-server-passphrase',
+        temporarySecretsKey: 'test-secrets-key',
         createdAt: expect.any(String),
       });
     });
@@ -72,7 +72,7 @@ describe('InvitationCoreController (writes)', () => {
           projectId: project.id,
           temporaryPublicKey: 'test-public-key',
           temporaryPrivateKey: 'test-private-key',
-          temporaryServerPassphrase: 'test-server-passphrase',
+          temporarySecretsKey: 'test-secrets-key',
         });
 
       // then
@@ -101,7 +101,7 @@ describe('InvitationCoreController (writes)', () => {
           projectId: project.id,
           temporaryPublicKey: 'test-public-key',
           temporaryPrivateKey: 'test-private-key',
-          temporaryServerPassphrase: 'test-server-passphrase',
+          temporarySecretsKey: 'test-secrets-key',
         });
 
       // then
@@ -123,7 +123,7 @@ describe('InvitationCoreController (writes)', () => {
         projectId: project.id,
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
-        temporaryServerPassphrase: 'test-server-passphrase',
+        temporarySecretsKey: 'test-secrets-key',
       });
 
       // then
@@ -150,7 +150,7 @@ describe('InvitationCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .post(`/invitations/${invitation.id}/accept`)
         .set('authorization', `Bearer ${inviteeToken}`)
-        .send({ newServerPassphrase: 'passphrase' });
+        .send({ newSecretsKey: 'passphrase' });
 
       // then
       expect(response.status).toEqual(201);
@@ -159,7 +159,8 @@ describe('InvitationCoreController (writes)', () => {
         project.id,
         inviteeToken,
       );
-      expect(updatedProject.members).toContain(invitee.id);
+
+      expect(updatedProject.members).toHaveProperty(invitee.id);
     });
 
     it('does not accept invitation twice', async () => {
@@ -181,13 +182,13 @@ describe('InvitationCoreController (writes)', () => {
       await request(bootstrap.app.getHttpServer())
         .post(`/invitations/${invitation.id}/accept`)
         .set('authorization', `Bearer ${inviteeToken}`)
-        .send({ newServerPassphrase: 'passphrase' });
+        .send({ newSecretsKey: 'encryptedSecretsKey' });
 
       // when
       const response = await request(bootstrap.app.getHttpServer())
         .post(`/invitations/${invitation.id}/accept`)
         .set('authorization', `Bearer ${otherInviteeToken}`)
-        .send({ newServerPassphrase: 'passphrase' });
+        .send({ newSecretsKey: 'encryptedSecretsKey' });
 
       // then
       expect(response.status).toEqual(404);
@@ -210,7 +211,7 @@ describe('InvitationCoreController (writes)', () => {
       // when
       const response = await request(bootstrap.app.getHttpServer())
         .post(`/invitations/${invitation.id}/accept`)
-        .send({ newServerPassphrase: 'passphrase' });
+        .send({ newSecretsKey: 'encryptedSecretsKey' });
 
       // then
       expect(response.status).toEqual(401);
@@ -224,7 +225,7 @@ describe('InvitationCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .post(`/invitations/60f7eabc1234567890abcdef/accept`)
         .set('authorization', `Bearer ${token}`)
-        .send({ newServerPassphrase: 'passphrase' });
+        .send({ newSecretsKey: 'encryptedSecretsKey' });
 
       // then
       expect(response.status).toEqual(404);

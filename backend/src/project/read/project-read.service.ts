@@ -10,7 +10,7 @@ export class ProjectReadService {
   constructor(@InjectModel(ProjectEntity.name) private projectModel: Model<ProjectEntity>) {}
 
   public async findById(id: string): Promise<ProjectNormalized> {
-    const project = await this.projectModel.findById(id).lean<ProjectEntity>().exec();
+    const project = await this.projectModel.findById(id).exec();
 
     if (!project) {
       throw new NotFoundException(`Project not found`);
@@ -19,10 +19,9 @@ export class ProjectReadService {
     return ProjectSerializer.normalize(project);
   }
 
-  public async findByMemberId(memberId: string): Promise<ProjectNormalized[]> {
+  public async findUserProjects(userId: string): Promise<ProjectNormalized[]> {
     const projects = await this.projectModel
-      .find({ members: memberId })
-      .lean<ProjectEntity[]>()
+      .find({ [`members.${userId}`]: { $exists: true } })
       .exec();
     return projects.map(ProjectSerializer.normalize);
   }

@@ -18,7 +18,7 @@ export class InvitationEntity {
   public temporaryPrivateKey: string;
 
   @Prop()
-  public temporaryServerPassphrase: string;
+  public temporarySecretsKey: string;
 
   @Prop()
   public createdAt: Date;

@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { Role } from 'src/shared/types/role.enum';
 import { ProjectEntity } from '../core/entities/project.entity';
 import { ProjectNormalized } from '../core/entities/project.interface';
 import { ProjectSerializer } from '../core/entities/project.serializer';
@@ -15,12 +16,11 @@ export class ProjectWriteService {
     @Inject(PROJECT_HISTORY_SIZE) private readonly maxSecretsVersions: number,
   ) {}
 
-  public async create(dto: CreateProjectDto): Promise<ProjectNormalized> {
+  public async create(dto: CreateProjectDto, userId: string): Promise<ProjectNormalized> {
     const project = await this.projectModel.create({
       name: dto.name,
-      owner: new Types.ObjectId(dto.owner),
-      members: [new Types.ObjectId(dto.owner)],
-      encryptedSecretsKeys: dto.encryptedKeyVersions,
+      members: new Map([[userId, Role.Owner]]),
+      encryptedKeyVersions: dto.encryptedKeyVersions,
       encryptedSecretsHistory: [dto.encryptedSecrets],
     });
 
@@ -35,8 +35,22 @@ export class ProjectWriteService {
     await this.projectModel.updateOne(
       { _id: new Types.ObjectId(projectId) },
       {
-        $push: { members: new Types.ObjectId(memberId) },
-        $set: { [`encryptedSecretsKeys.${memberId}`]: serverPassphrase },
+        $set: {
+          [`members.${memberId}`]: Role.Member,
+          encryptedSecretsKeys: { [memberId]: serverPassphrase },
+        },
+      },
+    );
+  }
+
+  public async removeMember(projectId: string, memberId: string): Promise<void> {
+    await this.projectModel.updateOne(
+      { _id: new Types.ObjectId(projectId) },
+      {
+        $unset: {
+          [`members.${memberId}`]: '',
+          [`encryptedSecretsKeys.${memberId}`]: '',
+        },
       },
     );
   }

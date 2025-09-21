@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserId } from 'src/shared/types/user-id';
+import { Role } from 'src/shared/types/role.enum';
 import { Branded } from '../../../shared/types/branded';
 
 export type EnvName = Branded<string, 'EnvName'>;
@@ -7,8 +7,7 @@ export type EnvName = Branded<string, 'EnvName'>;
 export class ProjectNormalized {
   public id: string;
   public name: string;
-  public owner: UserId;
-  public members: UserId[];
+  public members: Map<string, Role>;
   public encryptedKeyVersions: Record<string, string>;
   public encryptedSecretsHistory: string[];
   public createdAt: Date;
@@ -22,11 +21,8 @@ export class ProjectSerialized {
   @ApiProperty()
   public name: string;
 
-  @ApiProperty()
-  public owner: string;
-
-  @ApiProperty()
-  public members: string[];
+  @ApiProperty({ type: 'object', additionalProperties: { enum: Object.values(Role) } })
+  public members: Record<string, Role>;
 
   @ApiProperty()
   public encryptedKeyVersions: Record<string, string>;
@@ -48,11 +44,8 @@ export class ProjectHistorySerialized {
   @ApiProperty()
   public name: string;
 
-  @ApiProperty()
-  public owner: string;
-
-  @ApiProperty()
-  public members: string[];
+  @ApiProperty({ type: 'object', additionalProperties: { enum: Object.values(Role) } })
+  public members: Record<string, Role>;
 
   @ApiProperty()
   public encryptedKeyVersions: Record<string, string>;
