@@ -73,6 +73,7 @@ export function BaseFileEditor({
       value={value}
       onChange={(v) => onChange(v ?? "")}
       options={editorOptions}
+      loading={null}
     />
   );
 }
