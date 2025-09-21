@@ -97,7 +97,7 @@ function ProjectHeader() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   return (
-    <div className="mb-3 grid grid-cols-3 items-center gap-4">
+    <div className="mb-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
       {/* Left buttons - fixed width */}
       <div className="flex items-center gap-2 justify-self-start">
         <div className="relative group">
