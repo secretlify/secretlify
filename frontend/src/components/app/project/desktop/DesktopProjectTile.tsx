@@ -6,11 +6,66 @@ import { HistoryView } from "@/components/app/project/HistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
-import { IconHistory, IconUsers } from "@tabler/icons-react";
+import { IconHistory, IconUsers, IconBug } from "@tabler/icons-react";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 import { getRelativeTime } from "@/lib/utils";
 
-export function ProjectTile() {
+const hardcoreEase = [0, 1, 0, 1] as const;
+const differentEase = [0, 0.7, 0.3, 1] as const;
+
+const transitionPresets = {
+  A: {
+    initial: { opacity: 0, x: -50, scale: 0.9 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 50, scale: 0.9 },
+    transition: {
+      duration: 1,
+      ease: hardcoreEase,
+    },
+  },
+  B: {
+    initial: { opacity: 0, x: -50, scale: 0.9 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 50, scale: 0.9 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      x: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
+  },
+  C: {
+    initial: { opacity: 0, x: -100, scale: 0.8 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 100, scale: 0.8 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      x: { duration: 0.5, ease: differentEase },
+      scale: { duration: 0.5, ease: differentEase },
+    },
+  },
+  D: {
+    initial: { opacity: 0, x: 0, scale: 0.5 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, x: 0, scale: 0.5 },
+    transition: {
+      opacity: { duration: 0.1, ease: "easeInOut" as const },
+      x: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
+  },
+  E: {
+    initial: { opacity: 0, y: 100, scale: 0.8 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, x: 0, scale: 0.5 },
+    transition: {
+      opacity: { duration: 0.2, ease: "easeInOut" as const },
+      y: { duration: 1, ease: hardcoreEase },
+      scale: { duration: 1, ease: hardcoreEase },
+    },
+  },
+};
+
+export function DesktopProjectTile() {
   const {
     projectData,
     isShowingHistory,
@@ -19,6 +74,10 @@ export function ProjectTile() {
     inputValue,
   } = useValues(projectLogic);
   const { updateProjectContent, setInputValue } = useActions(projectLogic);
+  const [showDebug, setShowDebug] = useState(false);
+  const [selectedTransition, setSelectedTransition] =
+    useState<keyof typeof transitionPresets>("A");
+  const [remountKey, setRemountKey] = useState(0);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -28,6 +87,11 @@ export function ProjectTile() {
         if (!isSubmitting && isEditorDirty && !isShowingHistory) {
           updateProjectContent();
         }
+      }
+      // Toggle debug with Ctrl/Cmd + D
+      if ((event.metaKey || event.ctrlKey) && event.key === "d") {
+        event.preventDefault();
+        setShowDebug((prev) => !prev);
       }
     };
 
@@ -41,18 +105,26 @@ export function ProjectTile() {
     isShowingHistory,
   ]);
 
+  const handleTransitionChange = (
+    transitionKey: keyof typeof transitionPresets
+  ) => {
+    setSelectedTransition(transitionKey);
+    setRemountKey((prev) => prev + 1); // Force re-mount to see transition
+  };
+
   if (!projectData) {
     return null;
   }
 
   return (
-    <div className="w-full max-w-5xl px-4">
+    <div className="w-full max-w-5xl px-4 relative">
       <motion.div
+        key={remountKey}
         className="rounded-2xl border border-border bg-card/60 backdrop-blur"
-        initial={{ opacity: 0, x: -50, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: 50, scale: 0.9 }}
-        transition={{ duration: 1, ease: [0, 1, 0, 1] }}
+        initial={transitionPresets[selectedTransition].initial}
+        animate={transitionPresets[selectedTransition].animate}
+        exit={transitionPresets[selectedTransition].exit}
+        transition={transitionPresets[selectedTransition].transition}
       >
         <div className="p-4">
           <ProjectHeader />
@@ -71,7 +143,7 @@ export function ProjectTile() {
                 <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
                   <AnimatePresence mode="wait">
                     <motion.span
-                      key={projectData.updatedAt}
+                      key={projectData.id}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
@@ -87,6 +159,36 @@ export function ProjectTile() {
           </div>
         </div>
       </motion.div>
+
+      {/* Debug Panel */}
+      {showDebug && (
+        <div className="fixed top-4 right-4 bg-background border border-border rounded-lg p-4 shadow-lg z-50 min-w-[200px]">
+          <div className="flex items-center gap-2 mb-3">
+            <IconBug className="size-4" />
+            <span className="text-sm font-semibold">Transition Debug</span>
+          </div>
+          <div className="space-y-2">
+            {Object.keys(transitionPresets).map((key) => (
+              <button
+                key={key}
+                onClick={() =>
+                  handleTransitionChange(key as keyof typeof transitionPresets)
+                }
+                className={`w-full text-left px-3 py-2 text-sm rounded border ${
+                  selectedTransition === key
+                    ? "bg-accent border-accent-foreground/20"
+                    : "hover:bg-accent/50 border-transparent"
+                }`}
+              >
+                {key}
+              </button>
+            ))}
+          </div>
+          <div className="text-xs text-muted-foreground mt-3 pt-2 border-t border-border">
+            Press Cmd/Ctrl + D to toggle
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -97,8 +199,9 @@ function ProjectHeader() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   return (
-    <div className="mb-3 relative flex items-center justify-center gap-4">
-      <div className="absolute left-0 flex items-center gap-2">
+    <div className="mb-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+      {/* Left buttons - fixed width */}
+      <div className="flex items-center gap-2 justify-self-start">
         <div className="relative group">
           <Button
             variant="ghost"
@@ -132,14 +235,18 @@ function ProjectHeader() {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <div className="h-px w-6 bg-border"></div>
-        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 whitespace-nowrap">
+
+      {/* Center - project name with proper truncation */}
+      <div className="flex items-center gap-4 justify-center min-w-0">
+        <div className="h-px w-6 bg-border flex-shrink-0"></div>
+        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 truncate min-w-0">
           {projectData?.name}
         </h1>
-        <div className="h-px w-6 bg-border"></div>
+        <div className="h-px w-6 bg-border flex-shrink-0"></div>
       </div>
-      <div className="absolute right-0">
+
+      {/* Right button - fixed width */}
+      <div className="flex justify-self-end">
         {!isShowingHistory && <UpdateButton />}
       </div>
 

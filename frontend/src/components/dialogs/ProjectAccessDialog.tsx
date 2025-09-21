@@ -212,7 +212,7 @@ function GenerateNewInviteLinkSection() {
         disabled={!passphrase.trim()}
         className="w-full"
       >
-        "Generate invite link"
+        Generate invite link
       </Button>
     </div>
   );

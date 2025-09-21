@@ -8,12 +8,15 @@ import { useActions, useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { authLogic } from "@/lib/logics/authLogic";
 
-interface ProjectsListItemProps {
+interface DesktopProjectsListItemProps {
   project: Project;
   isActive: boolean;
 }
 
-export function ProjectsListItem({ project, isActive }: ProjectsListItemProps) {
+export function DesktopProjectsListItem({
+  project,
+  isActive,
+}: DesktopProjectsListItemProps) {
   const { jwtToken } = useValues(authLogic);
   const { loadProjects } = useActions(projectsLogic);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -66,4 +69,4 @@ export function ProjectsListItem({ project, isActive }: ProjectsListItemProps) {
   );
 }
 
-export default ProjectsListItem;
+export default DesktopProjectsListItem;

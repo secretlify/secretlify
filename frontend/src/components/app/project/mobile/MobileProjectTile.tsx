@@ -20,6 +20,11 @@ import { useProjects } from "@/lib/hooks/useProjects";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
+};
+
 export function MobileProjectTile() {
   const {
     projectData,
@@ -173,7 +178,11 @@ function MobileProjectHeader({
           onValueChange={handleSelectChange}
         >
           <SelectTrigger className="border-none shadow-none text-lg font-semibold bg-transparent hover:bg-accent/30 cursor-pointer">
-            <SelectValue placeholder="Select project" />
+            <SelectValue placeholder="Select project">
+              {activeProject?.name
+                ? truncateText(activeProject.name, 15)
+                : "Select project"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {projects.map((project) => (
@@ -182,7 +191,7 @@ function MobileProjectHeader({
                 value={project.id}
                 className="cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
               >
-                {project.name}
+                {truncateText(project.name, 40)}
               </SelectItem>
             ))}
             <SelectItem
