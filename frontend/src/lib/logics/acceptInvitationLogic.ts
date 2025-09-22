@@ -46,8 +46,6 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
 
   listeners(({ values }) => ({
     acceptInvitation: async ({ passphrase }) => {
-      console.log("Accepting invitation. Invitation", values.invitation);
-
       const passphraseAsKey =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 

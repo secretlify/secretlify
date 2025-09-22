@@ -176,8 +176,6 @@ export const projectLogic = kea<projectLogicType>([
             decryptedVersions.push({ ...version, content: contentDecrypted });
           }
 
-          console.log("Decrypted versions:", decryptedVersions);
-
           return decryptedVersions;
         },
       },
@@ -219,7 +217,7 @@ export const projectLogic = kea<projectLogicType>([
       }
 
       const chronologicalVersions = [...versions].reverse();
-      const patches: string[] = [];
+      const patches: Patch[] = [];
 
       for (let i = 0; i < chronologicalVersions.length - 1; i++) {
         const oldVersion = chronologicalVersions[i];
@@ -227,8 +225,8 @@ export const projectLogic = kea<projectLogicType>([
 
         const patch = createPatch(
           `version_${i + 1}_to_${i + 2}`,
-          oldVersion,
-          newVersion
+          oldVersion.content,
+          newVersion.content
         );
 
         const cleanPatch = patch
@@ -247,7 +245,13 @@ export const projectLogic = kea<projectLogicType>([
           })
           .join("\n");
 
-        patches.push(cleanPatch);
+        patches.push({
+          id: newVersion.id,
+          author: newVersion.author,
+          createdAt: newVersion.createdAt,
+          updatedAt: newVersion.updatedAt,
+          content: cleanPatch,
+        });
       }
 
       actions.setPatches(patches.reverse());

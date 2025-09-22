@@ -89,8 +89,6 @@ export class ProjectCoreController {
       new Types.ObjectId(projectId),
     );
 
-    console.log('Returning project:', project, membersHydrated, latestVersion.encryptedSecrets);
-
     return ProjectSerializer.serialize(project, membersHydrated, latestVersion.encryptedSecrets);
   }
 
