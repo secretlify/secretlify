@@ -14,5 +14,5 @@ export class CreateProjectBody {
 
   @ApiProperty()
   @IsObject()
-  public encryptedKeyVersions: Record<string, string>;
+  public encryptedSecretsKeys: Record<string, string>;
 }

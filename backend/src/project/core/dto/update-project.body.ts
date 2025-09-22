@@ -11,7 +11,7 @@ export class UpdateProjectBody {
   @ApiProperty({ required: false })
   @IsObject()
   @IsOptional()
-  public encryptedKeyVersions?: Record<string, string>;
+  public encryptedSecretsKeys?: Record<string, string>;
 
   @ApiProperty({ required: false })
   @IsString()

@@ -119,7 +119,7 @@ export const projectLogic = kea<projectLogicType>([
           );
 
           const projectKeyDecrypted = await AsymmetricCrypto.decrypt(
-            projectData?.encryptedKeyVersions![values.userData!.id]!,
+            projectData?.encryptedSecretsKeys![values.userData!.id]!,
             values.privateKeyDecrypted!
           );
 
@@ -154,7 +154,7 @@ export const projectLogic = kea<projectLogicType>([
 
           for (const version of projectWithVersions.encryptedSecretsHistory) {
             const passphraseAsKey = await AsymmetricCrypto.decrypt(
-              projectWithVersions.encryptedKeyVersions[values.userData!.id]!,
+              projectWithVersions.encryptedSecretsKeys[values.userData!.id]!,
               values.privateKeyDecrypted!
             );
 

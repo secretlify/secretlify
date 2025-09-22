@@ -9,7 +9,7 @@ export class ProjectNormalized {
   public id: string;
   public name: string;
   public members: Map<string, Role>;
-  public encryptedKeyVersions: Record<string, string>;
+  public encryptedSecretsKeys: Record<string, string>;
   public createdAt: Date;
   public updatedAt: Date;
 }
@@ -30,7 +30,7 @@ export class ProjectSerialized {
   public members: ProjectMemberSerialized[];
 
   @ApiProperty()
-  public encryptedKeyVersions: Record<string, string>;
+  public encryptedSecretsKeys: Record<string, string>;
 
   @ApiProperty()
   public encryptedSecrets: string;

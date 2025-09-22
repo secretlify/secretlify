@@ -20,7 +20,7 @@ export class ProjectWriteService {
     const project = await this.projectModel.create({
       name: dto.name,
       members: new Map([[userId, Role.Owner]]),
-      encryptedKeyVersions: dto.encryptedKeyVersions,
+      encryptedSecretsKeys: dto.encryptedSecretsKeys,
     });
 
     await this.projectSecretsVersionWriteService.create({
@@ -98,8 +98,8 @@ export class ProjectWriteService {
     if (dto.name !== undefined) {
       toSet.name = dto.name;
     }
-    if (dto.encryptedKeyVersions !== undefined) {
-      toSet.encryptedSecretsKeys = dto.encryptedKeyVersions;
+    if (dto.encryptedSecretsKeys !== undefined) {
+      toSet.encryptedSecretsKeys = dto.encryptedSecretsKeys;
     }
     return Object.keys(toSet).length > 0 ? { $set: toSet } : {};
   }

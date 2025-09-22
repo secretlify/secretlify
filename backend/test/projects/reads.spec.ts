@@ -35,7 +35,7 @@ describe('ProjectCoreController (reads)', () => {
         id: project.id,
         name: 'test-project',
         members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
@@ -66,7 +66,7 @@ describe('ProjectCoreController (reads)', () => {
           { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
           { id: member.id, email: member.email, avatarUrl: member.avatarUrl, role: 'member' },
         ],
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
@@ -108,12 +108,12 @@ describe('ProjectCoreController (reads)', () => {
       });
       const projectA = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-a',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
       });
       const projectB = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'project-b',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
       });
 
@@ -122,7 +122,7 @@ describe('ProjectCoreController (reads)', () => {
       });
       await bootstrap.utils.projectUtils.createProject(tokenB, {
         name: 'project-c',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
       });
 
@@ -140,7 +140,7 @@ describe('ProjectCoreController (reads)', () => {
             id: projectA.id,
             name: 'project-a',
             members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
-            encryptedKeyVersions: {},
+            encryptedSecretsKeys: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
@@ -149,7 +149,7 @@ describe('ProjectCoreController (reads)', () => {
             id: projectB.id,
             name: 'project-b',
             members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
-            encryptedKeyVersions: {},
+            encryptedSecretsKeys: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
@@ -191,7 +191,7 @@ describe('ProjectCoreController (reads)', () => {
       });
       const project = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'test-project',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: 'v1',
       });
 

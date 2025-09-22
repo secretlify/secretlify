@@ -16,7 +16,7 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
-  encryptedKeyVersions: Record<string, string>;
+  encryptedSecretsKeys: Record<string, string>;
   encryptedSecrets: string;
   members: ProjectMember[];
   updatedAt: string;
@@ -29,7 +29,7 @@ export interface ProjectWithVersions extends Project {
 export interface CreateProjectDto {
   name: string;
   encryptedSecrets: string;
-  encryptedKeyVersions: Record<string, string>;
+  encryptedSecretsKeys: Record<string, string>;
 }
 
 export interface UpdateProjectContentDto {
