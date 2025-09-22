@@ -1,6 +1,8 @@
+import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 import { ProjectEntity } from './project.entity';
 import {
   ProjectHistorySerialized,
+  ProjectMemberSerialized,
   ProjectNormalized,
   ProjectSerialized,
 } from './project.interface';
@@ -18,10 +20,23 @@ export class ProjectSerializer {
     };
   }
 
-  public static serialize(normalized: ProjectNormalized): ProjectSerialized {
-    const members = {};
-    for (const [key, value] of normalized.members.entries()) {
-      members[key] = value;
+  public static serialize(
+    normalized: ProjectNormalized,
+    membersDetails: UserPartialSerialized[],
+  ): ProjectSerialized {
+    const membersMap = new Map(membersDetails.map((m) => [m.id, m]));
+    const members: ProjectMemberSerialized[] = [];
+
+    for (const [userId, role] of normalized.members.entries()) {
+      const userDetails = membersMap.get(userId);
+      if (userDetails) {
+        members.push({
+          id: userDetails.id,
+          email: userDetails.email,
+          avatarUrl: userDetails.avatarUrl,
+          role,
+        });
+      }
     }
 
     return {
@@ -35,10 +50,23 @@ export class ProjectSerializer {
     };
   }
 
-  public static serializeHistory(normalized: ProjectNormalized): ProjectHistorySerialized {
-    const members = {};
-    for (const [key, value] of normalized.members.entries()) {
-      members[key] = value;
+  public static serializeHistory(
+    normalized: ProjectNormalized,
+    membersDetails: UserPartialSerialized[],
+  ): ProjectHistorySerialized {
+    const membersMap = new Map(membersDetails.map((m) => [m.id, m]));
+    const members: ProjectMemberSerialized[] = [];
+
+    for (const [userId, role] of normalized.members.entries()) {
+      const userDetails = membersMap.get(userId);
+      if (userDetails) {
+        members.push({
+          id: userDetails.id,
+          email: userDetails.email,
+          avatarUrl: userDetails.avatarUrl,
+          role,
+        });
+      }
     }
 
     return {

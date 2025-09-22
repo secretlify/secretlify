@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
+import { UserSerializer } from '../../user/core/entities/user.serializer';
+import { UserReadService } from '../../user/read/user-read.service';
 import { ProjectReadService } from '../read/project-read.service';
 import { ProjectWriteService } from '../write/project-write.service';
 import { CreateProjectBody } from './dto/create-project.body';
@@ -28,13 +30,18 @@ export class ProjectCoreController {
   constructor(
     private readonly projectWriteService: ProjectWriteService,
     private readonly projectReadService: ProjectReadService,
+    private readonly userReadService: UserReadService,
   ) {}
 
   @Get('users/me/projects')
   @ApiResponse({ type: [ProjectSerialized] })
   public async findUserProjects(@CurrentUserId() userId: string): Promise<ProjectSerialized[]> {
     const projects = await this.projectReadService.findUserProjects(userId);
-    return projects.map(ProjectSerializer.serialize);
+    const memberIds = [...new Set(projects.flatMap((p) => [...p.members.keys()]))];
+    const members = await this.userReadService.readByIds(memberIds);
+    const membersHydrated = members.map(UserSerializer.serializePartial);
+
+    return projects.map((p) => ProjectSerializer.serialize(p, membersHydrated));
   }
 
   @Post('projects')
@@ -52,7 +59,10 @@ export class ProjectCoreController {
       userId,
     );
 
-    return ProjectSerializer.serialize(project);
+    const members = await this.userReadService.readByIds([userId]);
+    const membersHydrated = members.map(UserSerializer.serializePartial);
+
+    return ProjectSerializer.serialize(project, membersHydrated);
   }
 
   @Get('projects/:projectId')
@@ -60,7 +70,11 @@ export class ProjectCoreController {
   @ApiResponse({ type: ProjectSerialized })
   public async findById(@Param('projectId') projectId: string): Promise<ProjectSerialized> {
     const project = await this.projectReadService.findById(projectId);
-    return ProjectSerializer.serialize(project);
+    const memberIds = [...project.members.keys()];
+    const members = await this.userReadService.readByIds(memberIds);
+    const membersHydrated = members.map(UserSerializer.serializePartial);
+
+    return ProjectSerializer.serialize(project, membersHydrated);
   }
 
   @Get('projects/:projectId/history')
@@ -70,7 +84,11 @@ export class ProjectCoreController {
     @Param('projectId') projectId: string,
   ): Promise<ProjectHistorySerialized> {
     const project = await this.projectReadService.findById(projectId);
-    return ProjectSerializer.serializeHistory(project);
+    const memberIds = [...project.members.keys()];
+    const members = await this.userReadService.readByIds(memberIds);
+    const membersHydrated = members.map(UserSerializer.serializePartial);
+
+    return ProjectSerializer.serializeHistory(project, membersHydrated);
   }
 
   @Patch('projects/:projectId')
@@ -81,7 +99,11 @@ export class ProjectCoreController {
     @Body() body: UpdateProjectBody,
   ): Promise<ProjectSerialized> {
     const project = await this.projectWriteService.update(projectId, body);
-    return ProjectSerializer.serialize(project);
+    const memberIds = [...project.members.keys()];
+    const members = await this.userReadService.readByIds(memberIds);
+    const membersHydrated = members.map(UserSerializer.serializePartial);
+
+    return ProjectSerializer.serialize(project, membersHydrated);
   }
 
   @Delete('projects/:projectId/members/:memberId')

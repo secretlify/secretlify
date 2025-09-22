@@ -34,7 +34,7 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        members: { [user.id]: 'owner' },
+        members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -62,7 +62,10 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        members: { [owner.id]: 'owner', [member.id]: 'member' },
+        members: [
+          { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
+          { id: member.id, email: member.email, avatarUrl: member.avatarUrl, role: 'member' },
+        ],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -136,7 +139,7 @@ describe('ProjectCoreController (reads)', () => {
           {
             id: projectA.id,
             name: 'project-a',
-            members: { [user.id]: 'owner' },
+            members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
             encryptedKeyVersions: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
@@ -145,7 +148,7 @@ describe('ProjectCoreController (reads)', () => {
           {
             id: projectB.id,
             name: 'project-b',
-            members: { [user.id]: 'owner' },
+            members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
             encryptedKeyVersions: {},
             encryptedSecrets: '',
             createdAt: expect.any(String),
@@ -211,7 +214,7 @@ describe('ProjectCoreController (reads)', () => {
       expect(response.body).toEqual({
         id: project.id,
         name: 'test-project',
-        members: { [user.id]: 'owner' },
+        members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
         encryptedKeyVersions: {},
         encryptedSecretsHistory: ['v3', 'v2'],
       });

@@ -1,5 +1,10 @@
 import { UserEntity } from './user.entity';
-import { UserNormalized, UserSerialized } from './user.interface';
+import {
+  UserNormalized,
+  UserPartialNormalized,
+  UserPartialSerialized,
+  UserSerialized,
+} from './user.interface';
 
 export class UserSerializer {
   public static normalize(entity: UserEntity): UserNormalized {
@@ -21,6 +26,14 @@ export class UserSerializer {
       avatarUrl: normalized.avatarUrl,
       privateKeyEncrypted: normalized.privateKeyEncrypted,
       publicKey: normalized.publicKey,
+    };
+  }
+
+  public static serializePartial(normalized: UserPartialNormalized): UserPartialSerialized {
+    return {
+      id: normalized.id,
+      email: normalized.email,
+      avatarUrl: normalized.avatarUrl,
     };
   }
 }

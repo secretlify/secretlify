@@ -164,7 +164,12 @@ describe('InvitationCoreController (writes)', () => {
         inviteeToken,
       );
 
-      expect(updatedProject.members).toHaveProperty(invitee.id);
+      expect(updatedProject.members).toContainEqual({
+        id: invitee.id,
+        email: invitee.email,
+        avatarUrl: invitee.avatarUrl,
+        role: 'member',
+      });
     });
 
     it('does not accept invitation twice', async () => {

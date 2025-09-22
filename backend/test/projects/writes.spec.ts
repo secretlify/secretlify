@@ -35,7 +35,7 @@ describe('ProjectCoreController (writes)', () => {
       expect(response.body).toEqual({
         id: expect.any(String),
         name: 'test-project',
-        members: { [user.id]: 'owner' },
+        members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
         encryptedKeyVersions: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
@@ -287,7 +287,9 @@ describe('ProjectCoreController (writes)', () => {
       // then
       expect(response.status).toEqual(204);
       const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, ownerToken);
-      expect(updatedProject.members).toEqual({ [owner.id]: 'owner' });
+      expect(updatedProject.members).toEqual([
+        { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
+      ]);
     });
 
     it('member removes themself', async () => {
@@ -309,7 +311,9 @@ describe('ProjectCoreController (writes)', () => {
       // then
       expect(response.status).toEqual(204);
       const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, ownerToken);
-      expect(updatedProject.members).toEqual({ [owner.id]: 'owner' });
+      expect(updatedProject.members).toEqual([
+        { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
+      ]);
     });
 
     it('member cannot remove owner', async () => {
