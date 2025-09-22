@@ -22,8 +22,12 @@ export interface Project {
   updatedAt: string;
 }
 
-export interface ProjectWithVersions extends Project {
-  encryptedSecretsHistory: string[];
+export interface Version {
+  id: string;
+  encryptedSecrets: string;
+  createdAt: string;
+  updatedAt: string;
+  author: ProjectMember;
 }
 
 export interface CreateProjectDto {
@@ -54,8 +58,8 @@ export class ProjectsApi {
   public static async getProjectVersions(
     jwtToken: string,
     projectId: string
-  ): Promise<ProjectWithVersions> {
-    const response = await axios.get<ProjectWithVersions>(
+  ): Promise<Version[]> {
+    const response = await axios.get<Version[]>(
       `/projects/${projectId}/history`,
       {
         headers: {

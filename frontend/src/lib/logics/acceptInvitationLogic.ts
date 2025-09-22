@@ -57,7 +57,7 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
       );
 
       const decryptedServerPassphrase = await AsymmetricCrypto.decrypt(
-        values.invitation!.temporaryServerPassphrase,
+        values.invitation!.temporarySecretsKey,
         decryptedTempPrivateKey
       );
 
@@ -70,7 +70,7 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
         values.jwtToken!,
         values.invitation!.id,
         {
-          newServerPassphrase: reEncryptedServerPassphrase,
+          newSecretsKey: reEncryptedServerPassphrase,
         }
       );
     },

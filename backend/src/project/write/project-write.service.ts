@@ -42,7 +42,7 @@ export class ProjectWriteService {
       {
         $set: {
           [`members.${memberId}`]: Role.Member,
-          encryptedSecretsKeys: { [memberId]: serverPassphrase },
+          [`encryptedSecretsKeys.${memberId}`]: serverPassphrase,
         },
       },
     );

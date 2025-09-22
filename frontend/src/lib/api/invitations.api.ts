@@ -19,7 +19,7 @@ export interface CreateInvitationDto {
 }
 
 export interface AcceptInvitationDto {
-  newServerPassphrase: string;
+  newSecretsKey: string;
 }
 
 export class InvitationsApi {

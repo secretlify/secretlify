@@ -1,5 +1,5 @@
 import { useValues, useActions, useAsyncActions } from "kea";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,12 @@ function MembersSection() {
   const { projectData, userData } = useValues(projectLogic);
 
   if (!projectData) return null;
+
+  const myRole = useMemo(
+    () =>
+      projectData.members.find((member) => member.id === userData?.id)?.role,
+    [projectData.members, userData?.id]
+  );
 
   return (
     <div className="space-y-3">

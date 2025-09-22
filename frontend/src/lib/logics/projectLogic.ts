@@ -122,12 +122,10 @@ export const projectLogic = kea<projectLogicType>([
             projectData?.encryptedSecretsKeys![values.userData!.id]!,
             values.privateKeyDecrypted!
           );
-
           const contentDecrypted = await SymmetricCrypto.decrypt(
             projectData?.encryptedSecrets!,
             projectKeyDecrypted
           );
-
           actions.setInputValue(contentDecrypted);
 
           return {
@@ -145,22 +143,23 @@ export const projectLogic = kea<projectLogicType>([
       [] as string[],
       {
         loadProjectVersions: async () => {
-          const projectWithVersions = await ProjectsApi.getProjectVersions(
+          const versions = await ProjectsApi.getProjectVersions(
             values.jwtToken!,
             props.projectId
           );
 
           const decryptedSecretsVersions: string[] = [];
 
-          for (const version of projectWithVersions.encryptedSecretsHistory) {
-            const passphraseAsKey = await AsymmetricCrypto.decrypt(
-              projectWithVersions.encryptedSecretsKeys[values.userData!.id]!,
-              values.privateKeyDecrypted!
-            );
+          for (const version of versions) {
+            const myKey = values.projectData?.passphraseAsKey;
+
+            if (!myKey) {
+              return [];
+            }
 
             const contentDecrypted = await SymmetricCrypto.decrypt(
-              version,
-              passphraseAsKey
+              version.encryptedSecrets,
+              myKey
             );
 
             decryptedSecretsVersions.push(contentDecrypted);
@@ -245,6 +244,8 @@ export const projectLogic = kea<projectLogicType>([
   subscriptions(({ actions }) => ({
     projects: () => {
       actions.loadProjectData();
+    },
+    projectData: () => {
       actions.loadProjectVersions();
     },
     projectVersions: (versions) => {
