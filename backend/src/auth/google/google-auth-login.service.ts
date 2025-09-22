@@ -1,13 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CustomJwtService } from '../custom-jwt/custom-jwt.service';
+import { Logger, Metrics } from '@logdash/js-sdk';
+import { Injectable } from '@nestjs/common';
+import { TokenResponse } from '../../shared/responses/token.response';
+import { AuthMethod } from '../../user/core/enum/auth-method.enum';
 import { UserReadService } from '../../user/read/user-read.service';
 import { UserWriteService } from '../../user/write/user-write.service';
-import { AuthMethod } from '../../user/core/enum/auth-method.enum';
-import { AuthEventEmitter } from '../events/auth-event.emitter';
+import { CustomJwtService } from '../custom-jwt/custom-jwt.service';
 import { GoogleLoginBody } from './dto/google-login.body';
-import { TokenResponse } from '../../shared/responses/token.response';
 import { GoogleAuthDataService } from './google-auth-data.service';
-import { Logger, Metrics } from '@logdash/js-sdk';
 
 @Injectable()
 export class GoogleAuthLoginService {
@@ -52,6 +51,7 @@ export class GoogleAuthLoginService {
 
       return {
         token: await this.jwtService.sign({ id: user.id }),
+        isNewUser: true,
       };
     }
 
@@ -61,6 +61,7 @@ export class GoogleAuthLoginService {
 
     return {
       token: await this.jwtService.sign({ id: user.id }),
+      isNewUser: false,
     };
   }
 }
