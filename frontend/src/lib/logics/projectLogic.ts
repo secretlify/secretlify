@@ -16,7 +16,7 @@ import { keyLogic } from "./keyLogic";
 import { authLogic } from "./authLogic";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
-import { ProjectsApi } from "../api/projects.api";
+import { ProjectsApi, type ProjectMember } from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
@@ -30,7 +30,7 @@ export interface DecryptedProject {
   name: string;
   content: string;
   passphraseAsKey: string;
-  members: string[];
+  members: ProjectMember[];
   updatedAt: string;
 }
 

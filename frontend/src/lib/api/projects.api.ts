@@ -1,12 +1,24 @@
 import axios from "axios";
 
+export enum ProjectMemberRole {
+  Owner = "owner",
+  Member = "member",
+}
+
+export interface ProjectMember {
+  id: string;
+  email: string;
+  avatarUrl: string;
+  role: ProjectMemberRole;
+}
+
 export interface Project {
   id: string;
   name: string;
   owner: string;
   encryptedKeyVersions: Record<string, string>;
   encryptedSecrets: string;
-  members: string[];
+  members: ProjectMember[];
   updatedAt: string;
 }
 

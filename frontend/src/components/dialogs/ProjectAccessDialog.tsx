@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
+import { ProjectMemberRole } from "@/lib/api/projects.api";
 import {
   IconUsers,
   IconCopy,
@@ -38,31 +39,41 @@ function MembersSection() {
         <h3 className="text-sm font-medium">Members</h3>
       </div>
       <div className="space-y-2 max-h-32 overflow-y-auto">
-        {projectData.members.map((memberId) => (
+        {projectData.members.map((member) => (
           <div
-            key={memberId}
+            key={member.id}
             className="flex items-center gap-3 p-2 rounded-md bg-muted/30"
           >
-            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium">
-              {memberId.charAt(0).toUpperCase()}
+            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium overflow-hidden">
+              {member.avatarUrl ? (
+                <img
+                  src={member.avatarUrl}
+                  alt={member.email}
+                  className="size-8 rounded-full object-cover"
+                />
+              ) : (
+                member.email.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium truncate">
-                {memberId === userData?.id
-                  ? "You"
-                  : `User ${memberId.slice(-4)}`}
+                {member.id === userData?.id ? "You" : member.email}
               </div>
               <div className="text-xs text-muted-foreground truncate">
-                {memberId === userData?.id
+                {member.id === userData?.id
                   ? userData.email
-                  : `Member ID: ${memberId}`}
+                  : `ID: ${member.id.slice(-8)}`}
               </div>
             </div>
-            {memberId === userData?.id && (
-              <div className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
-                Owner
-              </div>
-            )}
+            <div
+              className={`text-xs px-2 py-1 rounded capitalize ${
+                member.role === ProjectMemberRole.Owner
+                  ? "bg-primary/20 text-primary"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {member.role}
+            </div>
           </div>
         ))}
       </div>
