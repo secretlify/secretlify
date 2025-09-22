@@ -46,8 +46,6 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
 
   listeners(({ values }) => ({
     acceptInvitation: async ({ passphrase }) => {
-      console.log("Accepting invitation. Invitation", values.invitation);
-
       const passphraseAsKey =
         await SymmetricCrypto.deriveBase64KeyFromPassphrase(passphrase);
 
@@ -57,7 +55,7 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
       );
 
       const decryptedServerPassphrase = await AsymmetricCrypto.decrypt(
-        values.invitation!.temporaryServerPassphrase,
+        values.invitation!.temporarySecretsKey,
         decryptedTempPrivateKey
       );
 
@@ -70,7 +68,7 @@ export const acceptInvitationLogic = kea<acceptInvitationLogicType>([
         values.jwtToken!,
         values.invitation!.id,
         {
-          newServerPassphrase: reEncryptedServerPassphrase,
+          newSecretsKey: reEncryptedServerPassphrase,
         }
       );
     },

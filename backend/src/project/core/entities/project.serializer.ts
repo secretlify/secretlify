@@ -8,7 +8,7 @@ export class ProjectSerializer {
       id: entity._id.toString(),
       name: entity.name,
       members: entity.members,
-      encryptedKeyVersions: entity.encryptedSecretsKeys,
+      encryptedSecretsKeys: entity.encryptedSecretsKeys,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
@@ -38,7 +38,7 @@ export class ProjectSerializer {
       id: normalized.id,
       name: normalized.name,
       members: members,
-      encryptedKeyVersions: normalized.encryptedKeyVersions,
+      encryptedSecretsKeys: normalized.encryptedSecretsKeys,
       encryptedSecrets: latestSecret,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),

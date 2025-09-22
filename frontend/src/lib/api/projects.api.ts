@@ -1,23 +1,46 @@
 import axios from "axios";
 
+export enum ProjectMemberRole {
+  Owner = "owner",
+  Member = "member",
+}
+
+export interface ProjectMember {
+  id: string;
+  email: string;
+  avatarUrl: string;
+  role: ProjectMemberRole;
+}
+
 export interface Project {
   id: string;
   name: string;
   owner: string;
-  encryptedKeyVersions: Record<string, string>;
+  encryptedSecretsKeys: Record<string, string>;
   encryptedSecrets: string;
-  members: string[];
+  members: ProjectMember[];
   updatedAt: string;
 }
 
-export interface ProjectWithVersions extends Project {
-  encryptedSecretsHistory: string[];
+interface BaseVersion {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  author: ProjectMember;
+}
+
+export interface EncryptedVersion extends BaseVersion {
+  encryptedSecrets: string;
+}
+
+export interface DecryptedVersion extends BaseVersion {
+  content: string;
 }
 
 export interface CreateProjectDto {
   name: string;
   encryptedSecrets: string;
-  encryptedKeyVersions: Record<string, string>;
+  encryptedSecretsKeys: Record<string, string>;
 }
 
 export interface UpdateProjectContentDto {
@@ -42,8 +65,8 @@ export class ProjectsApi {
   public static async getProjectVersions(
     jwtToken: string,
     projectId: string
-  ): Promise<ProjectWithVersions> {
-    const response = await axios.get<ProjectWithVersions>(
+  ): Promise<EncryptedVersion[]> {
+    const response = await axios.get<EncryptedVersion[]>(
       `/projects/${projectId}/history`,
       {
         headers: {

@@ -16,7 +16,11 @@ import { keyLogic } from "./keyLogic";
 import { authLogic } from "./authLogic";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
-import { ProjectsApi } from "../api/projects.api";
+import {
+  ProjectsApi,
+  type DecryptedVersion,
+  type ProjectMember,
+} from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
@@ -30,8 +34,16 @@ export interface DecryptedProject {
   name: string;
   content: string;
   passphraseAsKey: string;
-  members: string[];
+  members: ProjectMember[];
   updatedAt: string;
+}
+
+export interface Patch {
+  id: string;
+  author: ProjectMember;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
 }
 
 export const projectLogic = kea<projectLogicType>([
@@ -60,8 +72,8 @@ export const projectLogic = kea<projectLogicType>([
       changeId,
       patch,
     }),
-    setPatches: (patches: string[]) => ({ patches }),
-    computePatches: (versions: string[]) => ({ versions }),
+    setPatches: (patches: Patch[]) => ({ patches }),
+    computePatches: (versions: DecryptedVersion[]) => ({ versions }),
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
   }),
@@ -75,7 +87,7 @@ export const projectLogic = kea<projectLogicType>([
       },
     ],
     patches: [
-      [] as string[],
+      [] as Patch[],
       {
         setPatches: (_, { patches }) => patches,
       },
@@ -119,15 +131,13 @@ export const projectLogic = kea<projectLogicType>([
           );
 
           const projectKeyDecrypted = await AsymmetricCrypto.decrypt(
-            projectData?.encryptedKeyVersions![values.userData!.id]!,
+            projectData?.encryptedSecretsKeys![values.userData!.id]!,
             values.privateKeyDecrypted!
           );
-
           const contentDecrypted = await SymmetricCrypto.decrypt(
             projectData?.encryptedSecrets!,
             projectKeyDecrypted
           );
-
           actions.setInputValue(contentDecrypted);
 
           return {
@@ -142,31 +152,31 @@ export const projectLogic = kea<projectLogicType>([
       },
     ],
     projectVersions: [
-      [] as string[],
+      [] as DecryptedVersion[],
       {
         loadProjectVersions: async () => {
-          const projectWithVersions = await ProjectsApi.getProjectVersions(
+          const versions = await ProjectsApi.getProjectVersions(
             values.jwtToken!,
             props.projectId
           );
 
-          const decryptedSecretsVersions: string[] = [];
+          const myKey = values.projectData?.passphraseAsKey;
 
-          for (const version of projectWithVersions.encryptedSecretsHistory) {
-            const passphraseAsKey = await AsymmetricCrypto.decrypt(
-              projectWithVersions.encryptedKeyVersions[values.userData!.id]!,
-              values.privateKeyDecrypted!
-            );
-
-            const contentDecrypted = await SymmetricCrypto.decrypt(
-              version,
-              passphraseAsKey
-            );
-
-            decryptedSecretsVersions.push(contentDecrypted);
+          if (!myKey) {
+            return [];
           }
 
-          return decryptedSecretsVersions;
+          const decryptedVersions: DecryptedVersion[] = [];
+
+          for (const version of versions) {
+            const contentDecrypted = await SymmetricCrypto.decrypt(
+              version.encryptedSecrets,
+              myKey
+            );
+            decryptedVersions.push({ ...version, content: contentDecrypted });
+          }
+
+          return decryptedVersions;
         },
       },
     ],
@@ -207,7 +217,7 @@ export const projectLogic = kea<projectLogicType>([
       }
 
       const chronologicalVersions = [...versions].reverse();
-      const patches: string[] = [];
+      const patches: Patch[] = [];
 
       for (let i = 0; i < chronologicalVersions.length - 1; i++) {
         const oldVersion = chronologicalVersions[i];
@@ -215,8 +225,8 @@ export const projectLogic = kea<projectLogicType>([
 
         const patch = createPatch(
           `version_${i + 1}_to_${i + 2}`,
-          oldVersion,
-          newVersion
+          oldVersion.content,
+          newVersion.content
         );
 
         const cleanPatch = patch
@@ -235,7 +245,13 @@ export const projectLogic = kea<projectLogicType>([
           })
           .join("\n");
 
-        patches.push(cleanPatch);
+        patches.push({
+          id: newVersion.id,
+          author: newVersion.author,
+          createdAt: newVersion.createdAt,
+          updatedAt: newVersion.updatedAt,
+          content: cleanPatch,
+        });
       }
 
       actions.setPatches(patches.reverse());
@@ -245,6 +261,8 @@ export const projectLogic = kea<projectLogicType>([
   subscriptions(({ actions }) => ({
     projects: () => {
       actions.loadProjectData();
+    },
+    projectData: () => {
       actions.loadProjectVersions();
     },
     projectVersions: (versions) => {

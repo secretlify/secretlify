@@ -2,43 +2,30 @@ import { cn, getRelativeTime } from "@/lib/utils";
 import { useValues, useActions } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { DiffEditor } from "@/components/app/project/DiffEditor";
+import { useEffect, useState } from "react";
 
-interface HistoryChange {
-  id: string;
-  email: string;
-  date: string;
-  changes: string;
-  avatar?: string;
-}
-
-export function HistoryView() {
+export function DesktopHistoryView() {
   const { patches, selectedHistoryChangeId, projectVersionsLoading } =
     useValues(projectLogic);
   const { selectHistoryChange } = useActions(projectLogic);
 
-  // Convert patches to HistoryChange format with hardcoded data
-  const historyChanges: HistoryChange[] = patches.map((patch, index) => {
-    // Generate dates going backwards from now
-    const now = new Date();
-    const daysAgo = patches.length - index - 1;
-    const date = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+  const [, setRefreshKey] = useState(0);
 
-    return {
-      id: `change-${index + 1}`,
-      email: "john@doe.com",
-      date: date.toISOString(),
-      changes: patch,
-      avatar: DEFAULT_AVATAR,
-    };
-  });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Get the currently selected patch
-  const selectedPatch = historyChanges.find(
-    (change) => change.id === selectedHistoryChangeId
-  )?.changes;
+  const selectedPatch = patches.find(
+    (patch) => patch.id === selectedHistoryChangeId
+  )?.content;
 
   // Handle loading state
-  if (!historyChanges.length && projectVersionsLoading) {
+  if (!patches.length && projectVersionsLoading) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-sm text-muted-foreground">Loading history...</div>
@@ -47,7 +34,7 @@ export function HistoryView() {
   }
 
   // Handle empty state
-  if (!historyChanges.length && !projectVersionsLoading) {
+  if (!patches.length && !projectVersionsLoading) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-sm text-muted-foreground text-center">
@@ -64,15 +51,15 @@ export function HistoryView() {
       <div className="w-80 flex flex-col bg-card rounded-xl">
         <div className="flex-1 overflow-y-auto custom-scrollbar pl-2 pt-2">
           <div className="space-y-1">
-            {historyChanges.map((change) => (
+            {patches.map((patch) => (
               <button
-                key={change.id}
+                key={patch.id}
                 onClick={() => {
-                  selectHistoryChange(change.id, change.changes);
+                  selectHistoryChange(patch.id, patch.content);
                 }}
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer",
-                  selectedHistoryChangeId === change.id
+                  selectedHistoryChangeId === patch.id
                     ? "bg-primary/10 border border-primary/20"
                     : "border border-transparent hover:bg-muted/20"
                 )}
@@ -80,19 +67,19 @@ export function HistoryView() {
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <img
-                      src={change.avatar || DEFAULT_AVATAR}
-                      alt={change.email}
+                      src={patch.author.avatarUrl || DEFAULT_AVATAR}
+                      alt={patch.author.email}
                       className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                     />
                     <p className="text-sm font-medium truncate flex-1 min-w-0">
-                      {change.email}
+                      {patch.author.email}
                     </p>
                   </div>
                   <span
                     className="text-xs text-muted-foreground whitespace-nowrap"
-                    title={formatDate(change.date)}
+                    title={formatDate(patch.createdAt)}
                   >
-                    {getRelativeTime(change.date)}
+                    {getRelativeTime(patch.createdAt)}
                   </span>
                 </div>
               </button>

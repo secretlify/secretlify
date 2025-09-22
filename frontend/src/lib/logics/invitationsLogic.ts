@@ -47,11 +47,12 @@ export const invitationsLogic = kea<invitationsLogicType>([
     ],
   }),
 
-  loaders(({ values }) => ({
+  loaders(({ values, props }) => ({
     invitations: {
       loadInvitations: async () => {
         const invitations = await InvitationsApi.getInvitations(
-          values.jwtToken!
+          values.jwtToken!,
+          props.projectId
         );
         return invitations;
       },
@@ -81,7 +82,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
         projectId: props.projectId,
         temporaryPublicKey: keyPair.publicKey,
         temporaryPrivateKey: encryptedPrivateKey,
-        temporaryServerPassphrase: serverKeyEncrypted,
+        temporarySecretsKey: serverKeyEncrypted,
       });
 
       actions.loadInvitations();

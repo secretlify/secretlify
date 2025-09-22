@@ -1,5 +1,5 @@
 import { useValues, useActions, useAsyncActions } from "kea";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
+import { ProjectMemberRole } from "@/lib/api/projects.api";
 import {
   IconUsers,
   IconCopy,
@@ -38,31 +39,41 @@ function MembersSection() {
         <h3 className="text-sm font-medium">Members</h3>
       </div>
       <div className="space-y-2 max-h-32 overflow-y-auto">
-        {projectData.members.map((memberId) => (
+        {projectData.members.map((member) => (
           <div
-            key={memberId}
+            key={member.id}
             className="flex items-center gap-3 p-2 rounded-md bg-muted/30"
           >
-            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium">
-              {memberId.charAt(0).toUpperCase()}
+            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium overflow-hidden">
+              {member.avatarUrl ? (
+                <img
+                  src={member.avatarUrl}
+                  alt={member.email}
+                  className="size-8 rounded-full object-cover"
+                />
+              ) : (
+                member.email.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium truncate">
-                {memberId === userData?.id
-                  ? "You"
-                  : `User ${memberId.slice(-4)}`}
+                {member.id === userData?.id ? "You" : member.email}
               </div>
               <div className="text-xs text-muted-foreground truncate">
-                {memberId === userData?.id
+                {member.id === userData?.id
                   ? userData.email
-                  : `Member ID: ${memberId}`}
+                  : `ID: ${member.id.slice(-8)}`}
               </div>
             </div>
-            {memberId === userData?.id && (
-              <div className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
-                Owner
-              </div>
-            )}
+            <div
+              className={`text-xs px-2 py-1 rounded capitalize ${
+                member.role === ProjectMemberRole.Owner
+                  ? "bg-primary/20 text-primary"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {member.role}
+            </div>
           </div>
         ))}
       </div>
@@ -135,12 +146,42 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
 }
 
 function ActiveInviteLinksSection() {
+  const { projectData, userData } = useValues(projectLogic);
   const { invitations, invitationsLoading } = useValues(invitationsLogic);
   const { loadInvitations } = useActions(invitationsLogic);
 
+  const myRole = useMemo(
+    () =>
+      projectData?.members.find((member) => member.id === userData?.id)?.role,
+    [projectData?.members, userData?.id]
+  );
+
   useEffect(() => {
-    loadInvitations();
-  }, []);
+    if (myRole === ProjectMemberRole.Owner) {
+      loadInvitations();
+    }
+  }, [myRole]);
+
+  if (myRole !== ProjectMemberRole.Owner) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <IconLink className="size-4 text-muted-foreground" />
+          <h3 className="text-sm font-medium">Active invite links</h3>
+        </div>
+        <div className="text-center py-6 px-4 bg-muted/20 rounded-md border border-dashed">
+          <div className="text-sm text-muted-foreground">
+            You are a <span className="font-medium underline">Member</span> of
+            this project.
+          </div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Only <span className="font-medium underline">Owners</span> can view
+            invite links.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -172,9 +213,16 @@ function ActiveInviteLinksSection() {
 }
 
 function GenerateNewInviteLinkSection() {
+  const { projectData, userData } = useValues(projectLogic);
   const { createInvitation } = useAsyncActions(invitationsLogic);
   const [passphrase, setPassphrase] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const myRole = useMemo(
+    () =>
+      projectData?.members.find((member) => member.id === userData?.id)?.role,
+    [projectData?.members, userData?.id]
+  );
 
   const handleGenerateLink = async () => {
     setIsLoading(true);
@@ -182,6 +230,27 @@ function GenerateNewInviteLinkSection() {
     setPassphrase("");
     setIsLoading(false);
   };
+
+  if (myRole !== ProjectMemberRole.Owner) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <IconHexagonalPrism className="size-4 text-muted-foreground" />
+          <h3 className="text-sm font-medium">Generate new invite link</h3>
+        </div>
+        <div className="text-center py-6 px-4 bg-muted/20 rounded-md border border-dashed">
+          <div className="text-sm text-muted-foreground">
+            You are a <span className="font-medium underline">Member</span> of
+            this project.
+          </div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Only <span className="font-medium underline">Owners</span> can
+            generate invite links.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">

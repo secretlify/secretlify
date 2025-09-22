@@ -21,7 +21,7 @@ export class ProjectUtils {
     token: string,
     body: CreateProjectBody = {
       name: 'test-project',
-      encryptedKeyVersions: {},
+      encryptedSecretsKeys: {},
       encryptedSecrets: '',
     },
   ): Promise<ProjectSerialized> {

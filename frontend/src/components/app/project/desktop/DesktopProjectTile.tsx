@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { FileEditor } from "@/components/app/project/FileEditor";
 import { UpdateButton } from "@/components/app/project/SaveButton";
-import { HistoryView } from "@/components/app/project/HistoryView";
+import { DesktopHistoryView } from "@/components/app/project/desktop/DesktopHistoryView";
 import { useActions, useValues } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { Button } from "@/components/ui/button";
@@ -133,7 +133,7 @@ export function DesktopProjectTile() {
             style={{ height: "55vh" }}
           >
             {isShowingHistory ? (
-              <HistoryView />
+              <DesktopHistoryView />
             ) : (
               <div className="h-full">
                 <FileEditor

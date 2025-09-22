@@ -4,5 +4,5 @@ import { IsObject } from 'class-validator';
 export class RemoveUserFromBody {
   @ApiProperty()
   @IsObject()
-  public newEncryptedKeyVersions: Record<string, string>;
+  public newencryptedSecretsKeys: Record<string, string>;
 }

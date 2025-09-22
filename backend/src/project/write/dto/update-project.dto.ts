@@ -1,5 +1,5 @@
 export class UpdateProjectDto {
   public name?: string;
   public encryptedSecrets?: string;
-  public encryptedKeyVersions?: Record<string, string>;
+  public encryptedSecretsKeys?: Record<string, string>;
 }

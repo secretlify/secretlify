@@ -28,7 +28,7 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .post('/projects')
         .set('authorization', `Bearer ${token}`)
-        .send({ name: 'test-project', encryptedSecrets: '', encryptedKeyVersions: {} });
+        .send({ name: 'test-project', encryptedSecrets: '', encryptedSecretsKeys: {} });
 
       // then
       expect(response.status).toEqual(201);
@@ -36,7 +36,7 @@ describe('ProjectCoreController (writes)', () => {
         id: expect.any(String),
         name: 'test-project',
         members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
@@ -64,7 +64,7 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .post('/projects')
         .set('authorization', `Bearer ${token}`)
-        .send({ name: 'test-project', encryptedSecrets: longSecrets, encryptedKeyVersions: {} });
+        .send({ name: 'test-project', encryptedSecrets: longSecrets, encryptedSecretsKeys: {} });
 
       // then
       expect(response.status).toEqual(400);
@@ -80,7 +80,7 @@ describe('ProjectCoreController (writes)', () => {
       const project = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'old-name',
         encryptedSecrets: '',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
       });
 
       // when
@@ -89,7 +89,7 @@ describe('ProjectCoreController (writes)', () => {
         .set('authorization', `Bearer ${token}`)
         .send({
           name: 'new-name',
-          encryptedKeyVersions: {
+          encryptedSecretsKeys: {
             [user.id]: 'new-passphrase',
           },
           encryptedSecrets: 'new-secrets',
@@ -100,7 +100,7 @@ describe('ProjectCoreController (writes)', () => {
       expect(response.body).toMatchObject({
         id: project.id,
         name: 'new-name',
-        encryptedKeyVersions: {
+        encryptedSecretsKeys: {
           [user.id]: 'new-passphrase',
         },
         encryptedSecrets: 'new-secrets',
@@ -117,7 +117,7 @@ describe('ProjectCoreController (writes)', () => {
       });
       const project = await bootstrap.utils.projectUtils.createProject(ownerToken, {
         name: 'old-name',
-        encryptedKeyVersions: {},
+        encryptedSecretsKeys: {},
         encryptedSecrets: '',
       });
 

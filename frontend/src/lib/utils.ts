@@ -17,6 +17,7 @@ export function getRelativeTime(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffInMs = now.getTime() - date.getTime();
+  const diffInSeconds = Math.floor(diffInMs / 1000);
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
   if (diffInDays === 0) {
@@ -24,7 +25,10 @@ export function getRelativeTime(dateString: string): string {
     if (diffInHours === 0) {
       const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
       if (diffInMinutes === 0) {
-        return "just now";
+        if (diffInSeconds <= 10) {
+          return "just now";
+        }
+        return `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
       }
       return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
     }

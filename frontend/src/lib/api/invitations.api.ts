@@ -6,7 +6,7 @@ export interface Invitation {
   authorId: string;
   temporaryPublicKey: string;
   temporaryPrivateKey: string;
-  temporaryServerPassphrase: string;
+  temporarySecretsKey: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,11 +15,11 @@ export interface CreateInvitationDto {
   projectId: string;
   temporaryPublicKey: string;
   temporaryPrivateKey: string;
-  temporaryServerPassphrase: string;
+  temporarySecretsKey: string;
 }
 
 export interface AcceptInvitationDto {
-  newServerPassphrase: string;
+  newSecretsKey: string;
 }
 
 export class InvitationsApi {
@@ -38,12 +38,18 @@ export class InvitationsApi {
     return response.data;
   }
 
-  public static async getInvitations(jwtToken: string): Promise<Invitation[]> {
-    const response = await axios.get<Invitation[]>(`/invitations/me`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    });
+  public static async getInvitations(
+    jwtToken: string,
+    projectId: string
+  ): Promise<Invitation[]> {
+    const response = await axios.get<Invitation[]>(
+      `/projects/${projectId}/invitations`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
     return response.data;
   }
 
