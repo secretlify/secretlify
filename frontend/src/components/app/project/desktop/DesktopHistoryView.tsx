@@ -11,7 +11,7 @@ interface HistoryChange {
   avatar?: string;
 }
 
-export function HistoryView() {
+export function DesktopHistoryView() {
   const { patches, selectedHistoryChangeId, projectVersionsLoading } =
     useValues(projectLogic);
   const { selectHistoryChange } = useActions(projectLogic);

@@ -16,7 +16,11 @@ import { keyLogic } from "./keyLogic";
 import { authLogic } from "./authLogic";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
-import { ProjectsApi, type ProjectMember } from "../api/projects.api";
+import {
+  ProjectsApi,
+  type DecryptedVersion,
+  type ProjectMember,
+} from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
@@ -61,7 +65,7 @@ export const projectLogic = kea<projectLogicType>([
       patch,
     }),
     setPatches: (patches: string[]) => ({ patches }),
-    computePatches: (versions: string[]) => ({ versions }),
+    computePatches: (versions: DecryptedVersion[]) => ({ versions }),
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
   }),
@@ -140,7 +144,7 @@ export const projectLogic = kea<projectLogicType>([
       },
     ],
     projectVersions: [
-      [] as string[],
+      [] as DecryptedVersion[],
       {
         loadProjectVersions: async () => {
           const versions = await ProjectsApi.getProjectVersions(
@@ -148,24 +152,25 @@ export const projectLogic = kea<projectLogicType>([
             props.projectId
           );
 
-          const decryptedSecretsVersions: string[] = [];
+          const myKey = values.projectData?.passphraseAsKey;
+
+          if (!myKey) {
+            return [];
+          }
+
+          const decryptedVersions: DecryptedVersion[] = [];
 
           for (const version of versions) {
-            const myKey = values.projectData?.passphraseAsKey;
-
-            if (!myKey) {
-              return [];
-            }
-
             const contentDecrypted = await SymmetricCrypto.decrypt(
               version.encryptedSecrets,
               myKey
             );
-
-            decryptedSecretsVersions.push(contentDecrypted);
+            decryptedVersions.push({ ...version, content: contentDecrypted });
           }
 
-          return decryptedSecretsVersions;
+          console.log("Decrypted versions:", decryptedVersions);
+
+          return decryptedVersions;
         },
       },
     ],
