@@ -38,6 +38,14 @@ export interface DecryptedProject {
   updatedAt: string;
 }
 
+export interface Patch {
+  id: string;
+  author: ProjectMember;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+}
+
 export const projectLogic = kea<projectLogicType>([
   path(["src", "lib", "logics", "projectLogic"]),
 
@@ -64,7 +72,7 @@ export const projectLogic = kea<projectLogicType>([
       changeId,
       patch,
     }),
-    setPatches: (patches: string[]) => ({ patches }),
+    setPatches: (patches: Patch[]) => ({ patches }),
     computePatches: (versions: DecryptedVersion[]) => ({ versions }),
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
@@ -79,7 +87,7 @@ export const projectLogic = kea<projectLogicType>([
       },
     ],
     patches: [
-      [] as string[],
+      [] as Patch[],
       {
         setPatches: (_, { patches }) => patches,
       },

@@ -3,14 +3,6 @@ import { useValues, useActions } from "kea";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { DiffEditor } from "@/components/app/project/DiffEditor";
 
-interface HistoryChange {
-  id: string;
-  email: string;
-  date: string;
-  changes: string;
-  avatar?: string;
-}
-
 export function DesktopHistoryView() {
   const { patches, selectedHistoryChangeId, projectVersionsLoading } =
     useValues(projectLogic);
