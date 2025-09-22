@@ -28,6 +28,7 @@ export class UserUtils {
   }> {
     const user = await this.userModel.create({
       email: params?.email || `test-user-${Math.random()}@example.com`,
+      avatarUrl: 'https://example.com/avatar.png',
       authMethod: AuthMethod.Google,
     });
 

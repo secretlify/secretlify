@@ -43,7 +43,11 @@ describe('InvitationCoreController (writes)', () => {
       expect(response.body).toEqual({
         id: expect.any(String),
         projectId: project.id,
-        authorId: owner.id,
+        author: {
+          id: owner.id,
+          email: owner.email,
+          avatarUrl: owner.avatarUrl,
+        },
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
         temporarySecretsKey: 'test-secrets-key',

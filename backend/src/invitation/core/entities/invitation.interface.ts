@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserPartialSerialized } from 'src/user/core/entities/user.interface';
 
 export class InvitationNormalized {
   public id: string;
@@ -17,8 +18,8 @@ export class InvitationSerialized {
   @ApiProperty()
   public projectId: string;
 
-  @ApiProperty()
-  public authorId: string;
+  @ApiProperty({ type: UserPartialSerialized })
+  public author: UserPartialSerialized;
 
   @ApiProperty()
   public temporaryPublicKey: string;

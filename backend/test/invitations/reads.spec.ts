@@ -37,7 +37,11 @@ describe('InvitationCoreController (reads)', () => {
       const expected = {
         id: invitation.id,
         projectId: project.id,
-        authorId: owner.id,
+        author: {
+          id: owner.id,
+          email: owner.email,
+          avatarUrl: owner.avatarUrl,
+        },
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
         temporarySecretsKey: 'test-server-passphrase',
@@ -98,6 +102,86 @@ describe('InvitationCoreController (reads)', () => {
 
       // then
       expect(response.status).toEqual(404);
+    });
+  });
+
+  describe('GET /projects/:projectId/invitations', () => {
+    it('gets invitations for project as owner', async () => {
+      // given
+      const { user, token, project } = await bootstrap.utils.projectUtils.setupOwner();
+      const invitationA = await bootstrap.utils.invitationUtils.createInvitation(token, project.id);
+      const invitationB = await bootstrap.utils.invitationUtils.createInvitation(token, project.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}/invitations`)
+        .set('authorization', `Bearer ${token}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toHaveLength(2);
+      expect(response.body.map((i) => i.id).sort()).toEqual(
+        [invitationA.id, invitationB.id].sort(),
+      );
+      expect(response.body[0].author).toEqual({
+        id: user.id,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+      });
+    });
+
+    it('returns empty array when no invitations', async () => {
+      // given
+      const { token, project } = await bootstrap.utils.projectUtils.setupOwner();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}/invitations`)
+        .set('authorization', `Bearer ${token}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual([]);
+    });
+
+    it('returns 403 when user is not an owner', async () => {
+      // given
+      const { project, token: memberToken } = await bootstrap.utils.projectUtils.setupMember();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}/invitations`)
+        .set('authorization', `Bearer ${memberToken}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('returns 403 when user is not a project member', async () => {
+      // given
+      const { project } = await bootstrap.utils.projectUtils.setupOwner();
+      const { token: tokenB } = await bootstrap.utils.userUtils.createDefault();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}/invitations`)
+        .set('authorization', `Bearer ${tokenB}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('returns 401 when not logged in', async () => {
+      // given
+      const { project } = await bootstrap.utils.projectUtils.setupOwner();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).get(
+        `/projects/${project.id}/invitations`,
+      );
+
+      // then
+      expect(response.status).toEqual(401);
     });
   });
 });

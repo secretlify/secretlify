@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from 
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProjectOwnerGuard } from 'src/project/core/guards/project-owner.guard';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
+import { UserReadService } from 'src/user/read/user-read.service';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { InvitationReadService } from '../read/invitation-read.service';
 import { InvitationWriteService } from '../write/invitation-write.service';
@@ -19,6 +20,7 @@ export class InvitationCoreController {
     private readonly invitationWriteService: InvitationWriteService,
     private readonly invitationReadService: InvitationReadService,
     private readonly projectWriteService: ProjectWriteService,
+    private readonly userReadService: UserReadService,
   ) {}
 
   @Get('projects/:projectId/invitations')
@@ -28,7 +30,18 @@ export class InvitationCoreController {
     @Param('projectId') projectId: string,
   ): Promise<InvitationSerialized[]> {
     const invitations = await this.invitationReadService.findByProjectId(projectId);
-    return invitations.map(InvitationSerializer.serialize);
+    const authors = await this.userReadService.readByIds(invitations.map((i) => i.authorId));
+
+    return invitations
+      .map((invitation) => {
+        const author = authors.find((a) => a.id === invitation.authorId);
+        if (!author) {
+          return null;
+        }
+
+        return InvitationSerializer.serialize(invitation, author);
+      })
+      .filter((i) => i !== null);
   }
 
   @Post('invitations')
@@ -42,14 +55,18 @@ export class InvitationCoreController {
       ...body,
       authorId: userId,
     });
-    return InvitationSerializer.serialize(invitation);
+    const author = await this.userReadService.readByIdOrThrow(userId);
+
+    return InvitationSerializer.serialize(invitation, author);
   }
 
   @Get('invitations/:id')
   @ApiResponse({ type: InvitationSerialized })
   public async findById(@Param('id') id: string): Promise<InvitationSerialized> {
     const invitation = await this.invitationReadService.findById(id);
-    return InvitationSerializer.serialize(invitation);
+    const author = await this.userReadService.readByIdOrThrow(invitation.authorId);
+
+    return InvitationSerializer.serialize(invitation, author);
   }
 
   @Post('invitations/:id/accept')

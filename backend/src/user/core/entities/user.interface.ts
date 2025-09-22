@@ -1,31 +1,36 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AuthMethod } from '../enum/auth-method.enum';
 
-export class UserNormalized {
-  id: string;
-  email: string;
-  authMethod: AuthMethod;
-  avatarUrl: string;
-  publicKey?: string;
-  privateKeyEncrypted?: string;
+export class UserPartialNormalized {
+  public id: string;
+  public email: string;
+  public avatarUrl: string;
 }
 
-export class UserSerialized {
+export class UserNormalized extends UserPartialNormalized {
+  public authMethod: AuthMethod;
+  public publicKey?: string;
+  public privateKeyEncrypted?: string;
+}
+
+export class UserPartialSerialized {
   @ApiProperty()
-  id: string;
+  public id: string;
 
   @ApiProperty()
-  email: string;
+  public email: string;
 
+  @ApiProperty()
+  public avatarUrl: string;
+}
+
+export class UserSerialized extends UserPartialSerialized {
   @ApiProperty({ enum: AuthMethod })
-  authMethod: AuthMethod;
+  public authMethod: AuthMethod;
 
   @ApiPropertyOptional()
-  avatarUrl: string;
+  public publicKey?: string;
 
   @ApiPropertyOptional()
-  privateKeyEncrypted?: string;
-
-  @ApiPropertyOptional()
-  publicKey?: string;
+  public privateKeyEncrypted?: string;
 }
