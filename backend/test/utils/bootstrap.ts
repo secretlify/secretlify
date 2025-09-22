@@ -1,5 +1,5 @@
 import { Logger, Metrics } from '@logdash/js-sdk';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -22,7 +22,25 @@ import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-mem
 import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
 
-export async function createTestApp() {
+export interface TestApp {
+  app: INestApplication;
+  module: TestingModule;
+  models: {
+    userModel: Model<UserEntity>;
+  };
+  utils: {
+    userUtils: UserUtils;
+    projectUtils: ProjectUtils;
+    invitationUtils: InvitationUtils;
+  };
+  methods: {
+    clearDatabase: () => Promise<void>;
+    beforeEach: () => Promise<void>;
+    afterAll: () => Promise<void>;
+  };
+}
+
+export async function createTestApp(): Promise<TestApp> {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       rootMongooseTestModule(),
@@ -76,6 +94,9 @@ export async function createTestApp() {
     clear();
   };
 
+  const userUtils = new UserUtils(app);
+  const projectUtils = new ProjectUtils(app, userUtils);
+
   return {
     app,
     module,
@@ -83,8 +104,8 @@ export async function createTestApp() {
       userModel,
     },
     utils: {
-      userUtils: new UserUtils(app),
-      projectUtils: new ProjectUtils(app),
+      userUtils: userUtils,
+      projectUtils: projectUtils,
       invitationUtils: new InvitationUtils(app),
     },
     methods: {

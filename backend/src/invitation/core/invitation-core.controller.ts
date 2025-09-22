@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ProjectOwnerGuard } from 'src/project/core/guards/project-owner.guard';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { InvitationReadService } from '../read/invitation-read.service';
@@ -19,6 +20,16 @@ export class InvitationCoreController {
     private readonly invitationReadService: InvitationReadService,
     private readonly projectWriteService: ProjectWriteService,
   ) {}
+
+  @Get('projects/:projectId/invitations')
+  @UseGuards(ProjectOwnerGuard)
+  @ApiResponse({ type: [InvitationSerialized] })
+  public async findProjectInvitations(
+    @Param('projectId') projectId: string,
+  ): Promise<InvitationSerialized[]> {
+    const invitations = await this.invitationReadService.findByProjectId(projectId);
+    return invitations.map(InvitationSerializer.serialize);
+  }
 
   @Post('invitations')
   @ApiResponse({ type: InvitationSerialized })
