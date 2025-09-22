@@ -146,12 +146,42 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
 }
 
 function ActiveInviteLinksSection() {
+  const { projectData, userData } = useValues(projectLogic);
   const { invitations, invitationsLoading } = useValues(invitationsLogic);
   const { loadInvitations } = useActions(invitationsLogic);
 
+  const myRole = useMemo(
+    () =>
+      projectData?.members.find((member) => member.id === userData?.id)?.role,
+    [projectData?.members, userData?.id]
+  );
+
   useEffect(() => {
-    loadInvitations();
-  }, []);
+    if (myRole === ProjectMemberRole.Owner) {
+      loadInvitations();
+    }
+  }, [myRole]);
+
+  if (myRole !== ProjectMemberRole.Owner) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <IconLink className="size-4 text-muted-foreground" />
+          <h3 className="text-sm font-medium">Active invite links</h3>
+        </div>
+        <div className="text-center py-6 px-4 bg-muted/20 rounded-md border border-dashed">
+          <div className="text-sm text-muted-foreground">
+            You are a <span className="font-medium underline">Member</span> of
+            this project.
+          </div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Only <span className="font-medium underline">Owners</span> can view
+            invite links.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -210,12 +240,12 @@ function GenerateNewInviteLinkSection() {
         </div>
         <div className="text-center py-6 px-4 bg-muted/20 rounded-md border border-dashed">
           <div className="text-sm text-muted-foreground">
-            You are a <span className="font-medium">Member</span> of this
-            project.
+            You are a <span className="font-medium underline">Member</span> of
+            this project.
           </div>
           <div className="text-sm text-muted-foreground mt-1">
-            Only <span className="font-medium">Owners</span> can generate invite
-            links.
+            Only <span className="font-medium underline">Owners</span> can
+            generate invite links.
           </div>
         </div>
       </div>
