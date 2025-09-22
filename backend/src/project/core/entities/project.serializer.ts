@@ -1,11 +1,6 @@
 import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 import { ProjectEntity } from './project.entity';
-import {
-  ProjectHistorySerialized,
-  ProjectMemberSerialized,
-  ProjectNormalized,
-  ProjectSerialized,
-} from './project.interface';
+import { ProjectMemberSerialized, ProjectNormalized, ProjectSerialized } from './project.interface';
 
 export class ProjectSerializer {
   public static normalize(entity: ProjectEntity): ProjectNormalized {
@@ -14,7 +9,6 @@ export class ProjectSerializer {
       name: entity.name,
       members: entity.members,
       encryptedKeyVersions: entity.encryptedSecretsKeys,
-      encryptedSecretsHistory: entity.encryptedSecretsHistory,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
@@ -23,6 +17,7 @@ export class ProjectSerializer {
   public static serialize(
     normalized: ProjectNormalized,
     membersDetails: UserPartialSerialized[],
+    latestSecret: string,
   ): ProjectSerialized {
     const membersMap = new Map(membersDetails.map((m) => [m.id, m]));
     const members: ProjectMemberSerialized[] = [];
@@ -44,37 +39,9 @@ export class ProjectSerializer {
       name: normalized.name,
       members: members,
       encryptedKeyVersions: normalized.encryptedKeyVersions,
-      encryptedSecrets: normalized.encryptedSecretsHistory[0],
+      encryptedSecrets: latestSecret,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),
-    };
-  }
-
-  public static serializeHistory(
-    normalized: ProjectNormalized,
-    membersDetails: UserPartialSerialized[],
-  ): ProjectHistorySerialized {
-    const membersMap = new Map(membersDetails.map((m) => [m.id, m]));
-    const members: ProjectMemberSerialized[] = [];
-
-    for (const [userId, role] of normalized.members.entries()) {
-      const userDetails = membersMap.get(userId);
-      if (userDetails) {
-        members.push({
-          id: userDetails.id,
-          email: userDetails.email,
-          avatarUrl: userDetails.avatarUrl,
-          role,
-        });
-      }
-    }
-
-    return {
-      id: normalized.id,
-      name: normalized.name,
-      members: members,
-      encryptedKeyVersions: normalized.encryptedKeyVersions,
-      encryptedSecretsHistory: normalized.encryptedSecretsHistory,
     };
   }
 }

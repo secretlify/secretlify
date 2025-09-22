@@ -10,7 +10,6 @@ export class ProjectNormalized {
   public name: string;
   public members: Map<string, Role>;
   public encryptedKeyVersions: Record<string, string>;
-  public encryptedSecretsHistory: string[];
   public createdAt: Date;
   public updatedAt: Date;
 }
@@ -41,21 +40,4 @@ export class ProjectSerialized {
 
   @ApiProperty()
   public updatedAt: string;
-}
-
-export class ProjectHistorySerialized {
-  @ApiProperty()
-  public id: string;
-
-  @ApiProperty()
-  public name: string;
-
-  @ApiProperty({ type: [ProjectMemberSerialized] })
-  public members: ProjectMemberSerialized[];
-
-  @ApiProperty()
-  public encryptedKeyVersions: Record<string, string>;
-
-  @ApiProperty()
-  public encryptedSecretsHistory: string[];
 }

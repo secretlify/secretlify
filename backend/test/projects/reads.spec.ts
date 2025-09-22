@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import { createTestApp, TestApp } from '../utils/bootstrap';
+import { createTestApp, TestApp } from './bootstrap';
 
 describe('ProjectCoreController (reads)', () => {
   let bootstrap: TestApp;
@@ -192,7 +192,7 @@ describe('ProjectCoreController (reads)', () => {
       const project = await bootstrap.utils.projectUtils.createProject(token, {
         name: 'test-project',
         encryptedKeyVersions: {},
-        encryptedSecrets: '',
+        encryptedSecrets: 'v1',
       });
 
       await request(bootstrap.app.getHttpServer())
@@ -211,13 +211,11 @@ describe('ProjectCoreController (reads)', () => {
 
       // then
       expect(response.status).toEqual(200);
-      expect(response.body).toEqual({
-        id: project.id,
-        name: 'test-project',
-        members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
-        encryptedKeyVersions: {},
-        encryptedSecretsHistory: ['v3', 'v2'],
-      });
+      expect(response.body).toHaveLength(2);
+      expect(response.body[0].encryptedSecrets).toEqual('v3');
+      expect(response.body[0].author.id).toEqual(user.id);
+      expect(response.body[1].encryptedSecrets).toEqual('v2');
+      expect(response.body[1].author.id).toEqual(user.id);
     });
   });
 });

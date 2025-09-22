@@ -1,19 +1,19 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ProjectSecretsVersionWriteService } from 'src/project-secrets-version/write/project-secrets-version-write.service';
 import { Role } from 'src/shared/types/role.enum';
 import { ProjectEntity } from '../core/entities/project.entity';
 import { ProjectNormalized } from '../core/entities/project.interface';
 import { ProjectSerializer } from '../core/entities/project.serializer';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { PROJECT_HISTORY_SIZE } from './project-write.constants';
 
 @Injectable()
 export class ProjectWriteService {
   constructor(
     @InjectModel(ProjectEntity.name) private projectModel: Model<ProjectEntity>,
-    @Inject(PROJECT_HISTORY_SIZE) private readonly maxSecretsVersions: number,
+    private readonly projectSecretsVersionWriteService: ProjectSecretsVersionWriteService,
   ) {}
 
   public async create(dto: CreateProjectDto, userId: string): Promise<ProjectNormalized> {
@@ -21,7 +21,12 @@ export class ProjectWriteService {
       name: dto.name,
       members: new Map([[userId, Role.Owner]]),
       encryptedKeyVersions: dto.encryptedKeyVersions,
-      encryptedSecretsHistory: [dto.encryptedSecrets],
+    });
+
+    await this.projectSecretsVersionWriteService.create({
+      projectId: project._id,
+      authorId: new Types.ObjectId(userId),
+      encryptedSecrets: dto.encryptedSecrets,
     });
 
     return ProjectSerializer.normalize(project);
@@ -59,7 +64,19 @@ export class ProjectWriteService {
     await this.projectModel.deleteOne({ _id: new Types.ObjectId(id) });
   }
 
-  public async update(id: string, dto: UpdateProjectDto): Promise<ProjectNormalized> {
+  public async update(
+    id: string,
+    dto: UpdateProjectDto,
+    authorId: string,
+  ): Promise<ProjectNormalized> {
+    if (dto.encryptedSecrets) {
+      await this.projectSecretsVersionWriteService.create({
+        projectId: new Types.ObjectId(id),
+        authorId: new Types.ObjectId(authorId),
+        encryptedSecrets: dto.encryptedSecrets,
+      });
+    }
+
     const updateQuery = this.buildUpdateQuery(dto);
 
     if (Object.keys(updateQuery).length === 0) {
@@ -72,9 +89,8 @@ export class ProjectWriteService {
 
   private buildUpdateQuery(dto: UpdateProjectDto): Record<string, unknown> {
     const setOperation = this.buildSetNameOrKeys(dto);
-    const pushOperation = this.buildPushSecretsHistory(dto);
 
-    return { ...setOperation, ...pushOperation };
+    return { ...setOperation };
   }
 
   private buildSetNameOrKeys(dto: UpdateProjectDto): Record<string, any> {
@@ -86,21 +102,6 @@ export class ProjectWriteService {
       toSet.encryptedSecretsKeys = dto.encryptedKeyVersions;
     }
     return Object.keys(toSet).length > 0 ? { $set: toSet } : {};
-  }
-
-  private buildPushSecretsHistory(dto: UpdateProjectDto): Record<string, any> {
-    if (!dto.encryptedSecrets) {
-      return {};
-    }
-    return {
-      $push: {
-        encryptedSecretsHistory: {
-          $each: [dto.encryptedSecrets],
-          $position: 0,
-          $slice: this.maxSecretsVersions,
-        },
-      },
-    };
   }
 
   private async handleNoUpdate(id: string): Promise<ProjectNormalized> {
