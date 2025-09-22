@@ -32,12 +32,6 @@ function MembersSection() {
 
   if (!projectData) return null;
 
-  const myRole = useMemo(
-    () =>
-      projectData.members.find((member) => member.id === userData?.id)?.role,
-    [projectData.members, userData?.id]
-  );
-
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
@@ -189,9 +183,16 @@ function ActiveInviteLinksSection() {
 }
 
 function GenerateNewInviteLinkSection() {
+  const { projectData, userData } = useValues(projectLogic);
   const { createInvitation } = useAsyncActions(invitationsLogic);
   const [passphrase, setPassphrase] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const myRole = useMemo(
+    () =>
+      projectData?.members.find((member) => member.id === userData?.id)?.role,
+    [projectData?.members, userData?.id]
+  );
 
   const handleGenerateLink = async () => {
     setIsLoading(true);
@@ -199,6 +200,27 @@ function GenerateNewInviteLinkSection() {
     setPassphrase("");
     setIsLoading(false);
   };
+
+  if (myRole !== ProjectMemberRole.Owner) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <IconHexagonalPrism className="size-4 text-muted-foreground" />
+          <h3 className="text-sm font-medium">Generate new invite link</h3>
+        </div>
+        <div className="text-center py-6 px-4 bg-muted/20 rounded-md border border-dashed">
+          <div className="text-sm text-muted-foreground">
+            You are a <span className="font-medium">Member</span> of this
+            project.
+          </div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Only <span className="font-medium">Owners</span> can generate invite
+            links.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
