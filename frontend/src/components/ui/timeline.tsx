@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 interface TimelineEntry {
   title: string;
   content: React.ReactNode;
-  illustration?: React.ReactNode;
 }
 
 export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
@@ -14,10 +13,12 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      setHeight(rect.height);
-    }
+    setTimeout(() => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        setHeight(rect.height);
+      }
+    }, 3000);
   }, [ref]);
 
   const { scrollYProgress } = useScroll({
@@ -57,17 +58,12 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               </h3>
             </div>
 
-            <div className="relative pl-20 pr-4 md:pl-4 w-full">
-              <h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
+            <div className="pl-20 pr-4 md:pl-4 w-full">
+              <h3 className="md:hidden block text-2xl mb-6 text-left font-bold text-neutral-500 dark:text-neutral-500">
                 {item.title}
               </h3>
 
-              <div className="space-y-8">
-                <div>{item.content}</div>
-                {item.illustration && (
-                  <div className="flex justify-start">{item.illustration}</div>
-                )}
-              </div>
+              <div>{item.content}</div>
             </div>
           </div>
         ))}

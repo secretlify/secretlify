@@ -455,34 +455,41 @@ function TimelineSection() {
       title: "Day 1",
       content: (
         <div>
-          <p className="mb-4 text-lg font-normal text-neutral-300 md:text-xl">
+          <p className="mb-6 text-lg font-normal text-neutral-300 md:text-xl">
             <strong className="text-white">
               Morning to midnight coding session
             </strong>
           </p>
+          <div className="mb-6">
+            <img
+              src="/changelog-tldraw.png"
+              alt="Morning to midnight coding session"
+              className="rounded-lg shadow-lg max-w-full h-auto"
+            />
+          </div>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
             We worked from dawn till dusk, fueled by determination. The core
             cryptographic architecture was designed and implemented.
           </p>
         </div>
       ),
-      illustration: (
-        <img
-          src="/changelog-tldraw.png"
-          alt="Morning to midnight coding session"
-          className="rounded-lg shadow-lg max-w-full h-auto"
-        />
-      ),
     },
     {
       title: "Day 2",
       content: (
         <div>
-          <p className="mb-4 text-lg font-normal text-neutral-300 md:text-xl">
+          <p className="mb-6 text-lg font-normal text-neutral-300 md:text-xl">
             <strong className="text-white">
               First version with full E2E encryption released
             </strong>
           </p>
+          <div className="mb-6">
+            <img
+              src="/changelog-first-version.png"
+              alt="First version with full E2E encryption"
+              className="rounded-lg shadow-lg max-w-full h-auto"
+            />
+          </div>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
             We deployed the MVP. Every single secret was now encrypted
             end-to-end. Not even we could see what users were storing. The
@@ -490,23 +497,23 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: (
-        <img
-          src="/changelog-first-version.png"
-          alt="First version with full E2E encryption"
-          className="rounded-lg shadow-lg max-w-full h-auto"
-        />
-      ),
     },
     {
       title: "Week 1",
       content: (
         <div>
-          <p className="mb-4 text-lg font-normal text-neutral-300 md:text-xl">
+          <p className="mb-6 text-lg font-normal text-neutral-300 md:text-xl">
             <strong className="text-white">
               Version history with full encryption
             </strong>
           </p>
+          <div className="mb-6">
+            <img
+              src="/changelog-history.png"
+              alt="Version history with full encryption"
+              className="rounded-lg shadow-lg max-w-full h-auto"
+            />
+          </div>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
             Users can now track all changes to their secrets. Every version is
             independently encrypted, allowing for secure rollbacks and audit
@@ -514,34 +521,27 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: (
-        <img
-          src="/changelog-history.png"
-          alt="Version history with full encryption"
-          className="rounded-lg shadow-lg max-w-full h-auto"
-        />
-      ),
     },
     {
       title: "Week 2",
       content: (
         <div>
-          <p className="mb-4 text-lg font-normal text-neutral-300 md:text-xl">
+          <p className="mb-6 text-lg font-normal text-neutral-300 md:text-xl">
             <strong className="text-white">Team collaboration unlocked</strong>
           </p>
+          <div className="mb-6">
+            <img
+              src="/changelog-members.png"
+              alt="Team collaboration unlocked"
+              className="rounded-lg shadow-lg max-w-full h-auto"
+            />
+          </div>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
             Secure member invitations are now live. Each team member has their
             own keys, and project secrets are re-encrypted for each member
             individually. True end-to-end encryption for teams.
           </p>
         </div>
-      ),
-      illustration: (
-        <img
-          src="/changelog-members.png"
-          alt="Team collaboration unlocked"
-          className="rounded-lg shadow-lg max-w-full h-auto"
-        />
       ),
     },
     {
