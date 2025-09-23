@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { ProjectSecretsVersionWriteService } from 'src/project-secrets-version/write/project-secrets-version-write.service';
 import { Role } from 'src/shared/types/role.enum';
+import { ProjectSecretsVersionWriteService } from '../../project-secrets-version/write/project-secrets-version-write.service';
 import { ProjectEntity } from '../core/entities/project.entity';
 import { ProjectNormalized } from '../core/entities/project.interface';
 import { ProjectSerializer } from '../core/entities/project.serializer';

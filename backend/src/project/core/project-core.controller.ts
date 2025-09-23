@@ -7,15 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  Sse,
   UseGuards,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { Observable, filter, fromEvent, map } from 'rxjs';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { ProjectSecretsVersionSerialized } from '../../project-secrets-version/core/entities/project-secrets-version.interface';
 import { ProjectSecretsVersionReadService } from '../../project-secrets-version/read/project-secrets-version-read.service';
 import { UserSerializer } from '../../user/core/entities/user.serializer';
 import { UserReadService } from '../../user/read/user-read.service';
+import { SecretsUpdatedEvent } from '../events/definitions/secrets-updated.event';
+import { ProjectEvent } from '../events/project-events.enum';
 import { ProjectReadService } from '../read/project-read.service';
 import { ProjectWriteService } from '../write/project-write.service';
 import { CreateProjectBody } from './dto/create-project.body';
@@ -31,12 +36,27 @@ import { RemoveProjectMemberGuard } from './guards/remove-project-member.guard';
 @ApiTags('Projects')
 @ApiBearerAuth()
 export class ProjectCoreController {
-  constructor(
+  public constructor(
     private readonly projectWriteService: ProjectWriteService,
     private readonly projectReadService: ProjectReadService,
     private readonly userReadService: UserReadService,
     private readonly projectSecretsVersionReadService: ProjectSecretsVersionReadService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  @Sse('projects/:projectId/events')
+  @UseGuards(ProjectMemberGuard)
+  @ApiBearerAuth()
+  public streamEvents(
+    @Param('projectId') projectId: string,
+  ): Observable<{ data: SecretsUpdatedEvent }> {
+    return fromEvent(this.eventEmitter, ProjectEvent.SecretsUpdated).pipe(
+      filter((data: SecretsUpdatedEvent) => data.projectId === projectId),
+      map((data: SecretsUpdatedEvent) => ({
+        data,
+      })),
+    );
+  }
 
   @Get('users/me/projects')
   @ApiResponse({ type: [ProjectSerialized] })
@@ -123,6 +143,14 @@ export class ProjectCoreController {
     const latestVersion = await this.projectSecretsVersionReadService.findLatestByProjectId(
       new Types.ObjectId(projectId),
     );
+
+    if (body.encryptedSecrets) {
+      const author = membersHydrated.find((m) => m.id === userId);
+      this.eventEmitter.emit(
+        ProjectEvent.SecretsUpdated,
+        new SecretsUpdatedEvent(projectId, body.encryptedSecrets, author!),
+      );
+    }
 
     return ProjectSerializer.serialize(
       { ...project, updatedAt: latestVersion.updatedAt },

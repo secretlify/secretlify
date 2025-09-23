@@ -1,5 +1,8 @@
 import { advanceBy, advanceTo } from 'jest-date-mock';
+import { firstValueFrom, of } from 'rxjs';
+import { catchError, take, timeout, toArray } from 'rxjs/operators';
 import * as request from 'supertest';
+import { ProjectCoreController } from '../../src/project/core/project-core.controller';
 import { ENCRYPTED_SECRETS_MAX_LENGTH } from '../../src/shared/constants/validation';
 import { Role } from '../../src/shared/types/role.enum';
 import { createTestApp } from '../utils/bootstrap';
@@ -533,6 +536,95 @@ describe('ProjectCoreController (writes)', () => {
       // when
       const response = await request(bootstrap.app.getHttpServer()).delete(
         `/projects/${project.id}/members/${member.id}`,
+      );
+
+      // then
+      expect(response.status).toEqual(401);
+    });
+  });
+
+  describe('GET /projects/:projectId/events', () => {
+    it('receives secrets updates events for the specified project', async () => {
+      // given
+      const { user, token, project } = await bootstrap.utils.projectUtils.setupOwner();
+      const projectCoreController = bootstrap.app.get(ProjectCoreController);
+
+      // when
+      const stream = await projectCoreController.streamEvents(project.id);
+      const resultsPromise = firstValueFrom(stream.pipe(take(2), toArray()));
+
+      await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({
+          encryptedSecrets: 'new-secrets-for-sse',
+        });
+
+      await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({
+          encryptedSecrets: 'new-secrets-for-sse-2',
+        });
+
+      // then
+      const results = await resultsPromise;
+
+      expect(results[0].data).toMatchObject({
+        newEncryptedSecrets: 'new-secrets-for-sse',
+        user: {
+          id: user.id,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        },
+      });
+
+      expect(results[1].data).toMatchObject({
+        newEncryptedSecrets: 'new-secrets-for-sse-2',
+        user: {
+          id: user.id,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        },
+      });
+    });
+
+    it('does not receive secrets updates events for other projects', async () => {
+      // given
+      const { project: projectA } = await bootstrap.utils.projectUtils.setupOwner();
+      const { token: tokenB, project: projectB } = await bootstrap.utils.projectUtils.setupOwner();
+
+      const projectCoreController = bootstrap.app.get(ProjectCoreController);
+
+      const streamA = await projectCoreController.streamEvents(projectA.id);
+      const resultsPromiseA = firstValueFrom(
+        streamA.pipe(
+          take(1),
+          timeout(1000),
+          catchError(() => of(null)),
+        ),
+      );
+
+      // when
+      await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${projectB.id}`)
+        .set('authorization', `Bearer ${tokenB}`)
+        .send({
+          encryptedSecrets: 'new-secrets-for-sse',
+        });
+
+      // then
+      const result = await resultsPromiseA;
+      expect(result).toBeNull();
+    });
+
+    it('does not receive secrets when not logged in', async () => {
+      // given
+      const { project } = await bootstrap.utils.projectUtils.setupOwner();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer()).get(
+        `/projects/${project.id}/events`,
       );
 
       // then
