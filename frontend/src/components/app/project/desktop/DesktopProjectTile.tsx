@@ -43,20 +43,16 @@ export function DesktopProjectTile() {
 
   if (!projectData) {
     return (
-      <div className="w-full max-w-5xl px-4 relative">
-        <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-          <div className="p-4">
-            <ProjectHeaderSkeleton />
-            <div
-              className="relative rounded-xl overflow-hidden bg-card/30"
-              style={{ height: "55vh" }}
-            >
-              <div className="h-full p-6">
-                <EditorSkeleton />
-                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                  <Skeleton className="h-6 w-32 rounded" />
-                </div>
-              </div>
+      <div className="p-4">
+        <ProjectHeaderSkeleton />
+        <div
+          className="relative rounded-xl overflow-hidden bg-card/30"
+          style={{ height: "55vh" }}
+        >
+          <div className="h-full p-6">
+            <EditorSkeleton />
+            <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+              <Skeleton className="h-6 w-32 rounded" />
             </div>
           </div>
         </div>
@@ -65,30 +61,28 @@ export function DesktopProjectTile() {
   }
 
   return (
-    <div className="w-full max-w-5xl px-4 relative">
-      <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-        <div className="p-4">
-          <ProjectHeader />
-          <div
-            className="relative rounded-xl overflow-hidden"
-            style={{ height: "55vh" }}
-          >
-            {isShowingHistory ? (
-              <DesktopHistoryView />
-            ) : (
-              <div className="h-full">
-                <FileEditor
-                  value={inputValue}
-                  onChange={(v) => setInputValue(v)}
-                />
-                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-                  <span className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm">
-                    Changed by you {getRelativeTime(projectData.updatedAt)}
-                  </span>
-                </div>
+    <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
+      <div className="p-4">
+        <ProjectHeader />
+        <div
+          className="relative rounded-xl overflow-hidden"
+          style={{ height: "55vh" }}
+        >
+          {isShowingHistory ? (
+            <DesktopHistoryView />
+          ) : (
+            <div className="h-full">
+              <FileEditor
+                value={inputValue}
+                onChange={(v) => setInputValue(v)}
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
+                <span className="rounded bg-background/80 px-2 py-0.5 text-xs text-muted-foreground shadow-sm">
+                  Changed by you {getRelativeTime(projectData.updatedAt)}
+                </span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

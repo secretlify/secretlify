@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useValues } from "kea";
 import { Meh } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
+import { motion } from "motion/react";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
@@ -44,7 +45,19 @@ export function DesktopProjectView() {
           </aside>
 
           <main className="h-full overflow-y-auto flex items-center">
-            <DesktopProjectTile />
+            <motion.div
+              className="w-full max-w-5xl px-4 relative"
+              initial={{ opacity: 0, x: -50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 50, scale: 0.9 }}
+              transition={{
+                duration: 1,
+                ease: [0, 1, 0, 1],
+                delay: 0.5,
+              }}
+            >
+              <DesktopProjectTile />
+            </motion.div>
           </main>
         </div>
       </div>
