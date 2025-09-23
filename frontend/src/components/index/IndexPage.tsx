@@ -87,7 +87,7 @@ export function IndexPage() {
             className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto backdrop-blur-md border"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
             <div className="flex items-center gap-2 ">
               <Check className="h-4 w-4 text-green-600" />
@@ -125,9 +125,7 @@ export function IndexPage() {
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Why Cryptly?
-              </span>
+              <span className="">Why Cryptly?</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
               True zero-knowledge architecture means your secrets are yours
@@ -185,9 +183,7 @@ export function IndexPage() {
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                How It Works
-              </span>
+              <span className="">How It Works</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
               Military-grade encryption meets developer-friendly experience
@@ -280,9 +276,7 @@ export function IndexPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Ready to secure your secrets?
-              </span>
+              <span className="">Ready to secure your secrets?</span>
             </h2>
             <p className="mt-6 text-lg text-neutral-400">
               Join developers who trust Cryptly for zero-knowledge secrets
@@ -293,24 +287,24 @@ export function IndexPage() {
               <Link
                 to="/app/project/$projectId"
                 params={{ projectId: "demo" }}
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-3 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
               >
                 <span>Start using Cryptly</span>
-                <Rocket className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
             <div className="mt-12 flex items-center justify-center gap-8 text-sm text-neutral-500">
-              <div className="flex items-center gap-2">
-                <GitBranch className="h-4 w-4" />
-                <span>MIT Licensed</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-500" />
+              <div className="flex items-center gap-2 ">
+                <Check className="h-4 w-4 text-green-600" />
                 <span>Free Forever</span>
               </div>
               <div className="flex items-center gap-2">
-                <Lock className="h-4 w-4" />
+                <Check className="h-4 w-4 text-green-600" />
+                <span>Open Source</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-600" />
                 <span>E2E Encrypted</span>
               </div>
             </div>
