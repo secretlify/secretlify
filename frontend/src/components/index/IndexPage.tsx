@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { GitHubIcon } from "@/components/ui/GitHubIcon";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
+import Beams from "@/components/Beams";
 import {
   Shield,
   Lock,
@@ -14,16 +14,25 @@ import {
   Zap,
   ArrowRight,
   Check,
-  GitBranch,
-  Rocket,
 } from "lucide-react";
 
 export function IndexPage() {
   return (
-    <div className="min-h-screen bg-black">
-      {/* Hero Section with BackgroundRippleEffect */}
+    <div className="min-h-screen bg-black tracking-wide">
+      {/* Hero Section with Beams */}
       <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden">
-        <BackgroundRippleEffect />
+        <div className="absolute inset-0 z-0">
+          <Beams
+            beamWidth={2}
+            beamHeight={30}
+            beamNumber={20}
+            lightColor="#ffffff"
+            speed={2}
+            noiseIntensity={1.75}
+            scale={0.2}
+            rotation={30}
+          />
+        </div>
 
         <motion.div
           className="relative z-10 mt-20 w-full max-w-6xl mx-auto px-6"
@@ -32,29 +41,18 @@ export function IndexPage() {
           transition={{ duration: 2, ease: [0, 1, 0, 1] }}
         >
           <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Cryptly
-            </span>
+            <span className="">Cryptly</span>
           </h1>
 
           <motion.p
-            className="mx-auto mt-6 max-w-2xl text-center text-xl text-neutral-300 md:text-2xl"
+            className="mx-auto mt-6  text-center text-xl text-neutral-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.2 }}
           >
-            Zero-knowledge secrets management where even we can't access your
-            data
-          </motion.p>
-
-          <motion.p
-            className="mx-auto mt-4 max-w-xl text-center text-sm text-neutral-500 md:text-base"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.3 }}
-          >
-            End-to-end encrypted environment variables for your team. Your
-            secrets never leave your browser unencrypted.
+            Zero-knowledge secrets management
+            <br />
+            where even we can't access your data
           </motion.p>
 
           <motion.div
@@ -66,7 +64,7 @@ export function IndexPage() {
             <Link
               to="/app/project/$projectId"
               params={{ projectId: "demo" }}
-              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-3 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
             >
               <span>Dashboard</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -76,7 +74,7 @@ export function IndexPage() {
               href="https://github.com/secretlify/secretlify"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/70 px-8 py-3 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800/70"
             >
               <GitHubIcon className="h-5 w-5" />
               <span>Source</span>
@@ -84,21 +82,21 @@ export function IndexPage() {
           </motion.div>
 
           <motion.div
-            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-500"
+            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto backdrop-blur-md border"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+            <div className="flex items-center gap-2 ">
+              <Check className="h-4 w-4 text-green-600" />
               <span>Free Forever</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className="h-4 w-4 text-green-600" />
               <span>Open Source</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className="h-4 w-4 text-green-600" />
               <span>E2E Encrypted</span>
             </div>
           </motion.div>
@@ -125,9 +123,7 @@ export function IndexPage() {
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Why Cryptly?
-              </span>
+              <span className="">Why Cryptly?</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
               True zero-knowledge architecture means your secrets are yours
@@ -185,9 +181,7 @@ export function IndexPage() {
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                How It Works
-              </span>
+              <span className="">How It Works</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
               Military-grade encryption meets developer-friendly experience
@@ -206,8 +200,8 @@ export function IndexPage() {
                 delay: 0.1,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-blue-500/20 p-3">
-                <Fingerprint className="h-6 w-6 text-blue-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Fingerprint className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 1. Authenticate
@@ -230,8 +224,8 @@ export function IndexPage() {
                 delay: 0.2,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-purple-500/20 p-3">
-                <Terminal className="h-6 w-6 text-purple-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Terminal className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 2. Create & Edit
@@ -254,8 +248,8 @@ export function IndexPage() {
                 delay: 0.3,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-pink-500/20 p-3">
-                <Server className="h-6 w-6 text-pink-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Server className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 3. Store Securely
@@ -280,9 +274,7 @@ export function IndexPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Ready to secure your secrets?
-              </span>
+              <span className="">Ready to secure your secrets?</span>
             </h2>
             <p className="mt-6 text-lg text-neutral-400">
               Join developers who trust Cryptly for zero-knowledge secrets
@@ -293,24 +285,24 @@ export function IndexPage() {
               <Link
                 to="/app/project/$projectId"
                 params={{ projectId: "demo" }}
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-3 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
               >
                 <span>Start using Cryptly</span>
-                <Rocket className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
             <div className="mt-12 flex items-center justify-center gap-8 text-sm text-neutral-500">
-              <div className="flex items-center gap-2">
-                <GitBranch className="h-4 w-4" />
-                <span>MIT Licensed</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-500" />
+              <div className="flex items-center gap-2 ">
+                <Check className="h-4 w-4 text-green-600" />
                 <span>Free Forever</span>
               </div>
               <div className="flex items-center gap-2">
-                <Lock className="h-4 w-4" />
+                <Check className="h-4 w-4 text-green-600" />
+                <span>Open Source</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-600" />
                 <span>E2E Encrypted</span>
               </div>
             </div>
