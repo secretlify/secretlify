@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { GitHubIcon } from "@/components/ui/GitHubIcon";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
+import Beams from "@/components/Beams";
 import {
   Shield,
   Lock,
@@ -21,9 +21,20 @@ import {
 export function IndexPage() {
   return (
     <div className="min-h-screen bg-black">
-      {/* Hero Section with BackgroundRippleEffect */}
+      {/* Hero Section with Beams */}
       <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden">
-        <BackgroundRippleEffect />
+        <div className="absolute inset-0 z-0">
+          <Beams
+            beamWidth={3}
+            beamHeight={30}
+            beamNumber={20}
+            lightColor="#ffffff"
+            speed={2}
+            noiseIntensity={1.75}
+            scale={0.2}
+            rotation={30}
+          />
+        </div>
 
         <motion.div
           className="relative z-10 mt-20 w-full max-w-6xl mx-auto px-6"
@@ -32,9 +43,7 @@ export function IndexPage() {
           transition={{ duration: 2, ease: [0, 1, 0, 1] }}
         >
           <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Cryptly
-            </span>
+            <span className="font-semibold">Cryptly</span>
           </h1>
 
           <motion.p

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource/lato";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -189,4 +190,8 @@
       max-height: 100vh;
     }
   }
+}
+
+body {
+  font-family: "Lato", sans-serif;
 }
