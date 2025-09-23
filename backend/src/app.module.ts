@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthCoreModule } from './auth/core/auth-core.module';
 import { GithubAuthModule } from './auth/github/github-auth.module';
 import { GoogleAuthModule } from './auth/google/google-auth.module';
+import { HealthModule } from './health/health.module';
 import { InvitationCoreModule } from './invitation/core/invitation-core.module';
 import { ProjectSecretsVersionCoreModule } from './project-secrets-version/core/project-secrets-version-core.module';
 import { ProjectCoreModule } from './project/core/project-core.module';
@@ -25,6 +26,7 @@ import { UserCoreModule } from './user/core/user-core.module';
     LogdashModule,
     GoogleAuthModule,
     GithubAuthModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

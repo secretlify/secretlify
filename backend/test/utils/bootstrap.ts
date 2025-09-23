@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import * as nock from 'nock';
 import { GithubAuthModule } from '../../src/auth/github/github-auth.module';
 import { GoogleAuthModule } from '../../src/auth/google/google-auth.module';
+import { HealthModule } from '../../src/health/health.module';
 import { InvitationCoreModule } from '../../src/invitation/core/invitation-core.module';
 import { PROJECT_HISTORY_SIZE } from '../../src/project-secrets-version/write/project-secrets-version.constants';
 import { ProjectCoreModule } from '../../src/project/core/project-core.module';
@@ -53,6 +54,7 @@ export async function createTestApp(): Promise<TestApp> {
       LogdashModule,
       GoogleAuthModule,
       GithubAuthModule,
+      HealthModule,
     ],
   })
     .overrideProvider(Logger)
