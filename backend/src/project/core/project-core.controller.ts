@@ -19,6 +19,7 @@ import { UserReadService } from '../../user/read/user-read.service';
 import { ProjectReadService } from '../read/project-read.service';
 import { ProjectWriteService } from '../write/project-write.service';
 import { CreateProjectBody } from './dto/create-project.body';
+import { UpdateMemberRoleBody } from './dto/update-member-role.body';
 import { UpdateProjectBody } from './dto/update-project.body';
 import { ProjectSerialized } from './entities/project.interface';
 import { ProjectSerializer } from './entities/project.serializer';
@@ -138,6 +139,17 @@ export class ProjectCoreController {
     @Param('memberId') memberId: string,
   ): Promise<void> {
     await this.projectWriteService.removeMember(projectId, memberId);
+  }
+
+  @Patch('projects/:projectId/members/:memberId')
+  @UseGuards(ProjectOwnerGuard)
+  @HttpCode(204)
+  public async updateMemberRole(
+    @Param('projectId') projectId: string,
+    @Param('memberId') memberId: string,
+    @Body() body: UpdateMemberRoleBody,
+  ): Promise<void> {
+    await this.projectWriteService.updateMemberRole(projectId, memberId, body.role);
   }
 
   @Delete('projects/:projectId')

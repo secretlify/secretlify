@@ -5,6 +5,7 @@ import * as request from 'supertest';
 import { CreateProjectBody } from '../../src/project/core/dto/create-project.body';
 import { ProjectEntity } from '../../src/project/core/entities/project.entity';
 import { ProjectSerialized } from '../../src/project/core/entities/project.interface';
+import { Role } from '../../src/shared/types/role.enum';
 import { UserUtils } from './user.utils';
 
 export class ProjectUtils {
@@ -33,10 +34,14 @@ export class ProjectUtils {
     return response.body;
   }
 
-  public async addMemberToProject(projectId: string, memberId: string): Promise<void> {
+  public async addMemberToProject(
+    projectId: string,
+    memberId: string,
+    role: Role = Role.Member,
+  ): Promise<void> {
     await this.projectModel.updateOne(
       { _id: new Types.ObjectId(projectId) },
-      { $set: { [`members.${memberId}`]: 'member' } },
+      { $set: { [`members.${memberId}`]: role } },
     );
   }
 
@@ -63,8 +68,21 @@ export class ProjectUtils {
       email: 'member@test.com',
     });
     const project = await this.createProject(ownerToken);
-    await this.addMemberToProject(project.id, member.id);
+    await this.addMemberToProject(project.id, member.id, Role.Member);
 
     return { owner, member, token: memberToken, project };
+  }
+
+  public async setupAdmin() {
+    const { user: owner, token: ownerToken } = await this.userUtils.createDefault({
+      email: 'owner@test.com',
+    });
+    const { user: admin, token: adminToken } = await this.userUtils.createDefault({
+      email: 'admin@test.com',
+    });
+    const project = await this.createProject(ownerToken);
+    await this.addMemberToProject(project.id, admin.id, Role.Admin);
+
+    return { owner, admin, token: adminToken, project };
   }
 }

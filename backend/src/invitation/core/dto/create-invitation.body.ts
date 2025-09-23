@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { Role } from '../../../shared/types/role.enum';
 
 export class CreateInvitationBody {
   @ApiProperty()
@@ -17,4 +18,8 @@ export class CreateInvitationBody {
   @ApiProperty()
   @IsString()
   public temporarySecretsKey: string;
+
+  @ApiProperty({ enum: [Role.Admin, Role.Member] })
+  @IsEnum([Role.Admin, Role.Member])
+  public role: Role;
 }

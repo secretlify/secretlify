@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { Role } from '../../src/shared/types/role.enum';
 import { createTestApp } from '../utils/bootstrap';
 
 describe('InvitationCoreController (reads)', () => {
@@ -42,6 +43,7 @@ describe('InvitationCoreController (reads)', () => {
           email: owner.email,
           avatarUrl: owner.avatarUrl,
         },
+        role: Role.Member,
         temporaryPublicKey: 'test-public-key',
         temporaryPrivateKey: 'test-private-key',
         temporarySecretsKey: 'test-server-passphrase',

@@ -36,13 +36,25 @@ export class ProjectWriteService {
     projectId: string,
     memberId: string,
     serverPassphrase: string,
+    role: Role,
   ): Promise<void> {
     await this.projectModel.updateOne(
       { _id: new Types.ObjectId(projectId) },
       {
         $set: {
-          [`members.${memberId}`]: Role.Member,
+          [`members.${memberId}`]: role,
           [`encryptedSecretsKeys.${memberId}`]: serverPassphrase,
+        },
+      },
+    );
+  }
+
+  public async updateMemberRole(projectId: string, memberId: string, role: Role): Promise<void> {
+    await this.projectModel.updateOne(
+      { _id: new Types.ObjectId(projectId) },
+      {
+        $set: {
+          [`members.${memberId}`]: role,
         },
       },
     );

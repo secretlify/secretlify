@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
+import { Role } from '../../../shared/types/role.enum';
 
 @Schema({ collection: 'invitations', timestamps: true })
 export class InvitationEntity {
@@ -10,6 +11,9 @@ export class InvitationEntity {
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'UserEntity' })
   public authorId: Types.ObjectId;
+
+  @Prop({ type: String, enum: Role, default: Role.Member })
+  public role: Role;
 
   @Prop()
   public temporaryPublicKey: string;

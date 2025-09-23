@@ -26,6 +26,14 @@ export class RemoveProjectMemberGuard implements CanActivate {
       return true;
     }
 
+    if (userRole === Role.Admin) {
+      const roleToDelete = project.members.get(memberId);
+      if (roleToDelete !== Role.Member) {
+        throw new ForbiddenException('Admins can only remove members');
+      }
+      return true;
+    }
+
     throw new ForbiddenException("You don't have permission to perform this action.");
   }
 }

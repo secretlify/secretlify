@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserPartialSerialized } from 'src/user/core/entities/user.interface';
+import { Role } from '../../../shared/types/role.enum';
 
 export class InvitationNormalized {
   public id: string;
   public projectId: string;
   public authorId: string;
+  public role: Role;
   public temporaryPublicKey: string;
   public temporaryPrivateKey: string;
   public temporarySecretsKey: string;
@@ -20,6 +22,9 @@ export class InvitationSerialized {
 
   @ApiProperty({ type: UserPartialSerialized })
   public author: UserPartialSerialized;
+
+  @ApiProperty({ enum: Role })
+  public role: Role;
 
   @ApiProperty()
   public temporaryPublicKey: string;

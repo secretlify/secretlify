@@ -82,6 +82,7 @@ export class InvitationCoreController {
       invitation.projectId.toString(),
       userId,
       body.newSecretsKey,
+      invitation.role,
     );
 
     await this.invitationWriteService.delete(id);

@@ -8,6 +8,7 @@ export class InvitationSerializer {
       id: entity._id.toString(),
       projectId: entity.projectId.toString(),
       authorId: entity.authorId.toString(),
+      role: entity.role,
       temporaryPublicKey: entity.temporaryPublicKey,
       temporaryPrivateKey: entity.temporaryPrivateKey,
       temporarySecretsKey: entity.temporarySecretsKey,
@@ -22,6 +23,7 @@ export class InvitationSerializer {
     return {
       id: normalized.id,
       projectId: normalized.projectId,
+      role: normalized.role,
       author: {
         id: author.id,
         email: author.email,

@@ -1,6 +1,7 @@
 import { advanceBy, advanceTo } from 'jest-date-mock';
 import * as request from 'supertest';
 import { ENCRYPTED_SECRETS_MAX_LENGTH } from '../../src/shared/constants/validation';
+import { Role } from '../../src/shared/types/role.enum';
 import { createTestApp } from '../utils/bootstrap';
 
 describe('ProjectCoreController (writes)', () => {
@@ -224,6 +225,71 @@ describe('ProjectCoreController (writes)', () => {
     });
   });
 
+  describe('PATCH /projects/:projectId/members/:memberId', () => {
+    it('owner updates a member to admin', async () => {
+      // given
+      const {
+        user: owner,
+        token: ownerToken,
+        project,
+      } = await bootstrap.utils.projectUtils.setupOwner();
+      const { user: member } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${ownerToken}`)
+        .send({ role: Role.Admin });
+
+      // then
+      expect(response.status).toEqual(204);
+      const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, ownerToken);
+      expect(updatedProject.members).toEqual([
+        { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
+        { id: member.id, email: member.email, avatarUrl: member.avatarUrl, role: 'admin' },
+      ]);
+    });
+
+    it('owner cannot update a member to owner', async () => {
+      // given
+      const {
+        member,
+        token: ownerToken,
+        project,
+      } = await bootstrap.utils.projectUtils.setupMember();
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${ownerToken}`)
+        .send({ role: Role.Owner });
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('admin cannot update a member to admin', async () => {
+      // given
+      const { admin, token: adminToken, project } = await bootstrap.utils.projectUtils.setupAdmin();
+      const { user: member } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}/members/${admin.id}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({ role: Role.Admin });
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+  });
+
   describe('DELETE /projects/:projectId', () => {
     it('deletes project', async () => {
       // given
@@ -322,6 +388,33 @@ describe('ProjectCoreController (writes)', () => {
       ]);
     });
 
+    it('admin removes a member', async () => {
+      // given
+      const {
+        owner,
+        admin,
+        token: adminToken,
+        project,
+      } = await bootstrap.utils.projectUtils.setupAdmin();
+      const { user: member } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${member.id}`)
+        .set('authorization', `Bearer ${adminToken}`);
+
+      // then
+      expect(response.status).toEqual(204);
+      const updatedProject = await bootstrap.utils.projectUtils.getProject(project.id, adminToken);
+      expect(updatedProject.members).toEqual([
+        { id: owner.id, email: owner.email, avatarUrl: owner.avatarUrl, role: 'owner' },
+        { id: admin.id, email: admin.email, avatarUrl: admin.avatarUrl, role: 'admin' },
+      ]);
+    });
+
     it('member removes themself', async () => {
       // given
       const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
@@ -385,6 +478,23 @@ describe('ProjectCoreController (writes)', () => {
       const response = await request(bootstrap.app.getHttpServer())
         .delete(`/projects/${project.id}/members/${memberB.id}`)
         .set('authorization', `Bearer ${memberAToken}`);
+
+      // then
+      expect(response.status).toEqual(403);
+    });
+
+    it('member cannot remove admin', async () => {
+      // given
+      const { admin, token: adminToken, project } = await bootstrap.utils.projectUtils.setupAdmin();
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      // when
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/projects/${project.id}/members/${admin.id}`)
+        .set('authorization', `Bearer ${memberToken}`);
 
       // then
       expect(response.status).toEqual(403);
