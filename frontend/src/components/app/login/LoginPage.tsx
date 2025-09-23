@@ -23,7 +23,7 @@ export function LoginPage() {
         <div className="bg-card rounded-xl shadow-lg border border-border p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-card-foreground mb-2">
-              Welcome to Secretlify
+              Welcome to Cryptly
             </h1>
             <p className="text-muted-foreground">
               Sign in to your account to continue
