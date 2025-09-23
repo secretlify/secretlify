@@ -14,8 +14,6 @@ import {
   Zap,
   ArrowRight,
   Check,
-  GitBranch,
-  Rocket,
 } from "lucide-react";
 
 export function IndexPage() {
