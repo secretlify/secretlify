@@ -28,9 +28,9 @@ export function IndexPage() {
 
         <motion.div
           className="relative z-10 mt-20 w-full max-w-6xl mx-auto px-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 100, scale: 0.5 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 2, ease: [0, 1, 0, 1] }}
         >
           <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -42,7 +42,7 @@ export function IndexPage() {
             className="mx-auto mt-6 max-w-2xl text-center text-xl text-neutral-300 md:text-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.2 }}
           >
             Zero-knowledge secrets management where even we can't access your
             data
@@ -52,7 +52,7 @@ export function IndexPage() {
             className="mx-auto mt-4 max-w-xl text-center text-sm text-neutral-500 md:text-base"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.3 }}
           >
             End-to-end encrypted environment variables for your team. Your
             secrets never leave your browser unencrypted.
@@ -62,7 +62,7 @@ export function IndexPage() {
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+            transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.4 }}
           >
             <Link
               to="/app/project/$projectId"
@@ -81,7 +81,7 @@ export function IndexPage() {
               className="group inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800"
             >
               <GitHubIcon className="h-5 w-5" />
-              <span>View on GitHub</span>
+              <span>Source</span>
             </a>
 
             <Link
@@ -129,10 +129,10 @@ export function IndexPage() {
         <div className="mx-auto max-w-6xl">
           <motion.div
             className="mb-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 100, scale: 0.5 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
               <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
@@ -189,10 +189,10 @@ export function IndexPage() {
         <div className="mx-auto max-w-6xl">
           <motion.div
             className="mb-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 100, scale: 0.5 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
               <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -207,10 +207,14 @@ export function IndexPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{
+                duration: 0.5,
+                ease: [0, 0.55, 0.45, 1],
+                delay: 0.1,
+              }}
             >
               <div className="mb-4 inline-flex rounded-lg bg-blue-500/20 p-3">
                 <Fingerprint className="h-6 w-6 text-blue-400" />
@@ -227,10 +231,14 @@ export function IndexPage() {
 
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{
+                duration: 0.5,
+                ease: [0, 0.55, 0.45, 1],
+                delay: 0.2,
+              }}
             >
               <div className="mb-4 inline-flex rounded-lg bg-purple-500/20 p-3">
                 <Terminal className="h-6 w-6 text-purple-400" />
@@ -247,10 +255,14 @@ export function IndexPage() {
 
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{
+                duration: 0.5,
+                ease: [0, 0.55, 0.45, 1],
+                delay: 0.3,
+              }}
             >
               <div className="mb-4 inline-flex rounded-lg bg-pink-500/20 p-3">
                 <Server className="h-6 w-6 text-pink-400" />
@@ -285,8 +297,8 @@ export function IndexPage() {
       </section>
 
       {/* Timeline Section */}
-      <section className="relative">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative bg-white dark:bg-neutral-950">
+        <div className="max-w-6xl mx-auto">
           <TimelineSection />
         </div>
       </section>
@@ -434,33 +446,8 @@ function TimelineSection() {
             <strong className="text-white">The idea was born</strong>
           </p>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
-            3 weeks ago, me and my co-founder got frustrated with existing .env
-            management solutions. We realized that trusting a third party with
-            our most sensitive data - API keys, database credentials, auth
-            tokens - was fundamentally wrong.
+            Something smart here
           </p>
-          <p className="text-base text-neutral-500 md:text-lg">
-            "Why should anyone else be able to see our secrets?" - That question
-            started everything.
-          </p>
-          <div className="mt-4 flex gap-4">
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-base text-blue-400 hover:underline"
-            >
-              Co-founder 1 →
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-base text-blue-400 hover:underline"
-            >
-              Co-founder 2 →
-            </a>
-          </div>
         </div>
       ),
     },
@@ -474,20 +461,9 @@ function TimelineSection() {
             </strong>
           </p>
           <p className="mb-4 text-base text-neutral-500 md:text-lg">
-            We worked from dawn till dusk, fueled by coffee and determination.
-            The core cryptographic architecture was designed and implemented.
+            We worked from dawn till dusk, fueled determination. The core
+            cryptographic architecture was designed and implemented.
           </p>
-          <div className="mb-4">
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Asymmetric key generation in browser
-            </div>
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Passphrase-based key encryption
-            </div>
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Zero-knowledge server architecture
-            </div>
-          </div>
         </div>
       ),
     },
@@ -505,11 +481,6 @@ function TimelineSection() {
             end-to-end. Not even we could see what users were storing. The
             zero-knowledge promise was real.
           </p>
-          <div className="p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
-            <p className="text-base text-green-400">
-              🚀 First user signed up and stored encrypted secrets!
-            </p>
-          </div>
         </div>
       ),
     },
@@ -527,22 +498,6 @@ function TimelineSection() {
             independently encrypted, allowing for secure rollbacks and audit
             trails without compromising security.
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-2 bg-neutral-800/50 rounded border border-neutral-700">
-              <p className="text-base text-neutral-400">📝 Change tracking</p>
-            </div>
-            <div className="p-2 bg-neutral-800/50 rounded border border-neutral-700">
-              <p className="text-base text-neutral-400">🔄 Instant rollback</p>
-            </div>
-            <div className="p-2 bg-neutral-800/50 rounded border border-neutral-700">
-              <p className="text-base text-neutral-400">
-                🔒 Encrypted versions
-              </p>
-            </div>
-            <div className="p-2 bg-neutral-800/50 rounded border border-neutral-700">
-              <p className="text-base text-neutral-400">📊 Audit logs</p>
-            </div>
-          </div>
         </div>
       ),
     },
@@ -558,20 +513,6 @@ function TimelineSection() {
             own keys, and project secrets are re-encrypted for each member
             individually. True end-to-end encryption for teams.
           </p>
-          <div className="mb-4">
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Secure invitation links
-            </div>
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Per-member encryption
-            </div>
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Role-based access
-            </div>
-            <div className="flex items-center gap-2 text-base text-neutral-400 md:text-lg">
-              ✅ Member management
-            </div>
-          </div>
         </div>
       ),
     },
@@ -590,21 +531,7 @@ function TimelineSection() {
             crafted with the same attention to detail we put into our
             encryption.
           </p>
-          <div className="p-4 bg-purple-900/20 border border-purple-500/30 rounded-lg">
-            <p className="text-base text-purple-400 mb-2">
-              🎨 Currently working on:
-            </p>
-            <div className="space-y-1">
-              <p className="text-base text-neutral-500">
-                • Beautiful landing page (this one!)
-              </p>
-              <p className="text-base text-neutral-500">
-                • API access for CI/CD
-              </p>
-              <p className="text-base text-neutral-500">• CLI tool</p>
-              <p className="text-base text-neutral-500">• More integrations</p>
-            </div>
-          </div>
+
           <p className="mt-4 text-base text-blue-400">
             Join us on this journey. Your secrets deserve better.
           </p>
