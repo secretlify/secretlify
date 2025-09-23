@@ -20,12 +20,12 @@ import {
 
 export function IndexPage() {
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black tracking-wide">
       {/* Hero Section with Beams */}
       <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Beams
-            beamWidth={3}
+            beamWidth={2}
             beamHeight={30}
             beamNumber={20}
             lightColor="#ffffff"
@@ -43,7 +43,7 @@ export function IndexPage() {
           transition={{ duration: 2, ease: [0, 1, 0, 1] }}
         >
           <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
-            <span className="font-semibold">Cryptly</span>
+            <span className="">Cryptly</span>
           </h1>
 
           <motion.p
@@ -56,16 +56,6 @@ export function IndexPage() {
             data
           </motion.p>
 
-          <motion.p
-            className="mx-auto mt-4 max-w-xl text-center text-sm text-neutral-500 md:text-base"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.3 }}
-          >
-            End-to-end encrypted environment variables for your team. Your
-            secrets never leave your browser unencrypted.
-          </motion.p>
-
           <motion.div
             className="mt-10 flex items-center justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
@@ -75,7 +65,7 @@ export function IndexPage() {
             <Link
               to="/app/project/$projectId"
               params={{ projectId: "demo" }}
-              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-4 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
             >
               <span>Dashboard</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -85,7 +75,7 @@ export function IndexPage() {
               href="https://github.com/secretlify/secretlify"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/70 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800/70"
             >
               <GitHubIcon className="h-5 w-5" />
               <span>Source</span>
@@ -93,17 +83,20 @@ export function IndexPage() {
           </motion.div>
 
           <motion.div
-            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-500"
+            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               <Check className="h-4 w-4 text-green-500" />
               <span>Free Forever</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+              <Check
+                className="h-4 w-4 text-green-500"
+                style={{ mixBlendMode: "plus-lighter" }}
+              />
               <span>Open Source</span>
             </div>
             <div className="flex items-center gap-2">
@@ -302,7 +295,7 @@ export function IndexPage() {
               <Link
                 to="/app/project/$projectId"
                 params={{ projectId: "demo" }}
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
               >
                 <span>Start using Cryptly</span>
                 <Rocket className="h-4 w-4 transition-transform group-hover:translate-x-1" />
