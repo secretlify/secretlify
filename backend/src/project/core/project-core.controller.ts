@@ -47,12 +47,14 @@ export class ProjectCoreController {
     const latestVersions = await this.projectSecretsVersionReadService.findManyLatestByProjectIds(
       projects.map((p) => new Types.ObjectId(p.id)),
     );
-    const latestVersionsMap = new Map(
-      latestVersions.map((v) => [v.projectId.toString(), v.encryptedSecrets]),
-    );
+    const latestVersionsMap = new Map(latestVersions.map((v) => [v.projectId.toString(), v]));
 
     return projects.map((p) =>
-      ProjectSerializer.serialize(p, membersHydrated, latestVersionsMap.get(p.id)!!),
+      ProjectSerializer.serialize(
+        { ...p, updatedAt: latestVersionsMap.get(p.id)!!.updatedAt },
+        membersHydrated,
+        latestVersionsMap.get(p.id)!!.encryptedSecrets,
+      ),
     );
   }
 
@@ -89,7 +91,11 @@ export class ProjectCoreController {
       new Types.ObjectId(projectId),
     );
 
-    return ProjectSerializer.serialize(project, membersHydrated, latestVersion.encryptedSecrets);
+    return ProjectSerializer.serialize(
+      { ...project, updatedAt: latestVersion.updatedAt },
+      membersHydrated,
+      latestVersion.encryptedSecrets,
+    );
   }
 
   @Get('projects/:projectId/history')
@@ -117,7 +123,11 @@ export class ProjectCoreController {
       new Types.ObjectId(projectId),
     );
 
-    return ProjectSerializer.serialize(project, membersHydrated, latestVersion.encryptedSecrets);
+    return ProjectSerializer.serialize(
+      { ...project, updatedAt: latestVersion.updatedAt },
+      membersHydrated,
+      latestVersion.encryptedSecrets,
+    );
   }
 
   @Delete('projects/:projectId/members/:memberId')

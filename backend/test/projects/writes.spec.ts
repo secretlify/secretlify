@@ -1,3 +1,4 @@
+import { advanceBy, advanceTo } from 'jest-date-mock';
 import * as request from 'supertest';
 import { ENCRYPTED_SECRETS_MAX_LENGTH } from '../../src/shared/constants/validation';
 import { createTestApp } from '../utils/bootstrap';
@@ -191,6 +192,35 @@ describe('ProjectCoreController (writes)', () => {
 
       // then
       expect(response.status).toEqual(400);
+    });
+
+    it('project is updated when secrets change', async () => {
+      // given
+      const { user, token } = await bootstrap.utils.userUtils.createDefault({
+        email: 'test@test.com',
+      });
+      // set current time
+      advanceTo('2025-09-23T00:00:00.000Z');
+      const project = await bootstrap.utils.projectUtils.createProject(token);
+
+      // when
+      advanceBy(3600 * 1000); // 1 hour
+      const response = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .send({ encryptedSecrets: 'new-secrets' });
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        id: project.id,
+        name: 'test-project',
+        members: [{ id: user.id, email: user.email, avatarUrl: user.avatarUrl, role: 'owner' }],
+        encryptedSecretsKeys: {},
+        encryptedSecrets: 'new-secrets',
+        createdAt: expect.any(String),
+        updatedAt: '2025-09-23T01:00:00.000Z',
+      });
     });
   });
 

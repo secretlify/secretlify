@@ -17,7 +17,7 @@ export class ProjectSerializer {
   public static serialize(
     normalized: ProjectNormalized,
     membersDetails: UserPartialSerialized[],
-    latestSecret: string,
+    latestSecrets: string,
   ): ProjectSerialized {
     const membersMap = new Map(membersDetails.map((m) => [m.id, m]));
     const members: ProjectMemberSerialized[] = [];
@@ -39,7 +39,7 @@ export class ProjectSerializer {
       name: normalized.name,
       members: members,
       encryptedSecretsKeys: normalized.encryptedSecretsKeys,
-      encryptedSecrets: latestSecret,
+      encryptedSecrets: latestSecrets,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),
     };
