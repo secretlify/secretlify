@@ -172,6 +172,45 @@ describe('InvitationCoreController (writes)', () => {
       });
     });
 
+    it('can read secrets after adding member', async () => {
+      // given
+      const { user: owner, token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'owner@test.com',
+      });
+      const { user: invitee, token: inviteeToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'invitee@test.com',
+      });
+
+      const project = await bootstrap.utils.projectUtils.createProject(ownerToken, {
+        encryptedSecrets: 'passphrase',
+        encryptedSecretsKeys: { [owner.id]: 'owner-passphrase' },
+        name: 'test-project',
+      });
+      const invitation = await bootstrap.utils.invitationUtils.createInvitation(
+        ownerToken,
+        project.id,
+      );
+
+      // when
+      await request(bootstrap.app.getHttpServer())
+        .post(`/invitations/${invitation.id}/accept`)
+        .set('authorization', `Bearer ${inviteeToken}`)
+        .send({ newSecretsKey: 'invitee-passphrase' });
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${ownerToken}`);
+
+      // then
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject({
+        encryptedSecrets: 'passphrase',
+        encryptedSecretsKeys: {
+          [owner.id]: 'owner-passphrase',
+          [invitee.id]: 'invitee-passphrase',
+        },
+      });
+    });
+
     it('does not accept invitation twice', async () => {
       // given
       const { token: ownerToken } = await bootstrap.utils.userUtils.createDefault({
