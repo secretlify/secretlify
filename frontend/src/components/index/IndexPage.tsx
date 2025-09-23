@@ -47,13 +47,14 @@ export function IndexPage() {
           </h1>
 
           <motion.p
-            className="mx-auto mt-6 max-w-2xl text-center text-xl text-neutral-300 md:text-2xl"
+            className="mx-auto mt-6  text-center text-xl text-neutral-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.2 }}
           >
-            Zero-knowledge secrets management where even we can't access your
-            data
+            Zero-knowledge secrets management
+            <br />
+            where even we can't access your data
           </motion.p>
 
           <motion.div
@@ -65,7 +66,7 @@ export function IndexPage() {
             <Link
               to="/app/project/$projectId"
               params={{ projectId: "demo" }}
-              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-4 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-3 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
             >
               <span>Dashboard</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -75,7 +76,7 @@ export function IndexPage() {
               href="https://github.com/secretlify/secretlify"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/70 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800/70"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/70 px-8 py-3 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800/70"
             >
               <GitHubIcon className="h-5 w-5" />
               <span>Source</span>
@@ -83,24 +84,21 @@ export function IndexPage() {
           </motion.div>
 
           <motion.div
-            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto"
+            className="mt-8 flex items-center justify-center gap-8 text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto backdrop-blur-md border"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <div className="flex items-center gap-2 ">
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className="h-4 w-4 text-green-600" />
               <span>Free Forever</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check
-                className="h-4 w-4 text-green-500"
-                style={{ mixBlendMode: "plus-lighter" }}
-              />
+              <Check className="h-4 w-4 text-green-600" />
               <span>Open Source</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className="h-4 w-4 text-green-600" />
               <span>E2E Encrypted</span>
             </div>
           </motion.div>
