@@ -202,8 +202,8 @@ export function IndexPage() {
                 delay: 0.1,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-blue-500/20 p-3">
-                <Fingerprint className="h-6 w-6 text-blue-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Fingerprint className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 1. Authenticate
@@ -226,8 +226,8 @@ export function IndexPage() {
                 delay: 0.2,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-purple-500/20 p-3">
-                <Terminal className="h-6 w-6 text-purple-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Terminal className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 2. Create & Edit
@@ -250,8 +250,8 @@ export function IndexPage() {
                 delay: 0.3,
               }}
             >
-              <div className="mb-4 inline-flex rounded-lg bg-pink-500/20 p-3">
-                <Server className="h-6 w-6 text-pink-400" />
+              <div className="mb-4 inline-flex rounded-lg bg-neutral-700/20 p-3">
+                <Server className="h-6 w-6 text-neutral-300" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-white">
                 3. Store Securely
