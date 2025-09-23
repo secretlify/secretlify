@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useValues } from "kea";
 import { Meh } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
 import { motion } from "motion/react";
