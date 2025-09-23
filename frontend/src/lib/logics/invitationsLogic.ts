@@ -83,6 +83,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
         temporaryPublicKey: keyPair.publicKey,
         temporaryPrivateKey: encryptedPrivateKey,
         temporarySecretsKey: serverKeyEncrypted,
+        role: "member",
       });
 
       actions.loadInvitations();

@@ -267,22 +267,6 @@ export function IndexPage() {
               </p>
             </motion.div>
           </div>
-
-          <motion.div
-            className="mt-12 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Link
-              to="/architecture"
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              <span>Learn more about our architecture</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
         </div>
       </section>
 
