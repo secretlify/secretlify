@@ -17,12 +17,6 @@ import {
   Check,
   GitBranch,
   Rocket,
-  Lightbulb,
-  Code,
-  ShieldCheck,
-  History,
-  UserPlus,
-  Wrench,
 } from "lucide-react";
 
 export function IndexPage() {
@@ -456,7 +450,6 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <IdeaIllustration />,
     },
     {
       title: "Day 1",
@@ -473,7 +466,13 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <CodingIllustration />,
+      illustration: (
+        <img
+          src="/changelog-tldraw.png"
+          alt="Morning to midnight coding session"
+          className="rounded-lg shadow-lg max-w-full h-auto"
+        />
+      ),
     },
     {
       title: "Day 2",
@@ -491,7 +490,13 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <LaunchIllustration />,
+      illustration: (
+        <img
+          src="/changelog-first-version.png"
+          alt="First version with full E2E encryption"
+          className="rounded-lg shadow-lg max-w-full h-auto"
+        />
+      ),
     },
     {
       title: "Week 1",
@@ -509,7 +514,13 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <HistoryIllustration />,
+      illustration: (
+        <img
+          src="/changelog-history.png"
+          alt="Version history with full encryption"
+          className="rounded-lg shadow-lg max-w-full h-auto"
+        />
+      ),
     },
     {
       title: "Week 2",
@@ -525,7 +536,13 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <TeamIllustration />,
+      illustration: (
+        <img
+          src="/changelog-members.png"
+          alt="Team collaboration unlocked"
+          className="rounded-lg shadow-lg max-w-full h-auto"
+        />
+      ),
     },
     {
       title: "Week 3",
@@ -548,152 +565,8 @@ function TimelineSection() {
           </p>
         </div>
       ),
-      illustration: <FutureIllustration />,
     },
   ];
 
   return <Timeline data={data} />;
-}
-
-// Timeline Illustration Components
-function IdeaIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-yellow-500/30 to-orange-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-yellow-900/30 to-yellow-800/30 backdrop-blur-xl border border-yellow-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-yellow-500/20 rounded-full mb-4">
-            <Lightbulb className="w-12 h-12 text-yellow-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">The Spark</h4>
-          <p className="text-sm text-yellow-300">
-            "Why trust others with our secrets?"
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CodingIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-blue-500/20 rounded-full mb-4">
-            <Code className="w-12 h-12 text-blue-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">Dawn to Dusk</h4>
-          <p className="text-sm text-blue-300">
-            Core crypto architecture built
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LaunchIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-emerald-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-green-900/30 to-green-800/30 backdrop-blur-xl border border-green-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-green-500/20 rounded-full mb-4">
-            <ShieldCheck className="w-12 h-12 text-green-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">Zero Knowledge</h4>
-          <p className="text-sm text-green-300">
-            First E2E encrypted secrets stored
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function HistoryIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-pink-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-purple-500/20 rounded-full mb-4">
-            <History className="w-12 h-12 text-purple-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">Time Travel</h4>
-          <p className="text-sm text-purple-300">
-            Encrypted version tracking added
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TeamIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-cyan-900/30 to-cyan-800/30 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-cyan-500/20 rounded-full mb-4">
-            <UserPlus className="w-12 h-12 text-cyan-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">Team Power</h4>
-          <p className="text-sm text-cyan-300">Secure collaboration unlocked</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FutureIllustration() {
-  return (
-    <div className="relative w-full max-w-xs">
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-red-500/30 blur-2xl"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      <div className="relative bg-gradient-to-br from-orange-900/30 to-orange-800/30 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-6 shadow-2xl">
-        <div className="flex flex-col items-center text-center">
-          <div className="p-4 bg-orange-500/20 rounded-full mb-4">
-            <Wrench className="w-12 h-12 text-orange-400" />
-          </div>
-          <h4 className="text-lg font-bold text-white mb-2">Building</h4>
-          <p className="text-sm text-orange-300">
-            You are here! Join the journey
-          </p>
-        </div>
-      </div>
-    </div>
-  );
 }
