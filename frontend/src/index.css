@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fontsource/lato";
+@import "@fontsource/cutive-mono";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -190,4 +191,8 @@
       max-height: 100vh;
     }
   }
+}
+
+body {
+  font-family: "Cutive Mono", monospace;
 }

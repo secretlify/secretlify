@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/cutive-mono':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/lato':
         specifier: ^5.2.7
         version: 5.2.7
@@ -895,6 +898,9 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fontsource/cutive-mono@5.2.8':
+    resolution: {integrity: sha512-Y8PKAYfbpl9Empbb1HZBoirlj4W7RtU+G4EhvX27pHzO6RE1sO0I1ElZQH5DMCTS+MSJkMmQT33sJ0+Ji9U8eQ==}
 
   '@fontsource/lato@5.2.7':
     resolution: {integrity: sha512-k5mum1ADbDW5cTw1Ett1eQVWeoZ6gq0ct6SFBibEhB4LRxhniChJZTBgd6ph5yBxLkN1fcnsnmicBNA4S/3nbw==}
@@ -4159,6 +4165,8 @@ snapshots:
       react-dom: 19.1.1(react@19.1.1)
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fontsource/cutive-mono@5.2.8': {}
 
   '@fontsource/lato@5.2.7': {}
 
