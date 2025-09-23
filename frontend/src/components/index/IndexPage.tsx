@@ -34,7 +34,7 @@ export function IndexPage() {
         >
           <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Secretlify
+              Cryptly
             </span>
           </h1>
 
@@ -59,7 +59,7 @@ export function IndexPage() {
           </motion.p>
 
           <motion.div
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            className="mt-10 flex items-center justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.4 }}
@@ -71,7 +71,6 @@ export function IndexPage() {
             >
               <span>Dashboard</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 transition-opacity group-hover:opacity-100" />
             </Link>
 
             <a
@@ -83,14 +82,6 @@ export function IndexPage() {
               <GitHubIcon className="h-5 w-5" />
               <span>Source</span>
             </a>
-
-            <Link
-              to="/architecture"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800"
-            >
-              <Shield className="h-5 w-5" />
-              <span>How it Works</span>
-            </Link>
           </motion.div>
 
           <motion.div
@@ -136,7 +127,7 @@ export function IndexPage() {
           >
             <h2 className="text-4xl font-bold text-white md:text-5xl">
               <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Why Secretlify?
+                Why Cryptly?
               </span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
@@ -296,13 +287,6 @@ export function IndexPage() {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="relative bg-white dark:bg-neutral-950">
-        <div className="max-w-6xl mx-auto">
-          <TimelineSection />
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="relative py-32 px-6">
         <div className="mx-auto max-w-4xl text-center">
@@ -318,10 +302,8 @@ export function IndexPage() {
               </span>
             </h2>
             <p className="mt-6 text-lg text-neutral-400">
-              Join developers who trust Secretlify for zero-knowledge secrets
+              Join developers who trust Cryptly for zero-knowledge secrets
               management.
-              <br />
-              Free forever. Open source. No credit card required.
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -330,17 +312,8 @@ export function IndexPage() {
                 params={{ projectId: "demo" }}
                 className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:shadow-purple-500/25"
               >
-                <span>Start Using Secretlify</span>
+                <span>Start using Cryptly</span>
                 <Rocket className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 transition-opacity group-hover:opacity-100" />
-              </Link>
-
-              <Link
-                to="/architecture"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900 px-8 py-4 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800"
-              >
-                <Shield className="h-5 w-5" />
-                <span>How it Works</span>
               </Link>
             </div>
 
@@ -366,15 +339,9 @@ export function IndexPage() {
       <footer className="border-t border-neutral-800 py-8 px-6">
         <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-neutral-500">
-            © 2025 Secretlify. Zero-knowledge secrets management.
+            © 2025 Cryptly. Zero-knowledge secrets management.
           </div>
           <div className="flex items-center gap-6 text-sm text-neutral-500">
-            <Link
-              to="/architecture"
-              className="hover:text-neutral-300 transition-colors"
-            >
-              Architecture
-            </Link>
             <a
               href="https://github.com/secretlify/secretlify"
               target="_blank"

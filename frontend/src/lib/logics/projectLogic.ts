@@ -1,6 +1,8 @@
 import {
   actions,
+  afterMount,
   connect,
+  events,
   kea,
   key,
   listeners,
