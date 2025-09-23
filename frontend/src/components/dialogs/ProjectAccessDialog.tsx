@@ -1,5 +1,4 @@
-import { useValues, useActions, useAsyncActions } from "kea";
-import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,20 +6,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { projectLogic } from "@/lib/logics/projectLogic";
-import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import type { Invitation } from "@/lib/api/invitations.api";
 import { ProjectMemberRole } from "@/lib/api/projects.api";
-import {
-  IconUsers,
-  IconCopy,
-  IconCheck,
-  IconTrash,
-  IconLink,
-  IconHexagonalPrism,
-} from "@tabler/icons-react";
+import { invitationsLogic } from "@/lib/logics/invitationsLogic";
+import { projectLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
+import {
+  IconCheck,
+  IconCopy,
+  IconHexagonalPrism,
+  IconLink,
+  IconTrash,
+  IconUsers,
+} from "@tabler/icons-react";
+import { useActions, useAsyncActions, useValues } from "kea";
+import { useEffect, useMemo, useState } from "react";
 
 interface ProjectAccessDialogProps {
   open: boolean;
@@ -119,7 +119,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
               `${import.meta.env.VITE_APP_URL}/invite/${invitation.id}`
             )
           }
-          className="size-8 p-0"
+          className="size-8 p-0 cursor-pointer"
           aria-label="Copy link"
         >
           {copiedLinkId === invitation.id ? (
@@ -135,7 +135,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
           variant="ghost"
           onClick={() => handleRevokeLink(invitation.id)}
           disabled={isLoading}
-          className="size-8 p-0 text-destructive hover:text-destructive"
+          className="size-8 p-0 text-destructive hover:text-destructive cursor-pointer"
           aria-label="Revoke link"
         >
           <IconTrash className="size-4" />
@@ -279,7 +279,7 @@ function GenerateNewInviteLinkSection() {
         onClick={handleGenerateLink}
         isLoading={isLoading}
         disabled={!passphrase.trim()}
-        className="w-full"
+        className="w-full cursor-pointer"
       >
         Generate invite link
       </Button>

@@ -1,5 +1,4 @@
-import { useActions } from "kea";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,9 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useNavigate } from "@tanstack/react-router";
+import { useActions } from "kea";
+import { useEffect, useState } from "react";
 
 interface AddProjectDialogProps {
   open: boolean;
@@ -78,6 +78,7 @@ export function AddProjectDialog({
           <Button
             onClick={handleAddProject}
             disabled={!name.trim() || submitting}
+            className="cursor-pointer"
           >
             {submitting ? "Creating…" : "Create project"}
           </Button>

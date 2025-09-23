@@ -1,14 +1,14 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
 import { FileEditor } from "@/components/app/project/FileEditor";
 import { UpdateButton } from "@/components/app/project/SaveButton";
 import { DesktopHistoryView } from "@/components/app/project/desktop/DesktopHistoryView";
-import { useActions, useValues } from "kea";
-import { projectLogic } from "@/lib/logics/projectLogic";
-import { Button } from "@/components/ui/button";
-import { IconHistory, IconUsers, IconBug } from "@tabler/icons-react";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
+import { Button } from "@/components/ui/button";
+import { projectLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
+import { IconBug, IconHistory, IconUsers } from "@tabler/icons-react";
+import { useActions, useValues } from "kea";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 const hardcoreEase = [0, 1, 0, 1] as const;
 const differentEase = [0, 0.7, 0.3, 1] as const;
@@ -207,6 +207,7 @@ function ProjectHeader() {
             variant="ghost"
             onClick={() => setShareDialogOpen(true)}
             aria-label="Share project"
+            className="cursor-pointer"
           >
             <IconUsers className="size-5" />
           </Button>
@@ -220,6 +221,7 @@ function ProjectHeader() {
             variant={isShowingHistory ? "default" : "ghost"}
             onClick={toggleHistoryView}
             aria-label={isShowingHistory ? "Exit history mode" : "View history"}
+            className="cursor-pointer"
           >
             <IconHistory className="size-5" />
           </Button>

@@ -1,11 +1,11 @@
+import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
+import { Button } from "@/components/ui/button";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useValues } from "kea";
+import { Meh } from "lucide-react";
 import { useState } from "react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
-import { projectsLogic } from "@/lib/logics/projectsLogic";
-import { Button } from "@/components/ui/button";
-import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import { Meh } from "lucide-react";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
@@ -19,7 +19,12 @@ export function DesktopProjectView() {
           <p className="text-md text-muted-foreground/60 mb-6">
             Oops. There are no projects.
           </p>
-          <Button onClick={() => setAddDialogOpen(true)}>Create project</Button>
+          <Button
+            onClick={() => setAddDialogOpen(true)}
+            className="cursor-pointer"
+          >
+            Create project
+          </Button>
         </div>
 
         <AddProjectDialog
