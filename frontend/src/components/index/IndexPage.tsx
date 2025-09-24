@@ -34,25 +34,27 @@ export function IndexPage() {
           />
         </div>
 
+        <div className="absolute bottom-0 h-64 bg-gradient-to-t from-black to-transparent w-full z-0 pointer-events-none"></div>
+
         <motion.div
           className="relative z-10 mt-20 w-full max-w-6xl mx-auto px-6"
           initial={{ opacity: 0, y: 100, scale: 0.5 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 2, ease: [0, 1, 0, 1] }}
         >
-          <h1 className="text-center text-5xl font-bold text-neutral-100 md:text-7xl lg:text-8xl">
+          <h1 className="text-center text-5xl font-thin text-neutral-100 md:text-7xl lg:text-7xl">
             <span className="">Cryptly</span>
           </h1>
 
           <motion.p
-            className="mx-auto mt-6  text-center text-xl text-neutral-300"
+            className="mx-auto mt-6 text-center text-xl text-neutral-300 font-light"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0, 0.55, 0.45, 1], delay: 0.2 }}
           >
-            Zero-knowledge secrets management
+            Share your environment secrets
             <br />
-            where even we can't access your data
+            without possibility of 3rd parties getting involved (even us)
           </motion.p>
 
           <motion.div
@@ -64,40 +66,39 @@ export function IndexPage() {
             <Link
               to="/app/project/$projectId"
               params={{ projectId: "demo" }}
-              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white text-black px-8 py-3 font-semibold shadow-2xl transition-all hover:scale-105 hover:shadow-white/25"
+              className="group btn btn-primary"
             >
-              <span>Dashboard</span>
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span>Get Started</span>
             </Link>
 
             <a
               href="https://github.com/secretlify/secretlify"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/70 px-8 py-3 font-semibold text-white transition-all hover:border-neutral-600 hover:bg-neutral-800/70"
+              className="group btn btn-secondary"
             >
               <GitHubIcon className="h-5 w-5" />
-              <span>Source</span>
+              <span>Source Code</span>
             </a>
           </motion.div>
         </motion.div>
         <motion.div
-          className="mt-8 flex items-center justify-center gap-2 sm:gap-8 text-xs sm:text-sm text-neutral-300 bg-black/20 rounded-full px-4 py-2 w-fit mx-auto backdrop-blur-xl border"
+          className="mt-8 flex items-center justify-center gap-2 sm:gap-8 text-xs sm:text-sm text-neutral-300 bg-black/20 rounded-lg px-4 py-2 w-fit mx-auto backdrop-blur-xl border border-neutral-900"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <div className="flex items-center gap-1 sm:gap-2">
             <Check className="h-4 w-4 text-green-600" />
-            <span>Free Forever</span>
+            <span>E2E Encrypted</span>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Check className="h-4 w-4 text-green-600" />
+            <span>Full Transparency</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
             <Check className="h-4 w-4 text-green-600" />
             <span>Open Source</span>
-          </div>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Check className="h-4 w-4 text-green-600" />
-            <span>E2E Encrypted</span>
           </div>
         </motion.div>
 
@@ -116,12 +117,12 @@ export function IndexPage() {
         <div className="mx-auto max-w-6xl">
           <motion.div
             className="mb-16 text-center"
-            initial={{ opacity: 0, y: 100, scale: 0.5 }}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
-            <h2 className="text-4xl font-bold text-white md:text-5xl">
+            <h2 className="text-4xl font-thin text-white md:text-5xl">
               <span className="">Why Cryptly?</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
@@ -174,12 +175,12 @@ export function IndexPage() {
         <div className="mx-auto max-w-6xl">
           <motion.div
             className="mb-16 text-center"
-            initial={{ opacity: 0, y: 100, scale: 0.5 }}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 2, ease: [0, 1, 0, 1] }}
           >
-            <h2 className="text-4xl font-bold text-white md:text-5xl">
+            <h2 className="text-4xl font-thin text-white md:text-5xl">
               <span className="">How It Works</span>
             </h2>
             <p className="mt-4 text-lg text-neutral-400">
@@ -190,7 +191,7 @@ export function IndexPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{
@@ -214,7 +215,7 @@ export function IndexPage() {
 
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{
@@ -238,7 +239,7 @@ export function IndexPage() {
 
             <motion.div
               className="relative rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 backdrop-blur"
-              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{
@@ -272,7 +273,7 @@ export function IndexPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold text-white md:text-5xl">
+            <h2 className="text-4xl font-thin text-white md:text-5xl">
               <span className="">Ready to secure your secrets?</span>
             </h2>
             <p className="mt-6 text-lg text-neutral-400">
@@ -349,7 +350,7 @@ interface GridItemProps {
 const GridItem = ({ area, icon, title, description }: GridItemProps) => {
   return (
     <li className={`min-h-[14rem] list-none ${area}`}>
-      <div className="relative h-full rounded-2xl border border-neutral-800 p-2 md:rounded-3xl md:p-3">
+      <div className="relative h-full rounded-2xl border border-neutral-900 p-2 md:rounded-3xl md:p-3">
         <GlowingEffect
           spread={40}
           glow={true}

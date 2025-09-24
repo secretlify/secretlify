@@ -77,7 +77,7 @@ const GlowingEffect = memo(
 
           const currentAngle =
             parseFloat(element.style.getPropertyValue("--start")) || 0;
-          let targetAngle =
+          const targetAngle =
             (180 * Math.atan2(mouseY - center[1], mouseX - center[0])) /
               Math.PI +
             90;
@@ -144,17 +144,17 @@ const GlowingEffect = memo(
                   var(--black),
                   var(--black) calc(25% / var(--repeating-conic-gradient-times))
                 )`
-                  : `radial-gradient(circle, #ffffff 10%, #ffffff00 20%),
+                  : `radial-gradient(circle, #999999 10%, #ffffff00 20%),
                 radial-gradient(circle at 40% 40%, #ffffff 5%, #ffffff00 15%),
                 radial-gradient(circle at 60% 60%, #ffffff 10%, #ffffff00 20%), 
                 radial-gradient(circle at 40% 60%, #ffffff 10%, #ffffff00 20%),
                 repeating-conic-gradient(
                   from 236.84deg at 50% 50%,
-                  #ffffff 0%,
-                  #ffffff calc(25% / var(--repeating-conic-gradient-times)),
-                  #ffffff calc(50% / var(--repeating-conic-gradient-times)), 
-                  #ffffff calc(75% / var(--repeating-conic-gradient-times)),
-                  #ffffff calc(100% / var(--repeating-conic-gradient-times))
+                  #999999 0%,
+                  #999999 calc(25% / var(--repeating-conic-gradient-times)),
+                  #999999 calc(50% / var(--repeating-conic-gradient-times)), 
+                  #999999 calc(75% / var(--repeating-conic-gradient-times)),
+                  #999999 calc(100% / var(--repeating-conic-gradient-times))
                 )`,
             } as React.CSSProperties
           }
