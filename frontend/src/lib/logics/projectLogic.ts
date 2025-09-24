@@ -184,8 +184,15 @@ export const projectLogic = kea<projectLogicType>([
 
   selectors({
     isEditorDirty: [
-      (s) => [s.inputValue, s.projectData],
-      (inputValue, projectData) => inputValue !== projectData?.content,
+      (s) => [s.inputValue, s.projectData, s.projectDataLoading],
+      (inputValue, projectData, projectDataLoading) =>
+        inputValue !== projectData?.content && !projectDataLoading,
+    ],
+    lastEditAuthor: [(s) => [s.patches], (patches) => patches[0]?.author],
+    currentUserRole: [
+      (s) => [s.projectData, s.userData],
+      (projectData, userData) =>
+        projectData?.members.find((member) => member.id === userData?.id)?.role,
     ],
   }),
 
