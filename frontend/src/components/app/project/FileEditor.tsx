@@ -11,7 +11,7 @@ export function FileEditor({
     <BaseFileEditor
       value={value}
       onChange={onChange}
-      height="55vh"
+      height="100%"
       fontSize={14}
       padding={{ top: 16, bottom: 8 }}
     />
