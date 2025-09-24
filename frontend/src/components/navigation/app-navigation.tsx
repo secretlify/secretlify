@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { FloatingDock } from "./floating-dock";
-import { Home, LogIn, ScanFaceIcon, FileText, Code } from "lucide-react";
+import { Home, LogIn, ScanFaceIcon, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { memo } from "react";
 import { authLogic } from "@/lib/logics/authLogic";

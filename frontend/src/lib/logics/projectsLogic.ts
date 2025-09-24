@@ -1,4 +1,4 @@
-import { actions, connect, events, kea, listeners, path, selectors } from "kea";
+import { actions, connect, kea, listeners, path, selectors } from "kea";
 
 import type { projectsLogicType } from "./projectsLogicType";
 import { ProjectsApi, type Project } from "../api/projects.api";
@@ -29,7 +29,7 @@ export const projectsLogic = kea<projectsLogicType>([
     projects: [
       [] as Project[],
       {
-        loadProjects: async (_, breakpoint) => {
+        loadProjects: async () => {
           const projects = await ProjectsApi.getProjects(values.jwtToken!);
           return projects;
         },
