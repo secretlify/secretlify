@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
-import { IconHistory, IconUsers } from "@tabler/icons-react";
+import { IconArrowLeft, IconHistory, IconUsers } from "@tabler/icons-react";
 import { useActions, useValues } from "kea";
 import { useEffect, useState } from "react";
 
@@ -97,41 +97,66 @@ function ProjectHeader() {
   return (
     <div className="mb-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
       {/* Left buttons - fixed width */}
-      <div className="flex items-center gap-2 justify-self-start">
-        <div className="relative group">
-          <Button
-            variant="ghost"
-            onClick={() => setShareDialogOpen(true)}
-            aria-label="Share project"
-            className="cursor-pointer"
-          >
-            <IconUsers className="size-5" />
-          </Button>
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-            <div className="font-medium">Members</div>
-            <div className="text-xs text-muted-foreground">Invite members</div>
-          </div>
-        </div>
-        <div className="relative group">
-          <Button
-            variant={isShowingHistory ? "default" : "ghost"}
-            onClick={toggleHistoryView}
-            aria-label={isShowingHistory ? "Exit history mode" : "View history"}
-            className="cursor-pointer"
-          >
-            <IconHistory className="size-5" />
-          </Button>
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-            <div className="font-medium">
-              {isShowingHistory ? "Exit History Mode" : "View History"}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {isShowingHistory
-                ? "Return to edit mode"
-                : "View version history"}
+      <div className="flex items-center gap-2 justify-self-start -m-2 p-2">
+        {isShowingHistory ? (
+          <div className="relative group">
+            <Button
+              variant="ghost"
+              onClick={toggleHistoryView}
+              aria-label="Go back"
+              className="cursor-pointer"
+            >
+              <IconArrowLeft className="size-5" />
+            </Button>
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              <div className="font-medium">Go back</div>
+              <div className="text-xs text-muted-foreground">
+                Return to editor
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="relative group">
+              <Button
+                variant={isShowingHistory ? "default" : "ghost"}
+                onClick={toggleHistoryView}
+                aria-label={
+                  isShowingHistory ? "Exit history mode" : "View history"
+                }
+                className="cursor-pointer"
+              >
+                <IconHistory className="size-5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                <div className="font-medium">
+                  {isShowingHistory ? "Exit History Mode" : "View History"}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {isShowingHistory
+                    ? "Return to edit mode"
+                    : "View version history"}
+                </div>
+              </div>
+            </div>
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                onClick={() => setShareDialogOpen(true)}
+                aria-label="Share project"
+                className="cursor-pointer"
+              >
+                <IconUsers className="size-5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                <div className="font-medium">Members</div>
+                <div className="text-xs text-muted-foreground">
+                  Invite members
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Center - project name with proper truncation */}
