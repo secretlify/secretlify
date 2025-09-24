@@ -62,7 +62,7 @@ export function DesktopProjectTile() {
 
   return (
     <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-      <div className="p-4">
+      <div className="flex flex-col p-4 gap-4">
         <ProjectHeader />
         <div
           className="relative rounded-xl overflow-hidden"
@@ -95,13 +95,14 @@ function ProjectHeader() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   return (
-    <div className="mb-3 grid grid-cols-[auto_1fr_auto] items-center gap-4 h-10">
+    <div className="relative flex h-10 items-center justify-center">
       {/* Left buttons - fixed width */}
-      <div className="flex items-center gap-2 justify-self-start -m-2 p-2">
+      <div className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center gap-2">
         {isShowingHistory ? (
           <div className="relative group">
             <Button
               variant="ghost"
+              size="lg"
               onClick={toggleHistoryView}
               aria-label="Go back"
               className="cursor-pointer"
@@ -120,6 +121,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant={isShowingHistory ? "default" : "ghost"}
+                size="lg"
                 onClick={toggleHistoryView}
                 aria-label={
                   isShowingHistory ? "Exit history mode" : "View history"
@@ -142,6 +144,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant="ghost"
+                size="lg"
                 onClick={() => setShareDialogOpen(true)}
                 aria-label="Share project"
                 className="cursor-pointer"
@@ -160,16 +163,16 @@ function ProjectHeader() {
       </div>
 
       {/* Center - project name with proper truncation */}
-      <div className="flex items-center gap-4 justify-center min-w-0">
-        <div className="h-px w-6 bg-border flex-shrink-0"></div>
-        <h1 className="text-2xl font-semibold tracking-wide text-foreground/90 truncate min-w-0">
+      <div className="w-[50%] flex min-w-0 items-center justify-center gap-4">
+        <div className="h-px w-6 flex-shrink-0 bg-border"></div>
+        <h1 className="min-w-0 truncate text-2xl font-semibold tracking-wide text-foreground/90">
           {projectData?.name}
         </h1>
-        <div className="h-px w-6 bg-border flex-shrink-0"></div>
+        <div className="h-px w-6 flex-shrink-0 bg-border"></div>
       </div>
 
       {/* Right button - fixed width */}
-      <div className="flex justify-self-end">
+      <div className="absolute right-0 top-1/2 flex -translate-y-1/2">
         {!isShowingHistory && <UpdateButton />}
       </div>
 
@@ -183,22 +186,22 @@ function ProjectHeader() {
 
 function ProjectHeaderSkeleton() {
   return (
-    <div className="mb-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+    <div className="relative flex h-10 items-center justify-center">
       {/* Left buttons - fixed width */}
-      <div className="flex items-center gap-2 justify-self-start">
+      <div className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center gap-2">
         <Skeleton className="h-10 w-10 rounded-md" />
         <Skeleton className="h-10 w-10 rounded-md" />
       </div>
 
       {/* Center - project name skeleton */}
-      <div className="flex items-center gap-4 justify-center min-w-0">
-        <div className="h-px w-6 bg-border flex-shrink-0"></div>
+      <div className="w-[60%] flex min-w-0 items-center justify-center gap-4">
+        <div className="h-px w-6 flex-shrink-0 bg-border"></div>
         <Skeleton className="h-8 w-48 rounded-md" />
-        <div className="h-px w-6 bg-border flex-shrink-0"></div>
+        <div className="h-px w-6 flex-shrink-0 bg-border"></div>
       </div>
 
       {/* Right button - fixed width */}
-      <div className="flex justify-self-end">
+      <div className="absolute right-0 top-1/2 flex -translate-y-1/2">
         <Skeleton className="h-10 w-20 rounded-md" />
       </div>
     </div>
