@@ -2,6 +2,7 @@ import axios from "axios";
 
 export enum ProjectMemberRole {
   Owner = "owner",
+  Admin = "admin",
   Member = "member",
 }
 
@@ -46,6 +47,22 @@ export interface CreateProjectDto {
 export interface UpdateProjectContentDto {
   projectId: string;
   encryptedSecrets: string;
+}
+
+export interface UpdateProjectDto {
+  projectId: string;
+  name: string;
+}
+
+export interface RemoveMemberDto {
+  projectId: string;
+  memberId: string;
+}
+
+export interface UpdateMemberRoleDto {
+  projectId: string;
+  memberId: string;
+  role: ProjectMemberRole;
 }
 
 export class ProjectsApi {
@@ -121,5 +138,48 @@ export class ProjectsApi {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
+  }
+
+  public static async updateProject(
+    jwtToken: string,
+    dto: UpdateProjectDto
+  ): Promise<Project> {
+    const response = await axios.patch<Project>(
+      `/projects/${dto.projectId}`,
+      { name: dto.name },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
+    return response.data;
+  }
+
+  public static async removeMember(
+    jwtToken: string,
+    dto: RemoveMemberDto
+  ): Promise<void> {
+    await axios.delete(`/projects/${dto.projectId}/members/${dto.memberId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+  }
+
+  public static async updateMemberRole(
+    jwtToken: string,
+    dto: UpdateMemberRoleDto
+  ): Promise<Project> {
+    const response = await axios.patch<Project>(
+      `/projects/${dto.projectId}/members/${dto.memberId}`,
+      { role: dto.role },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
+    return response.data;
   }
 }

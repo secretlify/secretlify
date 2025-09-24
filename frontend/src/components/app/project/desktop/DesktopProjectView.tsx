@@ -53,7 +53,7 @@ export function DesktopProjectView() {
               transition={{
                 duration: 1,
                 ease: [0, 1, 0, 1],
-                delay: 0.5,
+                delay: 0.2,
               }}
             >
               <DesktopProjectTile />

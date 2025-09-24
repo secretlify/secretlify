@@ -6,6 +6,7 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { useEffect, useState } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
+import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 
 export function ProjectPage() {
   const navigate = useNavigate();
@@ -27,7 +28,12 @@ export function ProjectPage() {
         logic={invitationsLogic}
         props={{ projectId: projectId.projectId }}
       >
-        <ProjectPageContent />
+        <BindLogic
+          logic={projectSettingsLogic}
+          props={{ projectId: projectId.projectId }}
+        >
+          <ProjectPageContent />
+        </BindLogic>
       </BindLogic>
     </BindLogic>
   );

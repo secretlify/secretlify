@@ -33,7 +33,10 @@ export const invitationsLogic = kea<invitationsLogicType>([
   }),
 
   actions({
-    createInvitation: (passphrase: string) => ({ passphrase }),
+    createInvitation: (passphrase: string, role: "admin" | "member") => ({
+      passphrase,
+      role,
+    }),
     setInvitations: (invitations: Invitation[]) => ({ invitations }),
     deleteInvitation: (invitationId: string) => ({ invitationId }),
   }),
@@ -60,7 +63,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
   })),
 
   listeners(({ actions, values, props }) => ({
-    createInvitation: async ({ passphrase }) => {
+    createInvitation: async ({ passphrase, role }) => {
       const keyPair = await AsymmetricCrypto.generateKeyPair();
 
       const passphraseAsKey =
@@ -83,7 +86,7 @@ export const invitationsLogic = kea<invitationsLogicType>([
         temporaryPublicKey: keyPair.publicKey,
         temporaryPrivateKey: encryptedPrivateKey,
         temporarySecretsKey: serverKeyEncrypted,
-        role: "member",
+        role: role,
       });
 
       actions.loadInvitations();

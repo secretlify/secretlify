@@ -16,7 +16,7 @@ export interface CreateInvitationDto {
   temporaryPublicKey: string;
   temporaryPrivateKey: string;
   temporarySecretsKey: string;
-  role: "member"; // todo
+  role: "admin" | "member";
 }
 
 export interface AcceptInvitationDto {
