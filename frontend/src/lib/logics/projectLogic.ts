@@ -24,7 +24,6 @@ import {
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
-import type { User } from "../api/user.api";
 
 export interface ProjectLogicProps {
   projectId: string;
