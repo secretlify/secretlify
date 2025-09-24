@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
+import Waves from "@/components/Waves";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
@@ -14,8 +15,21 @@ export function DesktopProjectView() {
 
   if (!projectsLoading && !projects.length) {
     return (
-      <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8">
-        <div className="text-center">
+      <div className="h-screen w-full overflow-hidden text-foreground flex items-center justify-center px-8 relative">
+        {/* Background Waves */}
+        <div className="absolute inset-0 z-0">
+          <Waves
+            lineColor="rgba(255, 255, 255, 0.3)"
+            backgroundColor="transparent"
+            waveSpeedX={0.01}
+            waveSpeedY={0.005}
+            waveAmpX={20}
+            waveAmpY={10}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="text-center relative z-10">
           <Meh className="size-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-md text-muted-foreground/60 mb-6">
             Oops. There are no projects.
@@ -37,8 +51,21 @@ export function DesktopProjectView() {
   }
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8">
-      <div className="h-screen w-full overflow-hidden bg-background text-foreground">
+    <div className="h-screen w-full overflow-hidden bg-background text-foreground flex items-center justify-center px-8 relative">
+      {/* Background Threads */}
+      <div className="absolute inset-0 z-0 opacity-20">
+        <Waves
+          lineColor="rgba(50, 50, 50, 1)"
+          backgroundColor="transparent"
+          waveSpeedX={0.01}
+          waveSpeedY={0.005}
+          waveAmpX={25}
+          waveAmpY={25}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="h-screen w-full overflow-hidden text-foreground relative z-10">
         <div className="mx-auto max-w-7xl h-full grid grid-cols-1 md:grid-cols-[280px_1fr] gap-2 p-4 md:p-8">
           <aside className="h-full overflow-y-auto flex flex-col justify-center">
             <DesktopProjectsList />

@@ -21,7 +21,7 @@ export function MePage() {
   }, []);
 
   const containerVariants = {
-    hidden: { opacity: 0, y: 300, scale: 0.5 },
+    hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: {
       opacity: 1,
       y: 0,
