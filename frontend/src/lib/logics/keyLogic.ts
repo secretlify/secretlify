@@ -8,12 +8,12 @@ import {
   selectors,
 } from "kea";
 
-import type { keyLogicType } from "./keyLogicType";
+import { subscriptions } from "kea-subscriptions";
+import { UserApi, type User } from "../api/user.api";
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { authLogic } from "./authLogic";
-import { UserApi, type User } from "../api/user.api";
-import { subscriptions } from "kea-subscriptions";
+import type { keyLogicType } from "./keyLogicType";
 
 export const keyLogic = kea<keyLogicType>([
   path(["src", "lib", "logics", "keyLogic"]),

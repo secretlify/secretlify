@@ -35,7 +35,7 @@ export function LoginPage() {
               onClick={handleGoogleLogin}
               variant="outline"
               size="lg"
-              className="w-full flex items-center justify-center gap-3 h-12"
+              className="w-full flex items-center justify-center gap-3 h-12 cursor-pointer"
             >
               <GoogleIcon />
               Continue with Google
@@ -45,7 +45,7 @@ export function LoginPage() {
               onClick={handleGitHubLogin}
               variant="outline"
               size="lg"
-              className="w-full flex items-center justify-center gap-3 h-12"
+              className="w-full flex items-center justify-center gap-3 h-12 cursor-pointer"
             >
               <GitHubIcon />
               Continue with GitHub

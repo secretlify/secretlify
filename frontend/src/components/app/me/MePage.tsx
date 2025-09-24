@@ -1,14 +1,14 @@
-import { authLogic } from "@/lib/logics/authLogic";
 import { Button } from "@/components/ui/button";
+import { authLogic } from "@/lib/logics/authLogic";
 import { useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
-import { useEffect } from "react";
 import { motion } from "motion/react";
+import { useEffect } from "react";
 
 export function MePage() {
   const navigate = useNavigate();
   const { userData, isLoggedIn } = useValues(authLogic);
-  const { loadUserData, reset } = useActions(authLogic);
+  const { loadUserData, logout } = useActions(authLogic);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -19,11 +19,6 @@ export function MePage() {
   useEffect(() => {
     loadUserData();
   }, []);
-
-  const handleLogout = () => {
-    reset();
-    navigate({ to: "/app/login" });
-  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 300, scale: 0.5 },
@@ -87,12 +82,12 @@ export function MePage() {
             </div>
 
             <Button
-              onClick={handleLogout}
+              onClick={logout}
               variant="secondary"
               size="lg"
-              className="w-full"
+              className="w-full cursor-pointer"
             >
-              Sign Out
+              Log out
             </Button>
           </div>
         </motion.div>

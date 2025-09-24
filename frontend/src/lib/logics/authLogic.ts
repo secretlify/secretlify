@@ -1,12 +1,21 @@
-import { actions, kea, reducers, path, selectors, defaults } from "kea";
+import {
+  actions,
+  defaults,
+  kea,
+  listeners,
+  path,
+  reducers,
+  selectors,
+} from "kea";
 
 import { loaders } from "kea-loaders";
+import { subscriptions } from "kea-subscriptions";
 import { AuthApi } from "../api/auth.api";
 import { UserApi, type User } from "../api/user.api";
-import { subscriptions } from "kea-subscriptions";
 
-import type { authLogicType } from "./authLogicType";
+import { router } from "kea-router";
 import posthog from "posthog-js";
+import type { authLogicType } from "./authLogicType";
 
 export const authLogic = kea<authLogicType>([
   path(["src", "lib", "logics", "authLogic"]),
@@ -16,6 +25,7 @@ export const authLogic = kea<authLogicType>([
     setUserData: (userData: User) => ({ userData }),
 
     reset: true,
+    logout: true,
   }),
 
   defaults({
@@ -73,6 +83,13 @@ export const authLogic = kea<authLogicType>([
 
         return userDataValue;
       },
+    },
+  })),
+
+  listeners(({ actions }) => ({
+    logout: () => {
+      actions.reset();
+      router.actions.push("/app/login");
     },
   })),
 

@@ -13,12 +13,13 @@ import {
   IconEye,
   IconEyeOff,
 } from "@tabler/icons-react";
-import { useAsyncActions, useValues } from "kea";
+import { useActions, useAsyncActions, useValues } from "kea";
 import { useEffect, useState } from "react";
 
 export function UnlockBrowserDialog() {
   const { browserIsUnlocked, shouldSetUpPassphrase } = useValues(keyLogic);
   const { isLoggedIn } = useValues(authLogic);
+  const { logout } = useActions(authLogic);
   const { setPassphrase, decryptPrivateKey } = useAsyncActions(keyLogic);
 
   const [passphrase, setLocalPassphrase] = useState("");
@@ -104,9 +105,18 @@ export function UnlockBrowserDialog() {
 
         <div className="flex justify-end gap-2 pt-2">
           <Button
+            type="button"
+            variant="outline"
+            onClick={logout}
+            className="cursor-pointer"
+          >
+            Log out
+          </Button>
+          <Button
             onClick={handleUnlock}
             disabled={!passphrase || submitting}
             isLoading={submitting}
+            className="cursor-pointer"
           >
             Unlock
           </Button>

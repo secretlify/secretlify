@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { authLogic } from "@/lib/logics/authLogic";
 import { keyLogic } from "@/lib/logics/keyLogic";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useActions, useValues } from "kea";
@@ -14,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 export function SetUpPassphraseDialog() {
   const { shouldSetUpPassphrase } = useValues(keyLogic);
   const { setUpPassphrase } = useActions(keyLogic);
+  const { logout } = useActions(authLogic);
 
   const [pass1, setPass1] = useState("");
   const [pass2, setPass2] = useState("");
@@ -119,7 +121,19 @@ export function SetUpPassphraseDialog() {
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="submit" disabled={!passwordsMatch || submitting}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={logout}
+              className="cursor-pointer"
+            >
+              Log out
+            </Button>
+            <Button
+              type="submit"
+              disabled={!passwordsMatch || submitting}
+              className="cursor-pointer"
+            >
               {submitting ? "Setting up…" : "Set up passphrase"}
             </Button>
           </div>
