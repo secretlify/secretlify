@@ -1,6 +1,4 @@
-import { useAsyncActions, useValues } from "kea";
-import { useEffect, useState } from "react";
-import { keyLogic } from "@/lib/logics/keyLogic";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +6,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { authLogic } from "@/lib/logics/authLogic";
-import { IconExclamationCircle } from "@tabler/icons-react";
+import { keyLogic } from "@/lib/logics/keyLogic";
+import {
+  IconExclamationCircle,
+  IconEye,
+  IconEyeOff,
+} from "@tabler/icons-react";
+import { useAsyncActions, useValues } from "kea";
+import { useEffect, useState } from "react";
 
 export function UnlockBrowserDialog() {
   const { browserIsUnlocked, shouldSetUpPassphrase } = useValues(keyLogic);
@@ -18,6 +22,7 @@ export function UnlockBrowserDialog() {
   const { setPassphrase, decryptPrivateKey } = useAsyncActions(keyLogic);
 
   const [passphrase, setLocalPassphrase] = useState("");
+  const [showPassphrase, setShowPassphrase] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -58,21 +63,37 @@ export function UnlockBrowserDialog() {
           <label htmlFor="unlock-pass" className="text-sm font-medium">
             Passphrase
           </label>
-          <input
-            id="unlock-pass"
-            type="password"
-            value={passphrase}
-            onChange={(e) => {
-              setLocalPassphrase(e.target.value);
-              if (isError) {
-                setIsError(false);
+          <div className="relative">
+            <input
+              id="unlock-pass"
+              type={showPassphrase ? "text" : "password"}
+              value={passphrase}
+              onChange={(e) => {
+                setLocalPassphrase(e.target.value);
+                if (isError) {
+                  setIsError(false);
+                }
+              }}
+              className="w-full rounded-md border px-3 py-2 text bg-background text-base sm:text-sm pr-10"
+              autoFocus
+              autoComplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassphrase(!showPassphrase)}
+              className="absolute inset-y-0 right-0 flex items-center justify-center h-full px-3 text-muted-foreground hover:text-foreground cursor-pointer"
+              aria-label={
+                showPassphrase ? "Hide passphrase" : "Show passphrase"
               }
-            }}
-            className="w-full rounded-md border px-3 py-2 text bg-background text-base sm:text-sm"
-            autoFocus
-            autoComplete="current-password"
-            required
-          />
+            >
+              {showPassphrase ? (
+                <IconEyeOff className="size-4" />
+              ) : (
+                <IconEye className="size-4" />
+              )}
+            </button>
+          </div>
           {isError && (
             <div className="flex items-center gap-2 p-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
               <IconExclamationCircle />

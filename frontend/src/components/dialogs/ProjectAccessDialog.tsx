@@ -14,6 +14,8 @@ import { getRelativeTime } from "@/lib/utils";
 import {
   IconCheck,
   IconCopy,
+  IconEye,
+  IconEyeOff,
   IconHexagonalPrism,
   IconLink,
   IconTrash,
@@ -216,6 +218,7 @@ function GenerateNewInviteLinkSection() {
   const { projectData, userData } = useValues(projectLogic);
   const { createInvitation } = useAsyncActions(invitationsLogic);
   const [passphrase, setPassphrase] = useState("");
+  const [showPassphrase, setShowPassphrase] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const myRole = useMemo(
@@ -259,16 +262,30 @@ function GenerateNewInviteLinkSection() {
         <h3 className="text-sm font-medium">Generate new invite link</h3>
       </div>
       <div className="grid gap-2">
-        <input
-          id="passphrase"
-          type="password"
-          value={passphrase}
-          onChange={(e) => setPassphrase(e.target.value)}
-          className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
-          placeholder="Enter a secure passphrase"
-          autoComplete="new-password"
-          required
-        />
+        <div className="relative">
+          <input
+            id="passphrase"
+            type={showPassphrase ? "text" : "password"}
+            value={passphrase}
+            onChange={(e) => setPassphrase(e.target.value)}
+            className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm pr-10"
+            placeholder="Enter a secure passphrase"
+            autoComplete="new-password"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassphrase(!showPassphrase)}
+            className="absolute inset-y-0 right-0 flex items-center justify-center h-full px-3 text-muted-foreground hover:text-foreground cursor-pointer"
+            aria-label={showPassphrase ? "Hide passphrase" : "Show passphrase"}
+          >
+            {showPassphrase ? (
+              <IconEyeOff className="size-4" />
+            ) : (
+              <IconEye className="size-4" />
+            )}
+          </button>
+        </div>
         <div className="text-xs text-muted-foreground">
           This passphrase will be required to accept the invitation. Each invite
           link can only be used by one person.
