@@ -1,0 +1,130 @@
+name: Mongo backup restore
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_run_id:
+        description: "GitHub Run ID of the backup workflow to restore from"
+        required: true
+        type: string
+      artifact_name:
+        description: "Name of the backup artifact to restore from"
+        required: true
+        type: string
+      confirmation_password:
+        description: 'Type "RESTORE_CONFIRMED" to proceed with restore operation'
+        required: true
+        type: string
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate Input Password
+        run: |
+          if [ "${{ github.event.inputs.confirmation_password }}" != "RESTORE_CONFIRMED" ]; then
+            echo "❌ Invalid confirmation password. Please type 'RESTORE_CONFIRMED' to proceed."
+            exit 1
+          fi
+          echo "✅ Confirmation password validated"
+        shell: bash
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          # Install MongoDB tools for mongorestore
+          wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-database-tools age
+        shell: bash
+
+      - name: Download Backup Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.inputs.artifact_name }}
+          run-id: ${{ github.event.inputs.backup_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./restore
+
+      - name: Decrypt and Extract Backup
+        run: |
+          cd restore
+
+          # Find the encrypted backup file
+          ENCRYPTED_FILE=$(find . -name "mongo_backup_*.tar.gz.age" | head -1)
+
+          if [ -n "$ENCRYPTED_FILE" ]; then
+            echo "Found encrypted backup file: $ENCRYPTED_FILE"
+            
+            # Make script executable
+            chmod +x ../.github/scripts/decrypt-backup.sh
+            
+            # Decrypt the backup
+            DECRYPTED_FILE="${ENCRYPTED_FILE%.age}"
+            echo "🔓 Decrypting backup..."
+            ../.github/scripts/decrypt-backup.sh \
+              "$ENCRYPTED_FILE" \
+              "$DECRYPTED_FILE" \
+              "${{ secrets.BACKEND_BACKUP_ENCRYPTION_PASSPHRASE }}"
+            
+            BACKUP_FILE="$DECRYPTED_FILE"
+          else
+            echo "❌ No backup file found in artifact"
+            exit 1
+          fi
+
+          echo "Using backup file: $BACKUP_FILE"
+
+          # Extract backup
+          tar -xzf "$BACKUP_FILE"
+
+          # Validate backup structure
+          if [ ! -f "backup/metadata.txt" ]; then
+            echo "❌ Invalid backup: metadata.txt not found"
+            exit 1
+          fi
+
+          if [ ! -d "backup/mongodb_dump" ]; then
+            echo "❌ Invalid backup: mongodb_dump directory not found"
+            exit 1
+          fi
+
+          echo "✅ Backup validation passed"
+
+          # Display backup information
+          echo "📋 Backup Information:"
+          cat backup/metadata.txt
+        shell: bash
+
+      - name: Test Mongo Connection
+        run: |
+          echo "🔗 Testing Mongo connection..."
+          mongosh "${{ secrets.BACKEND_MONGO_URL }}" --eval "db.adminCommand({ ping: 1 })"
+          echo "✅ Mongo connection successful"
+        shell: bash
+
+      - name: Restore Database
+        run: |
+          echo "🔄 Starting database restoration..."
+          cd restore
+
+          # Restore database from backup. --drop will delete existing collections before restoring.
+          mongorestore --uri="${{ secrets.BACKEND_MONGO_URL }}" --drop backup/mongodb_dump
+
+          echo "✅ Database restoration completed"
+        shell: bash
+
+      - name: Verify Restoration
+        run: |
+          echo "🔍 Verifying restoration..."
+
+          # List restored collections
+          echo "📋 Restored collections:"
+          mongosh "${{ secrets.BACKEND_MONGO_URL }}" --eval "db.getCollectionNames()"
+
+          echo "✅ Restoration verification completed"
+        shell: bash
