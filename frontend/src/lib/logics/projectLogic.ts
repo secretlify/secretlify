@@ -24,6 +24,7 @@ import {
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
+import type { User } from "../api/user.api";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -182,7 +183,7 @@ export const projectLogic = kea<projectLogicType>([
     ],
   })),
 
-  selectors({
+  selectors(({ values }) => ({
     isEditorDirty: [
       (s) => [s.inputValue, s.projectData, s.projectDataLoading],
       (inputValue, projectData, projectDataLoading) =>
@@ -190,11 +191,12 @@ export const projectLogic = kea<projectLogicType>([
     ],
     lastEditAuthor: [(s) => [s.patches], (patches) => patches[0]?.author],
     currentUserRole: [
-      (s) => [s.projectData, s.userData],
-      (projectData, userData) =>
-        projectData?.members.find((member) => member.id === userData?.id)?.role,
+      (s) => [s.projectData],
+      (projectData) =>
+        projectData?.members.find((member) => member.id === values.userData?.id)
+          ?.role,
     ],
-  }),
+  })),
 
   listeners(({ values, actions, props, asyncActions }) => ({
     updateProjectContent: async () => {
