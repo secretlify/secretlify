@@ -7,10 +7,15 @@ import { useEffect, useState } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { useProjects } from "@/lib/hooks/useProjects";
 
 export function ProjectPage() {
+  const { projects } = useValues(projectsLogic);
   const navigate = useNavigate();
   const { isLoggedIn } = useValues(authLogic);
+
+  const { activeProject } = useProjects();
 
   const projectId = useParams({
     from: "/app/project/$projectId",
@@ -21,6 +26,18 @@ export function ProjectPage() {
       navigate({ to: "/app/login" });
     }
   }, []);
+
+  useEffect(() => {
+    if (
+      projects.length &&
+      !projects.find((project) => project.id === activeProject?.id)
+    ) {
+      navigate({
+        to: "/app/project/$projectId",
+        params: { projectId: projects[0].id },
+      });
+    }
+  }, [projects, activeProject]);
 
   return (
     <BindLogic logic={projectLogic} props={{ projectId: projectId.projectId }}>

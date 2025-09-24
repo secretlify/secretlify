@@ -1,30 +1,16 @@
-import { useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useValues } from "kea";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 import DesktopProjectsListItem from "./DesktopProjectsListItem";
 
 export function DesktopProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
-  const navigate = useNavigate();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const { activeProject } = useProjects();
-
-  useEffect(() => {
-    if (
-      projects.length &&
-      !projects.find((project) => project.id === activeProject?.id)
-    ) {
-      navigate({
-        to: "/app/project/$projectId",
-        params: { projectId: projects[0].id },
-      });
-    }
-  }, [projects]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 300, scale: 0.5 },

@@ -17,7 +17,10 @@ export function useAfterLogin() {
       navigate({ to: `/invite/${inviteIdToShowAfterLogin}` });
       setInviteIdToShowAfterLogin(null);
     } else {
-      navigate({ to: "/app/me" });
+      navigate({
+        to: "/app/project/$projectId",
+        params: { projectId: "demo" },
+      });
     }
   };
 

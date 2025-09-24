@@ -44,13 +44,6 @@ function AppNavigationImpl() {
             href: `/app/project/demo`,
           },
           {
-            title: "Developer",
-            icon: (
-              <Code className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-            ),
-            href: "/app/developer",
-          },
-          {
             title: "Me",
             icon: (
               <ScanFaceIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
