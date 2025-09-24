@@ -92,9 +92,10 @@ export function DesktopProjectTile() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-      <div className="flex flex-col p-4 gap-4">
+    <div className="rounded-2xl border-8 border-neutral-900 bg-neutral-950 backdrop-blur">
+      <div className="flex flex-col p-2 gap-4">
         <ProjectHeader />
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent" />
         <div
           className="relative rounded-xl overflow-hidden"
           style={{ height: "55vh" }}

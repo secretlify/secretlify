@@ -18,12 +18,9 @@ export function UpdateButton() {
   };
 
   return (
-    <motion.button
-      type="button"
+    <motion.div
       aria-label="Save"
       onClick={update}
-      disabled={isSubmitting || !isEditorDirty}
-      whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
       layout
       transition={{
         layout: { duration: 0.25, ease: [0.2, 0, 0, 1] },
@@ -39,11 +36,7 @@ export function UpdateButton() {
         if (!isSubmitting && isEditorDirty) setIsHovered(true);
       }}
       onHoverEnd={() => setIsHovered(false)}
-      className={cn(
-        "inline-flex h-10 items-center gap-2 rounded-md border px-4 font-semibold whitespace-nowrap cursor-pointer",
-        "bg-primary text-primary-foreground",
-        "disabled:opacity-50 disabled:cursor-not-allowed"
-      )}
+      className={cn("btn btn-primary")}
     >
       {isSubmitting ? (
         <>
@@ -84,6 +77,6 @@ export function UpdateButton() {
           </motion.span>
         </>
       )}
-    </motion.button>
+    </motion.div>
   );
 }
