@@ -267,10 +267,18 @@ export const projectLogic = kea<projectLogicType>([
   })),
 
   subscriptions(({ actions }) => ({
-    projects: () => {
+    projects: (newProjects) => {
+      if (!newProjects || newProjects.length === 0) {
+        return;
+      }
+
       actions.loadProjectData();
     },
-    projectData: () => {
+    projectData: (newProjectData) => {
+      if (!newProjectData) {
+        return;
+      }
+
       actions.loadProjectVersions();
     },
     projectVersions: (versions) => {

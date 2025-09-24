@@ -29,7 +29,7 @@ export const projectsLogic = kea<projectsLogicType>([
     projects: [
       [] as Project[],
       {
-        loadProjects: async () => {
+        loadProjects: async (_, breakpoint) => {
           const projects = await ProjectsApi.getProjects(values.jwtToken!);
           return projects;
         },
@@ -84,17 +84,11 @@ export const projectsLogic = kea<projectsLogicType>([
   })),
 
   subscriptions(({ actions }) => ({
-    jwtToken: () => {
+    userData: (newUserData) => {
+      if (!newUserData) {
+        return;
+      }
       actions.loadProjects();
-    },
-    userData: () => {
-      actions.loadProjects();
-    },
-  })),
-
-  events(({ actions }) => ({
-    afterMount: async () => {
-      await actions.loadProjects();
     },
   })),
 ]);
