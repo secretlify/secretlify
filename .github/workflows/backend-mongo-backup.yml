@@ -66,7 +66,7 @@ jobs:
           ./.github/scripts/encrypt-backup.sh \
             "${BACKUP_NAME}.tar.gz" \
             "${BACKUP_NAME}.tar.gz.age" \
-            "${{ secrets.BACKEND_BACKUP_ENCRYPTION_PASSPHRASE }}"
+            "${{ secrets.BACKEND_AGE_PUBLIC_KEY }}"
 
           # Remove unencrypted file for security
           rm -f "${BACKUP_NAME}.tar.gz"

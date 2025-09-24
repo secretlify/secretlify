@@ -69,7 +69,7 @@ jobs:
             ../.github/scripts/decrypt-backup.sh \
               "$ENCRYPTED_FILE" \
               "$DECRYPTED_FILE" \
-              "${{ secrets.BACKEND_BACKUP_ENCRYPTION_PASSPHRASE }}"
+              "${{ secrets.BACKEND_AGE_SECRET_KEY }}"
             
             BACKUP_FILE="$DECRYPTED_FILE"
           else
