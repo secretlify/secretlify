@@ -1,16 +1,16 @@
 import "./index.css";
 
-import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { resetContext } from "kea";
+import ReactDOM from "react-dom/client";
 // Import the generated route tree
-import { routeTree } from "./routeTree.gen";
 import axios from "axios";
-import { routerPlugin } from "kea-router";
 import { loadersPlugin } from "kea-loaders";
-import { subscriptionsPlugin } from "kea-subscriptions";
 import { localStoragePlugin } from "kea-localstorage";
+import { routerPlugin } from "kea-router";
+import { subscriptionsPlugin } from "kea-subscriptions";
 import { PostHogProvider } from "posthog-js/react";
+import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -29,7 +29,7 @@ resetContext({
 });
 
 const posthogOptions = {
-  api_host: "https://eu.i.posthog.com",
+  api_host: "https://ph.cryptly.dev",
 };
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
