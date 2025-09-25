@@ -19,6 +19,17 @@ export interface Integration {
   fullName: string;
 }
 
+export interface CreateIntegrationDto {
+  repositoryId: number;
+  installationId: number;
+  projectId: string;
+}
+
+export interface Installation {
+  owner: string;
+  avatar: string;
+}
+
 export class IntegrationsApi {
   public static async getRepositories(
     jwtToken: string,
@@ -42,6 +53,27 @@ export class IntegrationsApi {
   ): Promise<Integration[]> {
     const response = await axios.get<Integration[]>(
       `/projects/${projectId}/integrations/github`,
+      { headers: { Authorization: `Bearer ${jwtToken}` } }
+    );
+
+    return response.data;
+  }
+
+  public static async createIntegration(
+    jwtToken: string,
+    dto: CreateIntegrationDto
+  ): Promise<void> {
+    await axios.post<void>(`/integrations/github`, dto, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+  }
+
+  public static async getInstallation(
+    jwtToken: string,
+    installationId: number
+  ): Promise<Installation> {
+    const response = await axios.get<Installation>(
+      `/integrations/github/installations/${installationId}`,
       { headers: { Authorization: `Bearer ${jwtToken}` } }
     );
 

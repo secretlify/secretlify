@@ -42,8 +42,6 @@ export const projectsLogic = kea<projectsLogicType>([
       (state) => [state.projects],
       (projects) =>
         (id: string): Project | undefined => {
-          console.log("projects", projects);
-
           return projects.find((project) => {
             return project.id === id;
           });

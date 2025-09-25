@@ -63,6 +63,8 @@ export class GithubClient {
   }
 
   public async getInstallationById(installationId: number): Promise<GithubInstallationResponseDto> {
+    console.log('getInstallationById', installationId);
+
     const response: OctokitResponse<GithubInstallation> = await this.githubApp.octokit.request(
       'GET /app/installations/{installation_id}',
       { installation_id: installationId },

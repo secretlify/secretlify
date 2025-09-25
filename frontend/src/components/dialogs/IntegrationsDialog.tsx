@@ -16,7 +16,7 @@ import {
   IconBrandGithub,
   IconPlus,
 } from "@tabler/icons-react";
-import { useActions, useValues } from "kea";
+import { useActions, useAsyncActions, useValues } from "kea";
 import { useEffect, useState } from "react";
 
 interface IntegrationsDialogProps {
@@ -24,31 +24,6 @@ interface IntegrationsDialogProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-// Mock data for existing integrations - will be replaced with API calls
-const MOCK_EXISTING_INTEGRATIONS: Integration[] = [
-  {
-    projectId: "project-1",
-    repositoryId: "123456",
-    publicKey:
-      "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...",
-    publicKeyId: "key-1",
-    name: "my-app-backend",
-    owner: "mycompany",
-    fullName: "mycompany/my-app-backend",
-  },
-  {
-    projectId: "project-1",
-    repositoryId: "789012",
-    publicKey:
-      "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8B...",
-    publicKeyId: "key-2",
-    name: "my-app-frontend",
-    owner: "mycompany",
-    fullName: "mycompany/my-app-frontend",
-  },
-];
-
-// Mock installation data
 const MOCK_INSTALLATION = {
   id: "github-installation-123",
   name: "MyCompany Organization",
@@ -58,7 +33,7 @@ const MOCK_INSTALLATION = {
 function InstallationStatusSection() {
   const [loading, setLoading] = useState(false);
   const { activeProject } = useProjects();
-  const { githubInstallationId } = useValues(integrationsLogic);
+  const { installation } = useValues(integrationsLogic);
   const { removeInstallationFromProject } = useActions(integrationsLogic);
 
   const handleInstallApp = () => {
@@ -86,16 +61,14 @@ function InstallationStatusSection() {
         <h3 className="text-sm font-medium">GitHub App Installation</h3>
       </div>
 
-      {githubInstallationId ? (
+      {installation ? (
         <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
           <IconBrandGithub className="size-5 text-foreground/70" />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-foreground/90 truncate">
-              {MOCK_INSTALLATION.name}
+              {installation.owner}
             </div>
-            <div className="text-xs text-muted-foreground">
-              Installation ID: {githubInstallationId}
-            </div>
+            <div className="text-xs text-muted-foreground">todo</div>
           </div>
           <Button
             onClick={handleRemoveInstallation}
@@ -124,20 +97,18 @@ function InstallationStatusSection() {
 
 function ExistingIntegrationsSection() {
   const [loadingIntegrationId, setLoadingIntegrationId] = useState<string>("");
-  const { githubInstallationId } = useValues(integrationsLogic);
+  const { installation, integrations } = useValues(integrationsLogic);
 
   const handleRemoveIntegration = (integration: Integration) => {
     setLoadingIntegrationId(integration.repositoryId);
 
-    // Simulate API call
     setTimeout(() => {
       setLoadingIntegrationId("");
       console.log(`Removing integration for ${integration.fullName}`);
     }, 2000);
   };
 
-  // Only show this section if there's an installation
-  if (!githubInstallationId) {
+  if (!installation) {
     return null;
   }
 
@@ -148,9 +119,9 @@ function ExistingIntegrationsSection() {
         <h3 className="text-sm font-medium">Connected Repositories</h3>
       </div>
 
-      {MOCK_EXISTING_INTEGRATIONS.length > 0 ? (
+      {integrations.length > 0 ? (
         <div className="space-y-3">
-          {MOCK_EXISTING_INTEGRATIONS.map((integration) => (
+          {integrations.map((integration) => (
             <div
               key={integration.repositoryId}
               className="flex items-center gap-3 p-3 bg-muted/30 rounded-md"
@@ -189,29 +160,26 @@ function ExistingIntegrationsSection() {
 
 function AddIntegrationSection() {
   const [selectedRepository, setSelectedRepository] = useState<string>("");
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { githubInstallationId, repositories } = useValues(integrationsLogic);
+  const { installation, repositories } = useValues(integrationsLogic);
+  const { createIntegration } = useAsyncActions(integrationsLogic);
 
-  const handleConnectRepository = () => {
+  const handleConnectRepository = async () => {
     if (!selectedRepository) return;
 
-    setIsConnecting(true);
+    const repository = repositories.find(
+      (repo) => repo.name === selectedRepository
+    );
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsConnecting(false);
-      console.log(`Connecting repository: ${selectedRepository}`);
-      setSelectedRepository("");
-    }, 2000);
+    if (!repository) return;
+
+    setIsLoading(true);
+    await createIntegration(Number(repository.id));
+    setIsLoading(false);
   };
 
-  useEffect(() => {
-    console.log(repositories);
-  }, [repositories]);
-
-  // Only show this section if there's an installation
-  if (!githubInstallationId) {
+  if (!installation) {
     return null;
   }
 
@@ -239,7 +207,7 @@ function AddIntegrationSection() {
           <Button
             onClick={handleConnectRepository}
             disabled={!selectedRepository}
-            isLoading={isConnecting}
+            isLoading={isLoading}
             className="cursor-pointer"
           >
             Connect
