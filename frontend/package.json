@@ -36,6 +36,7 @@
     "kea-localstorage": "^3.1.0",
     "kea-router": "^3.4.1",
     "kea-subscriptions": "^3.0.1",
+    "libsodium-wrappers": "^0.7.15",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.12",
     "next-themes": "^0.4.6",
@@ -54,6 +55,7 @@
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@tanstack/router-plugin": "^1.131.43",
+    "@types/libsodium-wrappers": "^0.7.14",
     "@types/node": "^24.3.3",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
