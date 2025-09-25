@@ -1,10 +1,10 @@
-import { useLocation } from "@tanstack/react-router";
-import { FloatingDock } from "./floating-dock";
-import { Home, LogIn, ScanFaceIcon, FileText } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { memo } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
+import { useLocation } from "@tanstack/react-router";
 import { useValues } from "kea";
+import { Home, LogIn, User } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { memo } from "react";
+import { FloatingDock } from "./floating-dock";
 
 function AppNavigationImpl() {
   const location = useLocation();
@@ -14,13 +14,6 @@ function AppNavigationImpl() {
   const { isLoggedIn } = useValues(authLogic);
 
   const navItems = [
-    {
-      title: "Home",
-      icon: (
-        <Home className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "/",
-    },
     // Show Login only when user is not logged in
     ...(!isLoggedIn
       ? [
@@ -39,14 +32,14 @@ function AppNavigationImpl() {
           {
             title: "Projects",
             icon: (
-              <FileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+              <Home className="h-full w-full text-neutral-500 dark:text-neutral-300" />
             ),
             href: `/app/project/demo`,
           },
           {
             title: "Me",
             icon: (
-              <ScanFaceIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+              <User className="h-full w-full text-neutral-500 dark:text-neutral-300" />
             ),
             href: "/app/me",
           },
