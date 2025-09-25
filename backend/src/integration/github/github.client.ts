@@ -6,6 +6,7 @@ import { EnvConfig, getEnvConfig } from 'src/shared/config/env-config';
 import { App, RequestError } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 
+type GithubInstallation = Endpoints['GET /app/installations/{installation_id}']['response']['data'];
 type GithubRepository = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
 type CreateAccessToken =
   Endpoints['POST /app/installations/{installation_id}/access_tokens']['response']['data'];
@@ -26,6 +27,11 @@ export type GithubRepoDto = {
 export type RepoPublicKeyResponseDto = {
   keyId: string;
   key: string;
+};
+
+export type GithubInstallationResponseDto = {
+  owner: string;
+  avatar: string;
 };
 
 export type AccessTokenResponseDto = {
@@ -56,13 +62,20 @@ export class GithubClient {
     return this.githubApp.getInstallationOctokit(installationId);
   }
 
-  public async getInstallationById(installationId: number): Promise<number> {
-    const response: OctokitResponse<GithubAppOrganisationInstallation> =
-      await this.githubApp.octokit.request('GET /orgs/{org}/installation', {
-        org: this.githubConfig.app.organizationName,
-      });
+  public async getInstallationById(installationId: number): Promise<GithubInstallationResponseDto> {
+    const response: OctokitResponse<GithubInstallation> = await this.githubApp.octokit.request(
+      'GET /app/installations/{installation_id}',
+      {
+        installation_id: installationId,
+      },
+    );
 
-    return response.data.id;
+    const account = response.data.account || { avatar_url: '', login: '' };
+
+    return {
+      avatar: account?.avatar_url || '',
+      owner: 'login' in account ? account.login : account?.name || '',
+    };
   }
 
   public async getInstallationId(): Promise<number> {

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GithubClient } from 'src/integration/github/github.client';
+import { GithubClient, GithubInstallationResponseDto } from 'src/integration/github/github.client';
 import { EncryptionService } from 'src/shared/encryption/encryption.service';
 import { GithubIntegrationWriteService } from 'src/integration/github/write/github-integration-write.service';
 import { GithubIntegrationReadService } from 'src/integration/github/read/github-integration-read.service';
@@ -7,13 +7,13 @@ import { Logger } from '@logdash/js-sdk';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { ProjectReadService } from 'src/project/read/project-read.service';
 import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
-import { ProjectNormalized } from 'src/project/core/entities/project.interface';
 import {
   GithubIntegrationNormalized,
   GithubIntegrationSerialized,
 } from 'src/integration/github/entities/github-integration.interface';
 import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
+import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
 
 @Injectable()
 export class GithubIntegrationService {
@@ -86,18 +86,8 @@ export class GithubIntegrationService {
     );
   }
 
-  public async getInstallationById(integrationId: string | null): Promise<number> {
-    if (!integrationId) {
-      return this.client.getInstallationId();
-    }
-    const integration = await this.githubIntegrationReadService.findById(integrationId);
-    const project = await this.projectReadService.findById(integration.cryptlyProjectId);
-
-    if (!project.integrations.githubInstallationId) {
-      return this.client.getInstallationId();
-    }
-
-    return project.integrations.githubInstallationId;
+  public async getInstallationById(installationId: number): Promise<GithubInstallationResponseDto> {
+    return this.client.getInstallationById(installationId);
   }
 
   public async getAccessibleRepositories(
@@ -106,13 +96,15 @@ export class GithubIntegrationService {
     return this.client.getAccessibleRepositories(installationId);
   }
 
-  public async upsertSecrets(projectId: string): Promise<void> {
-    const result = await Promise.all([
+  public async upsertSecrets(
+    projectId: string,
+    { repositoryId }: UpdateSecretsBodyDto,
+  ): Promise<void> {
+    const [project, integration] = await Promise.all([
       this.projectReadService.findById(projectId),
-      this.githubIntegrationReadService.findByProjectId(projectId),
+      this.githubIntegrationReadService.findByRepositoryId(repositoryId),
     ]);
-    const project = result[0] as ProjectNormalized;
-    const integration = result[1] as GithubIntegrationNormalized;
+    const integration2 = integration as GithubIntegrationNormalized; // todo: fix types
 
     if (!project.integrations.githubInstallationId) {
       this.logger.error('Cannot import secrets to project which has not installed the app', {
@@ -122,13 +114,13 @@ export class GithubIntegrationService {
     }
 
     const repository = await this.client.getRepositoryById({
-      repositoryId: integration.githubRepositoryId,
+      repositoryId,
       installationId: project.integrations.githubInstallationId,
     });
 
     const { failedSecrets } = await this.client.upsertSecrets({
       secrets: project.encryptedSecretsKeys, // todo: ensure that encrypted via libsodium
-      keyId: integration.repositoryPublicKeyId,
+      keyId: integration2.repositoryPublicKeyId,
       repositoryName: repository.name,
       repositoryOwner: repository.owner,
       installationId: project.integrations.githubInstallationId,
@@ -141,19 +133,5 @@ export class GithubIntegrationService {
       });
       // todo: throw or handle/retry
     }
-  }
-
-  private async getInstallationId(integrationId: string | null): Promise<number> {
-    if (!integrationId) {
-      return this.client.getInstallationId();
-    }
-    const integration = await this.githubIntegrationReadService.findById(integrationId);
-    const project = await this.projectReadService.findById(integration.cryptlyProjectId);
-
-    if (!project.integrations.githubInstallationId) {
-      return this.client.getInstallationId();
-    }
-
-    return project.integrations.githubInstallationId;
   }
 }

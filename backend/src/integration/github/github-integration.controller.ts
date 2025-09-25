@@ -6,6 +6,8 @@ import { CreateAccessTokenResponseDto } from 'src/integration/github/dto/create-
 import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
+import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
+import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
 
 @Controller('')
 @ApiTags('Github')
@@ -23,7 +25,7 @@ export class GithubIntegrationController {
   @Get('/integrations/github/installations/:installationId')
   public async getInstallationById(
     @Param('installationId') installationId: number,
-  ): Promise<GithubIntegrationSerialized> {
+  ): Promise<GetGithubInstallationDto> {
     return this.githubIntegrationService.getInstallationById(installationId);
   }
 
@@ -48,10 +50,12 @@ export class GithubIntegrationController {
     return this.githubIntegrationService.createAccessToken();
   }
 
-  // todo: probably should be a route in integration/project controller
-  @Put('/:projectId/import')
+  @Put('/projects/:projectId/integrations/github/repositories/:repositoryId/secrets')
   @HttpCode(204)
-  public async importSecrets(@Param('projectId') projectId: string): Promise<void> {
-    await this.githubIntegrationService.upsertSecrets(projectId);
+  public async importSecrets(
+    @Param('projectId') projectId: string,
+    @Body() body: UpdateSecretsBodyDto,
+  ): Promise<void> {
+    await this.githubIntegrationService.upsertSecrets(projectId, body);
   }
 }

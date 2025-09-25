@@ -27,7 +27,7 @@ export class ProjectMemberSerialized extends UserPartialSerialized {
 
 export class IntegrationsSerialized {
   @ApiProperty()
-  public githubInstallationId: number;
+  public githubInstallationId?: number;
 }
 
 export class ProjectSerialized {
