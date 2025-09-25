@@ -88,12 +88,9 @@ export class GithubIntegrationService {
   }
 
   public async getAccessibleRepositories(
-    name: string,
     installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
-    const repositories = await this.client.getAccessibleRepositories(installationId);
-
-    return repositories.filter((repo) => repo.fullName.includes(name));
+    return this.client.getAccessibleRepositories(installationId);
   }
 
   public async upsertSecrets(projectId: string): Promise<void> {

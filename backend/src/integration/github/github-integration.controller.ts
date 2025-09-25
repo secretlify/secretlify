@@ -15,10 +15,9 @@ export class GithubIntegrationController {
 
   @Get(`/installations/:installationId/repositories`)
   public async getAvailableRepos(
-    @Query() { name }: GetAccessibleRepositoriesQueryDto,
     @Param('installationId') installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
-    return this.githubIntegrationService.getAccessibleRepositories(name, installationId);
+    return this.githubIntegrationService.getAccessibleRepositories(installationId);
   }
 
   @Post('/test')
