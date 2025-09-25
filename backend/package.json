@@ -32,12 +32,13 @@
     "@nestjs/schedule": "^6.0.1",
     "@nestjs/swagger": "^11.0.4",
     "@redis/client": "^5.0.1",
-    "axios": "^1.9.0",
+    "axios": "^1.12.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express-basic-auth": "^1.2.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
     "posthog-node": "^5.9.1",
     "reflect-metadata": "^0.2.2",
@@ -54,6 +55,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "clickhouse-migrations": "^1.0.4",
     "dotenv-cli": "^8.0.0",
     "globals": "^15.14.0",
@@ -99,6 +101,5 @@
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/src/$1"
     }
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

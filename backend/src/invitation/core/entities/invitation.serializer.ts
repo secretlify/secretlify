@@ -1,4 +1,4 @@
-import { UserPartialSerialized } from 'src/user/core/entities/user.interface';
+import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 import { InvitationEntity } from './invitation.entity';
 import { InvitationNormalized, InvitationSerialized } from './invitation.interface';
 

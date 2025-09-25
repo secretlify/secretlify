@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProjectWriteModule } from 'src/project/write/project-write.module';
-import { UserReadModule } from 'src/user/read/user-read.module';
+import { ProjectWriteModule } from '../../project/write/project-write.module';
+import { UserReadModule } from '../../user/read/user-read.module';
 import { ProjectReadModule } from '../../project/read/project-read.module';
 import { UserWriteModule } from '../../user/write/user-write.module';
 import { InvitationReadModule } from '../read/invitation-read.module';

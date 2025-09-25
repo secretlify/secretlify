@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from 
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProjectMemberGuard } from 'src/project/core/guards/project-member.guard';
 import { RequireRole } from 'src/project/decorators/require-project-role.decorator';
-import { ProjectWriteService } from 'src/project/write/project-write.service';
 import { Role } from 'src/shared/types/role.enum';
-import { UserReadService } from 'src/user/read/user-read.service';
+import { ProjectWriteService } from '../../project/write/project-write.service';
+import { UserReadService } from '../../user/read/user-read.service';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { InvitationReadService } from '../read/invitation-read.service';
 import { InvitationWriteService } from '../write/invitation-write.service';

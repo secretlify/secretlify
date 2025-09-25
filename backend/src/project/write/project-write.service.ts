@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Role } from 'src/shared/types/role.enum';
+import { Model, Types, UpdateQuery } from 'mongoose';
+import { Role } from '../../shared/types/role.enum';
 import { ProjectSecretsVersionWriteService } from '../../project-secrets-version/write/project-secrets-version-write.service';
 import { ProjectEntity } from '../core/entities/project.entity';
 import { ProjectNormalized } from '../core/entities/project.interface';
@@ -92,6 +92,7 @@ export class ProjectWriteService {
     const updateQuery = this.buildUpdateQuery(dto);
 
     if (Object.keys(updateQuery).length === 0) {
+      // todo: this will never be called
       return this.handleNoUpdate(id);
     }
 
@@ -99,21 +100,15 @@ export class ProjectWriteService {
     return ProjectSerializer.normalize(project);
   }
 
-  private buildUpdateQuery(dto: UpdateProjectDto): Record<string, unknown> {
-    const setOperation = this.buildSetNameOrKeys(dto);
-
-    return { ...setOperation };
-  }
-
-  private buildSetNameOrKeys(dto: UpdateProjectDto): Record<string, any> {
-    const toSet: { name?: string; encryptedSecretsKeys?: Record<string, string> } = {};
-    if (dto.name !== undefined) {
-      toSet.name = dto.name;
-    }
-    if (dto.encryptedSecretsKeys !== undefined) {
-      toSet.encryptedSecretsKeys = dto.encryptedSecretsKeys;
-    }
-    return Object.keys(toSet).length > 0 ? { $set: toSet } : {};
+  private buildUpdateQuery(dto: UpdateProjectDto): UpdateQuery<ProjectEntity> {
+    return {
+      $set: {
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.encryptedSecretsKeys && {
+          encryptedSecretsKeys: dto.encryptedSecretsKeys,
+        }),
+      },
+    };
   }
 
   private async handleNoUpdate(id: string): Promise<ProjectNormalized> {

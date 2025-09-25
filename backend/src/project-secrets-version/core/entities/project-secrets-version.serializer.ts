@@ -1,4 +1,4 @@
-import { UserPartialSerialized } from 'src/user/core/entities/user.interface';
+import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 import { ProjectSecretsVersionEntity } from './project-secrets-version.entity';
 import {
   ProjectSecretsVersionNormalized,
