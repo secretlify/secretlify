@@ -15,13 +15,14 @@ import { ProjectCoreModule } from '../../src/project/core/project-core.module';
 import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
-import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
+import { AuthCoreModule } from '../../src/auth/core/auth-core.module';
 import { InvitationUtils } from './invitation.utils';
 import { LoggerMock } from './mocks/logger-mock';
 import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
 import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
+import { IntegrationCoreModule } from '../../src/integration/core/integration.core.module';
 
 export interface TestApp {
   app: INestApplication;
@@ -46,6 +47,7 @@ export async function createTestApp(): Promise<TestApp> {
     imports: [
       rootMongooseTestModule(),
       UserCoreModule,
+      IntegrationCoreModule,
       ProjectCoreModule,
       InvitationCoreModule,
       ScheduleModule.forRoot(),

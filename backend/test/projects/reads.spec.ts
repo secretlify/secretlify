@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import { createTestApp, TestApp } from './bootstrap';
+import { createTestApp, TestApp } from '../utils/bootstrap';
 
 describe('ProjectCoreController (reads)', () => {
   let bootstrap: TestApp;

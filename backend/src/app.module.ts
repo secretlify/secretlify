@@ -12,12 +12,14 @@ import { ProjectCoreModule } from './project/core/project-core.module';
 import { getEnvConfig } from './shared/config/env-config';
 import { LogdashModule } from './shared/logdash/logdash.module';
 import { UserCoreModule } from './user/core/user-core.module';
+import { IntegrationCoreModule } from './integration/core/integration.core.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(getEnvConfig().mongo.url),
     UserCoreModule,
     ProjectCoreModule,
+    IntegrationCoreModule,
     ProjectSecretsVersionCoreModule,
     InvitationCoreModule,
     ScheduleModule.forRoot(),

@@ -9,6 +9,9 @@ export class ProjectEntity {
   @Prop({ required: true })
   public name: string;
 
+  @Prop({ required: false })
+  public githubInstallationId?: number;
+
   @Prop({
     type: Map,
     of: {

@@ -9,6 +9,7 @@ export class ProjectSerializer {
       name: entity.name,
       members: entity.members,
       encryptedSecretsKeys: entity.encryptedSecretsKeys,
+      githubInstallationId: entity.githubInstallationId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
@@ -39,6 +40,7 @@ export class ProjectSerializer {
       name: normalized.name,
       members: members,
       encryptedSecretsKeys: normalized.encryptedSecretsKeys,
+      githubInstallationId: normalized.githubInstallationId,
       encryptedSecrets: latestSecrets,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),

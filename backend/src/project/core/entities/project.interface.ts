@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from 'src/shared/types/role.enum';
 import { Branded } from '../../../shared/types/branded';
 import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
@@ -9,6 +9,7 @@ export class ProjectNormalized {
   public id: string;
   public name: string;
   public members: Map<string, Role>;
+  public githubInstallationId?: number;
   public encryptedSecretsKeys: Record<string, string>;
   public createdAt: Date;
   public updatedAt: Date;
@@ -31,6 +32,9 @@ export class ProjectSerialized {
 
   @ApiProperty()
   public encryptedSecretsKeys: Record<string, string>;
+
+  @ApiPropertyOptional()
+  public githubInstallationId?: number;
 
   @ApiProperty()
   public encryptedSecrets: string;
