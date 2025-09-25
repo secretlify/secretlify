@@ -65,9 +65,7 @@ export class GithubClient {
   public async getInstallationById(installationId: number): Promise<GithubInstallationResponseDto> {
     const response: OctokitResponse<GithubInstallation> = await this.githubApp.octokit.request(
       'GET /app/installations/{installation_id}',
-      {
-        installation_id: installationId,
-      },
+      { installation_id: installationId },
     );
 
     const account = response.data.account || { avatar_url: '', login: '' };
@@ -76,6 +74,12 @@ export class GithubClient {
       avatar: account?.avatar_url || '',
       owner: 'login' in account ? account.login : account?.name || '',
     };
+  }
+
+  public async deleteInstallation(installationId: number): Promise<void> {
+    await this.githubApp.octokit.request('DELETE /app/installations/{installation_id}', {
+      installation_id: installationId,
+    });
   }
 
   public async getInstallationId(): Promise<number> {

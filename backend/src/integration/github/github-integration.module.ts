@@ -10,13 +10,14 @@ import { App, Octokit } from 'octokit';
 import { GithubCryptlyApp } from 'src/shared/constants/symbol';
 import { getEnvConfig } from 'src/shared/config/env-config';
 import { ProjectReadModule } from 'src/project/read/project-read.module';
+import { ProjectWriteModule } from 'src/project/write/project-write.module';
 
 @Module({
   imports: [
-    EncryptionModule,
     GithubIntegrationReadModule,
     GithubIntegrationWriteModule,
     ProjectReadModule,
+    ProjectWriteModule,
   ],
   controllers: [GithubIntegrationController],
   providers: [

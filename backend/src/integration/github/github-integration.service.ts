@@ -1,36 +1,33 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GithubClient, GithubInstallationResponseDto } from 'src/integration/github/github.client';
-import { EncryptionService } from 'src/shared/encryption/encryption.service';
 import { GithubIntegrationWriteService } from 'src/integration/github/write/github-integration-write.service';
 import { GithubIntegrationReadService } from 'src/integration/github/read/github-integration-read.service';
 import { Logger } from '@logdash/js-sdk';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { ProjectReadService } from 'src/project/read/project-read.service';
 import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
-import {
-  GithubIntegrationNormalized,
-  GithubIntegrationSerialized,
-} from 'src/integration/github/entities/github-integration.interface';
+import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
+import { ProjectWriteService } from 'src/project/write/project-write.service';
 
 @Injectable()
 export class GithubIntegrationService {
   public constructor(
     private readonly client: GithubClient,
     private readonly logger: Logger,
-    private readonly encryptionService: EncryptionService,
     private readonly githubIntegrationWriteService: GithubIntegrationWriteService,
     private readonly githubIntegrationReadService: GithubIntegrationReadService,
     private readonly projectReadService: ProjectReadService,
+    private readonly projectWriteService: ProjectWriteService,
   ) {}
 
   public async createAccessToken() {
     return this.client.createAccessToken();
   }
 
-  public async create({
+  public async createIntegration({
     projectId,
     repositoryId,
     installationId,
@@ -90,6 +87,22 @@ export class GithubIntegrationService {
     return this.client.getInstallationById(installationId);
   }
 
+  public async deleteInstallation(projectId: string): Promise<void> {
+    const project = await this.projectReadService.findById(projectId);
+    const installationId = project.integrations.githubInstallationId;
+
+    if (!installationId) {
+      this.logger.error('Project has no installation', { projectId });
+      throw new BadRequestException('Project has no installation');
+    }
+
+    await Promise.all([
+      this.githubIntegrationWriteService.deleteByProjectId(projectId),
+      this.projectWriteService.update(projectId, { githubInstallationId: null }, ''),
+      this.client.deleteInstallation(installationId),
+    ]);
+  }
+
   public async getAccessibleRepositories(
     installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
@@ -104,7 +117,6 @@ export class GithubIntegrationService {
       this.projectReadService.findById(projectId),
       this.githubIntegrationReadService.findByRepositoryId(repositoryId),
     ]);
-    const integration2 = integration as GithubIntegrationNormalized; // todo: fix types
 
     if (!project.integrations.githubInstallationId) {
       this.logger.error('Cannot import secrets to project which has not installed the app', {
@@ -120,7 +132,7 @@ export class GithubIntegrationService {
 
     const { failedSecrets } = await this.client.upsertSecrets({
       secrets: project.encryptedSecretsKeys, // todo: ensure that encrypted via libsodium
-      keyId: integration2.repositoryPublicKeyId,
+      keyId: integration.repositoryPublicKeyId,
       repositoryName: repository.name,
       repositoryOwner: repository.owner,
       installationId: project.integrations.githubInstallationId,

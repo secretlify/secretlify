@@ -92,9 +92,8 @@ export class ProjectWriteService {
 
     const updateQuery = this.buildUpdateQuery(dto);
 
-    console.log(updateQuery);
-
     if (Object.keys(updateQuery).length === 0) {
+      // todo: this will never be called
       return this.handleNoUpdate(id);
     }
 
@@ -103,8 +102,7 @@ export class ProjectWriteService {
   }
 
   private buildUpdateQuery(dto: UpdateProjectDto): UpdateQuery<ProjectEntity> {
-    console.log(dto);
-    const query: UpdateQuery<ProjectEntity> = {
+    return {
       $set: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.encryptedSecretsKeys && {
@@ -115,8 +113,6 @@ export class ProjectWriteService {
         }),
       },
     };
-
-    return query;
   }
 
   private async handleNoUpdate(id: string): Promise<ProjectNormalized> {

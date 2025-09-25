@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
@@ -30,10 +30,16 @@ export class GithubIntegrationController {
   }
 
   @Post('/integrations/github')
-  public async createInstallation(
+  public async createIntegration(
     @Body() body: CreateGithubIntegrationDto,
   ): Promise<GithubIntegrationSerialized> {
-    return this.githubIntegrationService.create(body);
+    return this.githubIntegrationService.createIntegration(body);
+  }
+
+  @Delete('/projects/:projectId/integrations/github/installations')
+  @HttpCode(204)
+  public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
+    await this.githubIntegrationService.deleteInstallation(projectId);
   }
 
   @Get('/projects/:projectId/integrations/github')

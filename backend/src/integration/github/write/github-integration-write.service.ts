@@ -23,4 +23,8 @@ export class GithubIntegrationWriteService {
 
     return GithubIntegrationSerializer.normalize(integration);
   }
+
+  public async deleteByProjectId(cryptlyProjectId: string): Promise<void> {
+    await this.githubIntegrationModel.deleteMany({ cryptlyProjectId });
+  }
 }
