@@ -92,8 +92,10 @@ export class GithubIntegrationService implements IIntegrationProvider {
     return project.githubInstallationId;
   }
 
-  public async getAccessibleRepositories(name: string): Promise<AccessibleRepositoryDto[]> {
-    const installationId = await this.getInstallationId('todo');
+  public async getAccessibleRepositories(
+    name: string,
+    installationId: number,
+  ): Promise<AccessibleRepositoryDto[]> {
     const repositories = await this.client.getAccessibleRepositories(installationId);
 
     return repositories.filter((repo) => repo.fullName.includes(name));
