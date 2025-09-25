@@ -12,7 +12,6 @@ import {
 
 import type { integrationsLogicType } from "./integrationsLogicType";
 import { authLogic } from "./authLogic";
-import { ProjectsApi } from "../api/projects.api";
 import { projectLogic, type DecryptedProject } from "./projectLogic";
 import { loaders } from "kea-loaders";
 import {
@@ -93,6 +92,8 @@ export const integrationsLogic = kea<integrationsLogicType>([
             values.jwtToken!,
             props.projectId
           );
+
+          console.log("Integrations", integrations);
 
           return integrations;
         },

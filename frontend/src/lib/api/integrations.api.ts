@@ -33,6 +33,18 @@ export interface Installation {
   avatar: string;
 }
 
+export interface GetInstallationAccessTokenDto {
+  installationId: number;
+}
+
+export interface PushSecretDto {
+  owner: string;
+  repo: string;
+  secretName: string;
+  encryptedValue: string;
+  keyId: string;
+}
+
 export class IntegrationsApi {
   public static async getRepositories(
     jwtToken: string,
@@ -100,5 +112,35 @@ export class IntegrationsApi {
     await axios.delete(`/integrations/github/${integrationId}`, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
+  }
+
+  public static async getAccessToken(
+    jwtToken: string,
+    dto: GetInstallationAccessTokenDto
+  ): Promise<string> {
+    const response = await axios.post<{ token: string }>(`/access-token`, dto, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+
+    return response.data.token;
+  }
+
+  public static async pushSecret(
+    githubJwtToken: string,
+    dto: PushSecretDto
+  ): Promise<void> {
+    const response = await axios.put(
+      `https://api.github.com/repos/${dto.owner}/${dto.repo}/actions/secrets/${dto.secretName}`,
+      {
+        encrypted_value: dto.encryptedValue,
+        key_id: dto.keyId,
+      },
+      {
+        headers: { Authorization: `Bearer ${githubJwtToken}` },
+      }
+    );
+
+    console.log(response.status);
+    console.log(response.data);
   }
 }

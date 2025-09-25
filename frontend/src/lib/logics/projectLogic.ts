@@ -25,6 +25,8 @@ import {
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
+import { SodiumCrypto } from "../crypto/crypto.sodium";
+import { IntegrationsApi } from "../api/integrations.api";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -213,6 +215,29 @@ export const projectLogic = kea<projectLogicType>([
       await ProjectsApi.updateProjectContent(values.jwtToken!, {
         projectId: props.projectId,
         encryptedSecrets: encryptedContent,
+      });
+
+      const publicKey = "MnHZLJHhP7HtOWl875N97yFFi8W2Fui9hrzw2XelzCk=";
+
+      const [secretName, secretValue] = values.inputValue.split("=");
+
+      const encrypted = await SodiumCrypto.encrypt(secretValue, publicKey);
+
+      const githubToken = await IntegrationsApi.getAccessToken(
+        values.jwtToken!,
+        {
+          installationId: 87513586,
+        }
+      );
+
+      console.log("Token", githubToken);
+
+      await IntegrationsApi.pushSecret(githubToken, {
+        owner: "arturwita",
+        repo: "jamaica",
+        encryptedValue: encrypted,
+        keyId: "3380204578043523366",
+        secretName,
       });
 
       await Promise.all([
