@@ -75,13 +75,10 @@ export function DesktopProjectTile() {
 
   if (!projectData) {
     return (
-      <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-        <div className="flex flex-col p-4 gap-4">
+      <div className="h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur">
+        <div className="h-full flex flex-col p-4 gap-4">
           <ProjectHeaderSkeleton />
-          <div
-            className="relative rounded-xl overflow-hidden bg-editor"
-            style={{ height: "55vh" }}
-          >
+          <div className="relative rounded-xl overflow-hidden bg-editor h-full">
             <div className="h-full p-6">
               <EditorSkeleton />
             </div>
@@ -92,13 +89,10 @@ export function DesktopProjectTile() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-      <div className="flex flex-col p-4 gap-4">
+    <div className="h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur">
+      <div className="h-full flex flex-col p-4 gap-4">
         <ProjectHeader />
-        <div
-          className="relative rounded-xl overflow-hidden"
-          style={{ height: "55vh" }}
-        >
+        <div className="relative rounded-xl overflow-hidden h-full">
           {isShowingHistory ? (
             <DesktopHistoryView />
           ) : (

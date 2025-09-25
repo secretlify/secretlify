@@ -1,9 +1,9 @@
-import { motion } from "motion/react";
-import { useValues } from "kea";
-import { projectsLogic } from "@/lib/logics/projectsLogic";
-import { useProjects } from "@/lib/hooks/useProjects";
-import { useState } from "react";
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
+import { useProjects } from "@/lib/hooks/useProjects";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { useValues } from "kea";
+import { motion } from "motion/react";
+import { useState } from "react";
 import DesktopProjectsListItem from "./DesktopProjectsListItem";
 
 export function DesktopProjectsList() {
@@ -57,7 +57,7 @@ export function DesktopProjectsList() {
         Projects
       </motion.h2>
       <motion.div
-        className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
+        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm overflow-y-auto"
         layout="position"
       >
         <motion.nav className="space-y-2" variants={listVariants} layout>
