@@ -1,10 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GithubClient } from 'src/integration/github/github.client';
-import {
-  CreateIntegrationDto,
-  IIntegrationProvider,
-  ProviderIntegrationSerialized,
-} from 'src/integration/core/interfaces/integration-provider.interface';
 import { EncryptionService } from 'src/shared/encryption/encryption.service';
 import { GithubIntegrationWriteService } from 'src/integration/github/write/github-integration-write.service';
 import { GithubIntegrationReadService } from 'src/integration/github/read/github-integration-read.service';
@@ -16,7 +11,7 @@ import { ProjectNormalized } from 'src/project/core/entities/project.interface';
 import { GithubIntegrationNormalized } from 'src/integration/github/entities/github-integration.interface';
 
 @Injectable()
-export class GithubIntegrationService implements IIntegrationProvider {
+export class GithubIntegrationService {
   public constructor(
     private readonly client: GithubClient,
     private readonly logger: Logger,
@@ -52,7 +47,7 @@ export class GithubIntegrationService implements IIntegrationProvider {
     return this.client.createAccessToken();
   }
 
-  public async create(dto: CreateIntegrationDto): Promise<ProviderIntegrationSerialized> {
+  public async create(dto: any): Promise<any> {
     const repositoryId = Number.parseInt(dto.repositoryId, 10);
     if (isNaN(repositoryId)) {
       this.logger.error('Invalid github repository id', { originalRepositoryId: dto.repositoryId });

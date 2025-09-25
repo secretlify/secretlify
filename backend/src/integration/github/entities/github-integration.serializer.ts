@@ -1,6 +1,8 @@
-import { GithubIntegrationNormalized } from './github-integration.interface';
+import {
+  GithubIntegrationNormalized,
+  GithubIntegrationSerialized,
+} from './github-integration.interface';
 import { GithubIntegrationEntity } from 'src/integration/github/entities/github-integration.entity';
-import { ProviderIntegrationSerialized } from 'src/integration/core/interfaces/integration-provider.interface';
 import { IntegrationType } from 'src/integration/core/enums/integration-type.enum';
 
 export class GithubIntegrationSerializer {
@@ -16,12 +18,13 @@ export class GithubIntegrationSerializer {
     };
   }
 
-  public static serialize(normalized: GithubIntegrationNormalized): ProviderIntegrationSerialized {
+  public static serialize(normalized: GithubIntegrationNormalized): GithubIntegrationSerialized {
     return {
       id: normalized.id,
       cryptlyProjectId: normalized.cryptlyProjectId,
-      repositoryId: `${normalized.githubRepositoryId}`,
-      type: IntegrationType.Github,
+      githubRepositoryId: normalized.githubRepositoryId,
+      repositoryPublicKey: normalized.repositoryPublicKey,
+      repositoryPublicKeyId: normalized.repositoryPublicKeyId,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),
     };

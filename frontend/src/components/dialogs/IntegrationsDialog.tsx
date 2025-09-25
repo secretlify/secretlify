@@ -17,7 +17,7 @@ import { useProjects } from "@/lib/hooks/useProjects";
 import { integrationsLogic } from "@/lib/logics/integrationsLogic";
 import { IconLink, IconTrash, IconBrandGithub } from "@tabler/icons-react";
 import { useActions, useValues } from "kea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IntegrationsDialogProps {
   open: boolean;
@@ -43,7 +43,7 @@ function IntegrationsSection() {
 
   const { activeProject } = useProjects();
 
-  const { githubInstallationId } = useValues(integrationsLogic);
+  const { githubInstallationId, repositories } = useValues(integrationsLogic);
 
   const { removeIntegrationFromProject } = useActions(integrationsLogic);
 
@@ -56,6 +56,10 @@ function IntegrationsSection() {
       "_blank"
     );
   };
+
+  useEffect(() => {
+    console.log(repositories);
+  }, [repositories]);
 
   const handleRemoveIntegration = () => {
     setLoading(true);
