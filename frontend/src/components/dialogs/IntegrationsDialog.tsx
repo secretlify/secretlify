@@ -6,13 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { integrationsLogic } from "@/lib/logics/integrationsLogic";
 import { IconLink, IconTrash, IconBrandGithub } from "@tabler/icons-react";
@@ -30,13 +24,6 @@ const MOCK_INTEGRATION = {
   name: "Some installation",
   type: "github",
 };
-
-const MOCK_REPOSITORIES = [
-  { id: "repo-1", name: "secretlify/backend" },
-  { id: "repo-2", name: "secretlify/frontend" },
-  { id: "repo-3", name: "secretlify/docs" },
-  { id: "repo-4", name: "secretlify/mobile" },
-];
 
 function IntegrationsSection() {
   const [selectedRepository, setSelectedRepository] = useState<string>("");
@@ -106,21 +93,18 @@ function IntegrationsSection() {
             <label className="text-sm font-medium text-foreground/90">
               Select Repository
             </label>
-            <Select
+            <Combobox
+              options={repositories.map((repo) => ({
+                value: repo.name,
+                label: repo.name,
+              }))}
               value={selectedRepository}
               onValueChange={setSelectedRepository}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose a repository" />
-              </SelectTrigger>
-              <SelectContent>
-                {MOCK_REPOSITORIES.map((repo) => (
-                  <SelectItem key={repo.id} value={repo.id}>
-                    {repo.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Choose a repository"
+              searchPlaceholder="Search repositories..."
+              emptyMessage="No repositories found."
+              className="w-full"
+            />
           </div>
         </div>
       ) : (

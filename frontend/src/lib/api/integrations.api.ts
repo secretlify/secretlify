@@ -12,13 +12,10 @@ export interface Repository {
 export class IntegrationsApi {
   public static async getRepositories(
     jwtToken: string,
-    installationId: number,
-    nameSearchString: string
+    installationId: number
   ): Promise<Repository[]> {
     const response = await axios.get<Repository[]>(
-      `/integrations/github/installations/${installationId}/repositories?name=${
-        nameSearchString || ""
-      }`,
+      `/integrations/github/installations/${installationId}/repositories`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
