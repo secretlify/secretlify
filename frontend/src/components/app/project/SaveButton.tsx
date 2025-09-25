@@ -52,7 +52,7 @@ export function UpdateButton() {
         <>
           <span>Save {"("}</span>
           <span>
-            <CommandIcon />
+            <CommandIcon className="w-4" />
           </span>
           <span>+ Enter )</span>
           <motion.span
