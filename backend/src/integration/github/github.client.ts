@@ -7,6 +7,8 @@ import { App, RequestError } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 
 type GithubRepository = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
+type CreateAccessToken =
+  Endpoints['POST /app/installations/{installation_id}/access_tokens']['response']['data'];
 type GithubAppOrganisationInstallation =
   Endpoints['GET /orgs/{org}/installation']['response']['data'];
 type RepositoryPublicKey =
@@ -24,6 +26,11 @@ export type GithubRepoDto = {
 export type RepoPublicKeyResponseDto = {
   keyId: string;
   key: string;
+};
+
+export type AccessTokenResponseDto = {
+  token: string;
+  expiresAt: string;
 };
 
 export type UpsertSecretBodyDto = {
@@ -78,6 +85,19 @@ export class GithubClient {
     );
 
     return this.mapRepository(response.data);
+  }
+
+  public async createAccessToken(): Promise<AccessTokenResponseDto> {
+    const installationId = await this.getInstallationId();
+    const response: OctokitResponse<CreateAccessToken> = await this.githubApp.octokit.request(
+      'POST /app/installations/{installation_id}/access_tokens',
+      { installation_id: installationId },
+    );
+
+    return {
+      token: response.data.token,
+      expiresAt: response.data.expires_at,
+    };
   }
 
   public async getRepositoryPublicKey(params: {

@@ -10,7 +10,7 @@ export class ProjectEntity {
   public name: string;
 
   @Prop({ required: false })
-  public githubInstallationId?: number;
+  public githubInstallationId?: number; // todo: save it
 
   @Prop({
     type: Map,

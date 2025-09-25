@@ -26,7 +26,7 @@ export class GithubIntegrationService implements IIntegrationProvider {
     private readonly projectReadService: ProjectReadService,
   ) {}
 
-  public async test(): Promise<any> {
+  public async test() {
     /**
      * cryptly-dev installationId: 87445864
      * ablaszkiewicz installationId: 87228122
@@ -38,13 +38,18 @@ export class GithubIntegrationService implements IIntegrationProvider {
      * publicKey: "MnHZLJHhP7HtOWl875N97yFFi8W2Fui9hrzw2XelzCk="
      */
     // return this.client.getAccessibleRepositories(87207622);
+    return this.client.createAccessToken();
     // return this.client.getRepositoryById({ repositoryId: 1062759744, installationId: 87207622 });
     // return this.client.getRepositoryPublicKey({
     //   repositoryName: 'jamaica',
     //   owner: 'arturwita',
     //   installationId: 87207622,
     // });
-    return this.client.getInstallationId();
+    // return this.client.getInstallationId();
+  }
+
+  public async createAccessToken() {
+    return this.client.createAccessToken();
   }
 
   public async create(dto: CreateIntegrationDto): Promise<ProviderIntegrationSerialized> {
