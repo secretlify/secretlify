@@ -11,6 +11,8 @@ export class AccessibleRepositoryDto {
   @ApiProperty()
   public owner: string;
   @ApiProperty()
+  public avatarUrl: string;
+  @ApiProperty()
   public url: string;
   @ApiProperty()
   public isPrivate: boolean;

@@ -19,6 +19,7 @@ export type GithubRepoDto = {
   id: number;
   fullName: string;
   owner: string;
+  avatarUrl: string;
   name: string;
   url: string;
   isPrivate: boolean;
@@ -183,6 +184,7 @@ export class GithubClient {
       id: dto.id,
       name: dto.name,
       owner: dto.owner.login,
+      avatarUrl: dto.owner.avatar_url,
       fullName: dto.full_name,
       url: dto.url,
       isPrivate: dto.private,
