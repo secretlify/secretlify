@@ -1,12 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { Trash2, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { type Project, ProjectsApi } from "@/lib/api/projects.api";
-import { useState } from "react";
-import { useActions, useValues } from "kea";
-import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { authLogic } from "@/lib/logics/authLogic";
+import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
+import { useActions, useValues } from "kea";
+import { useState } from "react";
 
 interface DesktopProjectsListItemProps {
   project: Project;
@@ -50,21 +48,6 @@ export function DesktopProjectsListItem({
       <div className="flex-1 min-w-0 pointer-events-none">
         <span className="font-medium truncate block">{project.name}</span>
       </div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        aria-label={`Delete project ${project.name}`}
-        className="relative z-10 opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer"
-        onClick={onDelete}
-        disabled={isDeleting}
-      >
-        {isDeleting ? (
-          <Loader2 className="size-4 animate-spin" />
-        ) : (
-          <Trash2 className="size-4" />
-        )}
-      </Button>
     </div>
   );
 }
