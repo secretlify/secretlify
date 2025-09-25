@@ -2,15 +2,15 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
 import { Role } from 'src/shared/types/role.enum';
 
+export interface Integrations {
+  githubInstallationId: number;
+}
 @Schema({ collection: 'projects', timestamps: true })
 export class ProjectEntity {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
   public name: string;
-
-  @Prop({ required: false })
-  public githubInstallationId?: number; // todo: save it
 
   @Prop({
     type: Map,
@@ -29,6 +29,9 @@ export class ProjectEntity {
 
   @Prop()
   public updatedAt: Date;
+
+  @Prop({ default: {}, type: MongooseSchema.Types.Mixed, required: true })
+  public integrations: Integrations;
 }
 
 export type ProjectDocument = HydratedDocument<ProjectEntity>;

@@ -1,6 +1,7 @@
 import { FileEditor } from "@/components/app/project/FileEditor";
 import { UpdateButton } from "@/components/app/project/SaveButton";
 import { DesktopHistoryView } from "@/components/app/project/desktop/DesktopHistoryView";
+import { IntegrationsDialog } from "@/components/dialogs/IntegrationsDialog";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
 import { ProjectSettingsDialog } from "@/components/dialogs/ProjectSettingsDialog";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { getRelativeTime } from "@/lib/utils";
 import {
   IconArrowLeft,
   IconHistory,
+  IconLink,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
@@ -137,6 +139,7 @@ function ProjectHeader() {
   const { toggleHistoryView } = useActions(projectLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
 
   return (
     <div className="relative flex h-10 items-center justify-center">
@@ -216,6 +219,23 @@ function ProjectHeader() {
                 <div className="font-medium">Settings</div>
                 <div className="text-xs text-muted-foreground">
                   Project settings
+                </div>
+              </div>
+            </div>
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                size="lg"
+                onClick={() => setIntegrationsDialogOpen(true)}
+                aria-label="Integrations"
+                className="cursor-pointer"
+              >
+                <IconLink className="size-5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                <div className="font-medium">Integrations</div>
+                <div className="text-xs text-muted-foreground">
+                  Connect external services
                 </div>
               </div>
             </div>
@@ -245,6 +265,10 @@ function ProjectHeader() {
         open={settingsDialogOpen}
         onOpenChange={setSettingsDialogOpen}
       />
+      <IntegrationsDialog
+        open={integrationsDialogOpen}
+        onOpenChange={setIntegrationsDialogOpen}
+      />
     </div>
   );
 }
@@ -254,6 +278,7 @@ function ProjectHeaderSkeleton() {
   const { toggleHistoryView } = useActions(projectLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
 
   return (
     <div className="relative flex h-10 items-center justify-center">
@@ -336,6 +361,23 @@ function ProjectHeaderSkeleton() {
                 </div>
               </div>
             </div>
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                size="lg"
+                onClick={() => setIntegrationsDialogOpen(true)}
+                aria-label="Integrations"
+                className="cursor-pointer"
+              >
+                <IconLink className="size-5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                <div className="font-medium">Integrations</div>
+                <div className="text-xs text-muted-foreground">
+                  Connect external services
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -359,6 +401,10 @@ function ProjectHeaderSkeleton() {
       <ProjectSettingsDialog
         open={settingsDialogOpen}
         onOpenChange={setSettingsDialogOpen}
+      />
+      <IntegrationsDialog
+        open={integrationsDialogOpen}
+        onOpenChange={setIntegrationsDialogOpen}
       />
     </div>
   );

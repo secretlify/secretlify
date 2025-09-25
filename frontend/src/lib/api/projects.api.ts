@@ -13,6 +13,10 @@ export interface ProjectMember {
   role: ProjectMemberRole;
 }
 
+export interface Integrations {
+  githubInstallationId: number;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -21,6 +25,7 @@ export interface Project {
   encryptedSecrets: string;
   members: ProjectMember[];
   updatedAt: string;
+  integrations: Integrations;
 }
 
 interface BaseVersion {
@@ -51,7 +56,8 @@ export interface UpdateProjectContentDto {
 
 export interface UpdateProjectDto {
   projectId: string;
-  name: string;
+  name?: string;
+  githubInstallationId?: number | null;
 }
 
 export interface RemoveMemberDto {
@@ -146,7 +152,7 @@ export class ProjectsApi {
   ): Promise<Project> {
     const response = await axios.patch<Project>(
       `/projects/${dto.projectId}`,
-      { name: dto.name },
+      dto,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

@@ -19,6 +19,7 @@ import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import {
   ProjectsApi,
   type DecryptedVersion,
+  type Integrations,
   type ProjectMember,
 } from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
@@ -36,6 +37,7 @@ export interface DecryptedProject {
   passphraseAsKey: string;
   members: ProjectMember[];
   updatedAt: string;
+  integrations: Integrations;
 }
 
 export interface Patch {
@@ -147,6 +149,7 @@ export const projectLogic = kea<projectLogicType>([
             passphraseAsKey: projectKeyDecrypted,
             members: projectData?.members!,
             updatedAt: projectData?.updatedAt!,
+            integrations: projectData?.integrations!,
           };
         },
       },
@@ -192,8 +195,9 @@ export const projectLogic = kea<projectLogicType>([
     currentUserRole: [
       (s) => [s.projectData],
       (projectData) =>
-        projectData?.members.find((member) => member.id === values.userData?.id)
-          ?.role,
+        projectData?.members?.find(
+          (member) => member.id === values.userData?.id
+        )?.role,
     ],
   })),
 

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, Types, UpdateQuery } from 'mongoose';
 import { Role } from 'src/shared/types/role.enum';
 import { ProjectSecretsVersionWriteService } from '../../project-secrets-version/write/project-secrets-version-write.service';
 import { ProjectEntity } from '../core/entities/project.entity';
@@ -21,6 +21,7 @@ export class ProjectWriteService {
       name: dto.name,
       members: new Map([[userId, Role.Owner]]),
       encryptedSecretsKeys: dto.encryptedSecretsKeys,
+      integrations: {},
     });
 
     await this.projectSecretsVersionWriteService.create({
@@ -91,6 +92,8 @@ export class ProjectWriteService {
 
     const updateQuery = this.buildUpdateQuery(dto);
 
+    console.log(updateQuery);
+
     if (Object.keys(updateQuery).length === 0) {
       return this.handleNoUpdate(id);
     }
@@ -99,21 +102,21 @@ export class ProjectWriteService {
     return ProjectSerializer.normalize(project);
   }
 
-  private buildUpdateQuery(dto: UpdateProjectDto): Record<string, unknown> {
-    const setOperation = this.buildSetNameOrKeys(dto);
+  private buildUpdateQuery(dto: UpdateProjectDto): UpdateQuery<ProjectEntity> {
+    console.log(dto);
+    const query: UpdateQuery<ProjectEntity> = {
+      $set: {
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.encryptedSecretsKeys && {
+          encryptedSecretsKeys: dto.encryptedSecretsKeys,
+        }),
+        ...(dto.githubInstallationId !== undefined && {
+          integrations: { githubInstallationId: dto.githubInstallationId },
+        }),
+      },
+    };
 
-    return { ...setOperation };
-  }
-
-  private buildSetNameOrKeys(dto: UpdateProjectDto): Record<string, any> {
-    const toSet: { name?: string; encryptedSecretsKeys?: Record<string, string> } = {};
-    if (dto.name !== undefined) {
-      toSet.name = dto.name;
-    }
-    if (dto.encryptedSecretsKeys !== undefined) {
-      toSet.encryptedSecretsKeys = dto.encryptedSecretsKeys;
-    }
-    return Object.keys(toSet).length > 0 ? { $set: toSet } : {};
+    return query;
   }
 
   private async handleNoUpdate(id: string): Promise<ProjectNormalized> {
