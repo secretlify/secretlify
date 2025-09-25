@@ -34,12 +34,12 @@ export const integrationsLogic = kea<integrationsLogicType>([
   }),
 
   actions({
-    removeIntegrationFromProject: true,
+    removeInstallationFromProject: true,
     loadRepositories: true,
   }),
 
   listeners(({ values, actions, props }) => ({
-    removeIntegrationFromProject: async () => {
+    removeInstallationFromProject: async () => {
       await ProjectsApi.updateProject(values.jwtToken!, {
         projectId: props.projectId,
         githubInstallationId: null,
@@ -56,8 +56,7 @@ export const integrationsLogic = kea<integrationsLogicType>([
         loadRepositories: async () => {
           const repositories = await IntegrationsApi.getRepositories(
             values.jwtToken!,
-            values.projectData?.integrations.githubInstallationId!,
-            ""
+            values.projectData?.integrations.githubInstallationId!
           );
 
           return repositories;

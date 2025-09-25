@@ -9,6 +9,16 @@ export interface Repository {
   isPrivate: boolean;
 }
 
+export interface Integration {
+  projectId: string;
+  repositoryId: string;
+  publicKey: string;
+  publicKeyId: string;
+  name: string;
+  owner: string;
+  fullName: string;
+}
+
 export class IntegrationsApi {
   public static async getRepositories(
     jwtToken: string,
@@ -21,6 +31,18 @@ export class IntegrationsApi {
           Authorization: `Bearer ${jwtToken}`,
         },
       }
+    );
+
+    return response.data;
+  }
+
+  public static async getIntegrationsForProject(
+    jwtToken: string,
+    projectId: string
+  ): Promise<Integration[]> {
+    const response = await axios.get<Integration[]>(
+      `/projects/${projectId}/integrations/github`,
+      { headers: { Authorization: `Bearer ${jwtToken}` } }
     );
 
     return response.data;
