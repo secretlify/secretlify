@@ -57,7 +57,7 @@ export function DesktopProjectsList() {
         Projects
       </motion.h2>
       <motion.div
-        className="rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm"
+        className="rounded-lg border border-neutral-800/80 bg-neutral-950 backdrop-blur p-1 shadow-sm"
         layout="position"
       >
         <motion.nav className="space-y-2" variants={listVariants} layout>

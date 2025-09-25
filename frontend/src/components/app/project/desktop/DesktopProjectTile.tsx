@@ -75,11 +75,12 @@ export function DesktopProjectTile() {
 
   if (!projectData) {
     return (
-      <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-        <div className="flex flex-col p-4 gap-4">
+      <div className="rounded-2xl border-8 border-neutral-900 bg-neutral-950 backdrop-blur">
+        <div className="flex flex-col p-2">
           <ProjectHeaderSkeleton />
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent mt-2" />
           <div
-            className="relative rounded-xl overflow-hidden bg-editor"
+            className="relative rounded-xl overflow-hidden"
             style={{ height: "55vh" }}
           >
             <div className="h-full p-6">
@@ -92,9 +93,10 @@ export function DesktopProjectTile() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card/60 backdrop-blur">
-      <div className="flex flex-col p-4 gap-4">
+    <div className="rounded-2xl border-8 border-neutral-900 bg-neutral-950 backdrop-blur">
+      <div className="flex flex-col p-2">
         <ProjectHeader />
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent mt-2" />
         <div
           className="relative rounded-xl overflow-hidden"
           style={{ height: "55vh" }}

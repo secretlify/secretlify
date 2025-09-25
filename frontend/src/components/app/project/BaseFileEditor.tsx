@@ -42,6 +42,7 @@ export function BaseFileEditor({
         ],
         colors: {
           focusBorder: "#00000000",
+          "editor.background": "#0a0a0a",
         },
       });
     });
