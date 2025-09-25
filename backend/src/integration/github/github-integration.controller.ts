@@ -1,9 +1,6 @@
-import { Controller, Get, HttpCode, Param, Post, Put, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import {
-  AccessibleRepositoryDto,
-  GetAccessibleRepositoriesQueryDto,
-} from 'src/integration/github/dto/get-accessible-repositories.dto';
+import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
 import { CreateAccessTokenResponseDto } from 'src/integration/github/dto/create-access-token.dto';
 
