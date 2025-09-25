@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
@@ -7,7 +7,6 @@ import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-gi
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
-import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
 
 @Controller('')
 @ApiTags('Github')
@@ -60,14 +59,5 @@ export class GithubIntegrationController {
   @ApiResponse({ type: CreateAccessTokenResponseDto })
   public async createAccessToken(): Promise<CreateAccessTokenResponseDto> {
     return this.githubIntegrationService.createAccessToken();
-  }
-
-  @Put('/projects/:projectId/integrations/github/repositories/:repositoryId/secrets')
-  @HttpCode(204)
-  public async importSecrets(
-    @Param('projectId') projectId: string,
-    @Body() body: UpdateSecretsBodyDto,
-  ): Promise<void> {
-    await this.githubIntegrationService.upsertSecrets(projectId, body);
   }
 }

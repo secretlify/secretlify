@@ -3,14 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { GithubCryptlyApp } from 'src/shared/constants/symbol';
 import { Endpoints, OctokitResponse } from '@octokit/types';
 import { EnvConfig, getEnvConfig } from 'src/shared/config/env-config';
-import { App, RequestError } from 'octokit';
+import { App } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 
 type GithubInstallation = Endpoints['GET /app/installations/{installation_id}']['response']['data'];
 type GithubRepository = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
 type CreateAccessToken =
   Endpoints['POST /app/installations/{installation_id}/access_tokens']['response']['data'];
-type GithubAppOrganisationInstallation =
+type GithubAppOrganizationInstallation =
   Endpoints['GET /orgs/{org}/installation']['response']['data'];
 type RepositoryPublicKey =
   Endpoints['GET /repos/{owner}/{repo}/actions/secrets/public-key']['response']['data'];
@@ -39,14 +39,6 @@ export type GithubInstallationResponseDto = {
 export type AccessTokenResponseDto = {
   token: string;
   expiresAt: string;
-};
-
-export type UpsertSecretBodyDto = {
-  secrets: Record<string, string>;
-  installationId: number; // we can fetch it by GET /repos/{owner}/{repo}/installation
-  repositoryOwner: string;
-  repositoryName: string;
-  keyId: string;
 };
 
 @Injectable()
@@ -86,7 +78,7 @@ export class GithubClient {
   }
 
   public async getInstallationId(): Promise<number> {
-    const response: OctokitResponse<GithubAppOrganisationInstallation> =
+    const response: OctokitResponse<GithubAppOrganizationInstallation> =
       await this.githubApp.octokit.request('GET /orgs/{org}/installation', {
         org: this.githubConfig.app.organizationName,
       });
@@ -143,37 +135,6 @@ export class GithubClient {
     return {
       keyId: response.data.key_id,
       key: response.data.key,
-    };
-  }
-
-  public async upsertSecrets(body: UpsertSecretBodyDto): Promise<{ failedSecrets: string[] }> {
-    const octokit = await this.getInstallationOctokit(body.installationId);
-
-    const failedSecrets: string[] = [];
-
-    await Promise.all(
-      Object.entries(body.secrets).map(async ([secretName, encryptedValue]) => {
-        try {
-          await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-            owner: body.repositoryOwner,
-            repo: body.repositoryName,
-            secret_name: secretName,
-            encrypted_value: encryptedValue,
-            key_id: body.keyId,
-          });
-        } catch (error) {
-          // if (error instanceof RequestError) { } // true
-          this.logger.error('Failed to upsert a secret', {
-            secretName,
-            errorMessage: error.message,
-          });
-          failedSecrets.push(secretName);
-        }
-      }),
-    );
-
-    return {
-      failedSecrets, // todo: consider retries, probably return {key, value}[] instead of key[]
     };
   }
 

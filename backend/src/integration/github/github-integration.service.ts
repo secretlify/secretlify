@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GithubClient, GithubInstallationResponseDto } from 'src/integration/github/github.client';
+import { GithubClient } from 'src/integration/github/github.client';
 import { GithubIntegrationWriteService } from 'src/integration/github/write/github-integration-write.service';
 import { GithubIntegrationReadService } from 'src/integration/github/read/github-integration-read.service';
 import { Logger } from '@logdash/js-sdk';
@@ -9,7 +9,6 @@ import { GithubIntegrationSerializer } from 'src/integration/github/entities/git
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
-import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
 import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
 
@@ -113,43 +112,5 @@ export class GithubIntegrationService {
     installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
     return this.client.getAccessibleRepositories(installationId);
-  }
-
-  public async upsertSecrets(
-    projectId: string,
-    { repositoryId }: UpdateSecretsBodyDto,
-  ): Promise<void> {
-    const [project, integration] = await Promise.all([
-      this.projectReadService.findById(projectId),
-      this.githubIntegrationReadService.findByRepositoryId(repositoryId),
-    ]);
-
-    if (!project.integrations.githubInstallationId) {
-      this.logger.error('Cannot import secrets to project which has not installed the app', {
-        projectId,
-      });
-      throw new BadRequestException('Invalid project selected');
-    }
-
-    const repository = await this.client.getRepositoryById({
-      repositoryId,
-      installationId: project.integrations.githubInstallationId,
-    });
-
-    const { failedSecrets } = await this.client.upsertSecrets({
-      secrets: project.encryptedSecretsKeys, // todo: ensure that encrypted via libsodium
-      keyId: integration.repositoryPublicKeyId,
-      repositoryName: repository.name,
-      repositoryOwner: repository.owner,
-      installationId: project.integrations.githubInstallationId,
-    });
-
-    if (failedSecrets.length > 0) {
-      this.logger.error('Failed to upsert some secrets', {
-        failedCount: failedSecrets.length,
-        failedSecrets,
-      });
-      // todo: throw or handle/retry
-    }
   }
 }
