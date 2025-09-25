@@ -22,9 +22,9 @@ export class GithubIntegrationController {
 
   @Get('/integrations/github/installations/:installationId')
   public async getInstallationById(
-    @Body() body: CreateGithubIntegrationDto,
+    @Param('installationId') installationId: number,
   ): Promise<GithubIntegrationSerialized> {
-    return this.githubIntegrationService.create(body);
+    return this.githubIntegrationService.getInstallationById(installationId);
   }
 
   @Post('/integrations/github')
@@ -38,12 +38,7 @@ export class GithubIntegrationController {
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,
   ): Promise<GetGithubIntegrationsDto[]> {
-    return this.githubIntegrationService.getProjectIntegration(projectId);
-  }
-
-  @Post('/test')
-  public async test(): Promise<any> {
-    return this.githubIntegrationService.test();
+    return this.githubIntegrationService.getProjectIntegrations(projectId);
   }
 
   // todo: should I pass installationId in the request or use the organisation one

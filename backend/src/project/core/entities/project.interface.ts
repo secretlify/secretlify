@@ -7,7 +7,7 @@ import { Integrations } from './project.entity';
 export type EnvName = Branded<string, 'EnvName'>;
 
 export class IntegrationsNormalized {
-  public githubInstallationId: number;
+  public githubInstallationId?: number;
 }
 
 export class ProjectNormalized {

@@ -5,7 +5,7 @@ export class GetGithubIntegrationsDto {
   @ApiProperty()
   public projectId: string;
   @ApiProperty()
-  public repositoryId: string;
+  public repositoryId: number;
   @ApiProperty()
   public publicKey: string;
   @ApiProperty()

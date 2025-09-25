@@ -56,6 +56,15 @@ export class GithubClient {
     return this.githubApp.getInstallationOctokit(installationId);
   }
 
+  public async getInstallationById(installationId: number): Promise<number> {
+    const response: OctokitResponse<GithubAppOrganisationInstallation> =
+      await this.githubApp.octokit.request('GET /orgs/{org}/installation', {
+        org: this.githubConfig.app.organizationName,
+      });
+
+    return response.data.id;
+  }
+
   public async getInstallationId(): Promise<number> {
     const response: OctokitResponse<GithubAppOrganisationInstallation> =
       await this.githubApp.octokit.request('GET /orgs/{org}/installation', {

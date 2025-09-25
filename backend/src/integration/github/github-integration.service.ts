@@ -26,28 +26,6 @@ export class GithubIntegrationService {
     private readonly projectReadService: ProjectReadService,
   ) {}
 
-  public async test() {
-    /**
-     * cryptly-dev installationId: 87445864
-     * ablaszkiewicz installationId: 87228122
-     * arturwita installationId: 87207622
-     *
-     * arturwita/jamaica:
-     * repositoryId: 1062759744
-     * keyId: "3380204578043523366"
-     * publicKey: "MnHZLJHhP7HtOWl875N97yFFi8W2Fui9hrzw2XelzCk="
-     */
-    // return this.client.getAccessibleRepositories(87207622);
-    return this.client.createAccessToken();
-    // return this.client.getRepositoryById({ repositoryId: 1062759744, installationId: 87207622 });
-    // return this.client.getRepositoryPublicKey({
-    //   repositoryName: 'jamaica',
-    //   owner: 'arturwita',
-    //   installationId: 87207622,
-    // });
-    // return this.client.getInstallationId();
-  }
-
   public async createAccessToken() {
     return this.client.createAccessToken();
   }
@@ -76,17 +54,39 @@ export class GithubIntegrationService {
   }
 
   public async getProjectIntegrations(projectId: string): Promise<GetGithubIntegrationsDto[]> {
+    const project = await this.projectReadService.findById(projectId);
+    const installationId = project.integrations.githubInstallationId;
+
+    if (!installationId) {
+      return [];
+    }
+
     const integrations = await this.githubIntegrationReadService.findByProjectId(projectId);
+    if (!integrations.length) {
+      return [];
+    }
 
-    // todo: add a check not to ensure 1-1 projectId-repoId
-    const repositoryIds = integrations.map((integration) => integration.githubRepositoryId);
+    return Promise.all(
+      integrations.map(async (integration) => {
+        const repo = await this.client.getRepositoryById({
+          repositoryId: integration.githubRepositoryId,
+          installationId,
+        });
 
-    // const repository = await this.client.getRepositoryById({ repositoryId, installationId });
-
-    return GithubIntegrationSerializer.serialize(integration);
+        return {
+          projectId,
+          name: repo.name,
+          owner: repo.owner,
+          repositoryId: repo.id,
+          fullName: repo.fullName,
+          publicKey: integration.repositoryPublicKey,
+          publicKeyId: integration.repositoryPublicKeyId,
+        } satisfies GetGithubIntegrationsDto;
+      }),
+    );
   }
 
-  private async getInstallationId(integrationId: string | null): Promise<number> {
+  public async getInstallationById(integrationId: string | null): Promise<number> {
     if (!integrationId) {
       return this.client.getInstallationId();
     }
@@ -141,5 +141,19 @@ export class GithubIntegrationService {
       });
       // todo: throw or handle/retry
     }
+  }
+
+  private async getInstallationId(integrationId: string | null): Promise<number> {
+    if (!integrationId) {
+      return this.client.getInstallationId();
+    }
+    const integration = await this.githubIntegrationReadService.findById(integrationId);
+    const project = await this.projectReadService.findById(integration.cryptlyProjectId);
+
+    if (!project.integrations.githubInstallationId) {
+      return this.client.getInstallationId();
+    }
+
+    return project.integrations.githubInstallationId;
   }
 }
