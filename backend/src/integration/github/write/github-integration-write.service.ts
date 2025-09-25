@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { GithubIntegrationEntity } from 'src/integration/github/entities/github-integration.entity';
 import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
 import { CreateGithubIntegrationDto } from 'src/integration/github/write/dto/create-github-integration.dto';
@@ -22,6 +22,10 @@ export class GithubIntegrationWriteService {
     });
 
     return GithubIntegrationSerializer.normalize(integration);
+  }
+
+  public async deleteById(integrationId: string): Promise<void> {
+    await this.githubIntegrationModel.deleteOne({ _id: new Types.ObjectId(integrationId) });
   }
 
   public async deleteByProjectId(cryptlyProjectId: string): Promise<void> {

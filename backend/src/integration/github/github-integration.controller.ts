@@ -42,6 +42,12 @@ export class GithubIntegrationController {
     await this.githubIntegrationService.deleteInstallation(projectId);
   }
 
+  @Delete('integrations/github/:integrationId')
+  @HttpCode(204)
+  public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
+    await this.githubIntegrationService.deleteIntegration(integrationId);
+  }
+
   @Get('/projects/:projectId/integrations/github')
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,

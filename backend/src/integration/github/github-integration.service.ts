@@ -103,6 +103,10 @@ export class GithubIntegrationService {
     ]);
   }
 
+  public async deleteIntegration(integrationId: string): Promise<void> {
+    await this.githubIntegrationWriteService.deleteById(integrationId);
+  }
+
   public async getAccessibleRepositories(
     installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
