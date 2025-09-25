@@ -382,6 +382,8 @@ function EditorSkeleton() {
       <Skeleton className="h-5 w-[86%]" />
       <Skeleton className="h-5 w-[94%]" />
       <Skeleton className="h-5 w-[81%]" />
+      <Skeleton className="h-5 w-[92%]" />
+      <Skeleton className="h-5 w-[77%]" />
     </div>
   );
 }
