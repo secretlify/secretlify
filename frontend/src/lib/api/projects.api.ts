@@ -152,7 +152,7 @@ export class ProjectsApi {
   ): Promise<Project> {
     const response = await axios.patch<Project>(
       `/projects/${dto.projectId}`,
-      { name: dto.name },
+      dto,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

@@ -13,7 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useProjects } from "@/lib/hooks/useProjects";
+import { integrationsLogic } from "@/lib/logics/integrationsLogic";
 import { IconLink, IconTrash, IconBrandGithub } from "@tabler/icons-react";
+import { useActions, useValues } from "kea";
 import { useState } from "react";
 
 interface IntegrationsDialogProps {
@@ -24,7 +27,7 @@ interface IntegrationsDialogProps {
 // Mock data - will be replaced with API calls in the future
 const MOCK_INTEGRATION = {
   id: "github-123",
-  name: "GitHub (secretlify-org)",
+  name: "Some installation",
   type: "github",
 };
 
@@ -36,27 +39,31 @@ const MOCK_REPOSITORIES = [
 ];
 
 function IntegrationsSection() {
-  // Mock state - will be replaced with actual integration logic
-  const [hasIntegration, setHasIntegration] = useState(false);
   const [selectedRepository, setSelectedRepository] = useState<string>("");
+
+  const { activeProject } = useProjects();
+
+  const { githubInstallationId } = useValues(integrationsLogic);
+
+  const { removeIntegrationFromProject } = useActions(integrationsLogic);
+
+  const [loading, setLoading] = useState(false);
 
   const handleAddIntegration = () => {
     // Open GitHub App installation page
     window.open(
-      "https://github.com/apps/SecretAppTestAW/installations/new",
+      `https://github.com/apps/SecretAppTestAW/installations/new?state=\"projectId=${activeProject?.id}\"`,
       "_blank"
     );
   };
 
   const handleRemoveIntegration = () => {
-    // Mock removal - will be replaced with API call
-    setHasIntegration(false);
-    setSelectedRepository("");
-  };
+    setLoading(true);
+    removeIntegrationFromProject();
 
-  const handleMockAddIntegration = () => {
-    // Mock adding integration for testing
-    setHasIntegration(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2_000);
   };
 
   return (
@@ -66,7 +73,7 @@ function IntegrationsSection() {
         <h3 className="text-sm font-medium">GitHub Integration</h3>
       </div>
 
-      {hasIntegration ? (
+      {githubInstallationId ? (
         <div className="space-y-4">
           {/* Integration Status */}
           <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
@@ -82,6 +89,7 @@ function IntegrationsSection() {
             <Button
               onClick={handleRemoveIntegration}
               variant="ghost"
+              isLoading={loading}
               size="sm"
               className="cursor-pointer text-destructive hover:text-destructive"
             >
@@ -121,15 +129,6 @@ function IntegrationsSection() {
             </div>
             <Button onClick={handleAddIntegration} className="cursor-pointer">
               Add Integration
-            </Button>
-            {/* Temporary mock button for testing */}
-            <Button
-              onClick={handleMockAddIntegration}
-              variant="outline"
-              size="sm"
-              className="ml-2 cursor-pointer"
-            >
-              Mock Add (Test)
             </Button>
           </div>
         </div>

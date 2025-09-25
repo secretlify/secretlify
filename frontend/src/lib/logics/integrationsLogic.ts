@@ -31,16 +31,14 @@ export const integrationsLogic = kea<integrationsLogicType>([
   }),
 
   actions({
-    addIntegrationToProject: (githubInstallationId: number) => ({
-      githubInstallationId,
-    }),
+    removeIntegrationFromProject: true,
   }),
 
-  listeners(({ values, props, actions }) => ({
-    addIntegrationToProject: async ({ githubInstallationId }) => {
+  listeners(({ values, actions, props }) => ({
+    removeIntegrationFromProject: async () => {
       await ProjectsApi.updateProject(values.jwtToken!, {
         projectId: props.projectId,
-        githubInstallationId,
+        githubInstallationId: null,
       });
 
       await actions.loadProjectData();

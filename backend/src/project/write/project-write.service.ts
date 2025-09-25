@@ -21,6 +21,7 @@ export class ProjectWriteService {
       name: dto.name,
       members: new Map([[userId, Role.Owner]]),
       encryptedSecretsKeys: dto.encryptedSecretsKeys,
+      integrations: {},
     });
 
     await this.projectSecretsVersionWriteService.create({
@@ -91,6 +92,8 @@ export class ProjectWriteService {
 
     const updateQuery = this.buildUpdateQuery(dto);
 
+    console.log(updateQuery);
+
     if (Object.keys(updateQuery).length === 0) {
       return this.handleNoUpdate(id);
     }
@@ -100,6 +103,7 @@ export class ProjectWriteService {
   }
 
   private buildUpdateQuery(dto: UpdateProjectDto): UpdateQuery<ProjectEntity> {
+    console.log(dto);
     const query: UpdateQuery<ProjectEntity> = {
       $set: {
         ...(dto.name !== undefined && { name: dto.name }),

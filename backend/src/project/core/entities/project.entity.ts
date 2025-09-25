@@ -30,7 +30,7 @@ export class ProjectEntity {
   @Prop()
   public updatedAt: Date;
 
-  @Prop({ default: {}, type: MongooseSchema.Types.Mixed })
+  @Prop({ default: {}, type: MongooseSchema.Types.Mixed, required: true })
   public integrations: Integrations;
 }
 
