@@ -52,7 +52,7 @@ function RenameProjectSection() {
 
   if (!canRename) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 overflow-hidden">
         <div className="flex items-center gap-2">
           <IconEdit className="size-4 text-muted-foreground" />
           <h3 className="text-sm font-medium">Rename project</h3>
@@ -72,7 +72,7 @@ function RenameProjectSection() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 overflow-hidden">
       <div className="flex items-center gap-2">
         <IconEdit className="size-4 text-muted-foreground" />
         <h3 className="text-sm font-medium">Rename project</h3>
@@ -169,7 +169,7 @@ function DangerZoneSection() {
   const ActionIcon = actionIcon;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 overflow-hidden">
       <div className="flex items-center gap-2">
         <ActionIcon className="size-4 text-muted-foreground" />
         <h3 className="text-sm font-medium">Danger zone</h3>
