@@ -54,7 +54,6 @@ export class GithubIntegrationController {
     return this.githubIntegrationService.getProjectIntegrations(projectId);
   }
 
-  // todo: should I pass installationId in the request or use the organisation one
   @Post('/access-token')
   @ApiResponse({ type: CreateAccessTokenResponseDto })
   public async createAccessToken(): Promise<CreateAccessTokenResponseDto> {

@@ -4,7 +4,7 @@ import { GithubClient } from 'src/integration/github/github.client';
 import { GithubIntegrationController } from 'src/integration/github/github-integration.controller';
 import { GithubIntegrationReadModule } from 'src/integration/github/read/github-integration-read.module';
 import { GithubIntegrationWriteModule } from 'src/integration/github/write/github-integration-write.module';
-import { App, Octokit } from 'octokit';
+import { App } from 'octokit';
 
 import { GithubCryptlyApp } from 'src/shared/constants/symbol';
 import { getEnvConfig } from 'src/shared/config/env-config';
@@ -30,7 +30,6 @@ import { ProjectWriteModule } from 'src/project/write/project-write.module';
         return new App({
           appId: config.app.id,
           privateKey: config.app.privateKey,
-          Octokit: Octokit.defaults({ baseUrl: config.api.baseUrl }),
         });
       },
     },

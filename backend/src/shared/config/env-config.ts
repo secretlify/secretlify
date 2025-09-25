@@ -31,10 +31,6 @@ export interface EnvConfig {
       privateKey: string;
       organizationName: string;
     };
-    api: {
-      version: string; // todo: probably we can remove it
-      baseUrl: string; // todo: probably we can remove it
-    };
   };
 }
 
@@ -74,10 +70,6 @@ export const EnvConfigs: EnvConfigs = {
         privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
         organizationName: process.env.GITHUB_CRYPTLY_APP_ORGANIZATION_NAME!,
       },
-      api: {
-        version: process.env.GITHUB_API_VERSION!,
-        baseUrl: process.env.GITHUB_API_BASE_URL!,
-      },
     },
   },
   [OurEnv.Dev]: {
@@ -109,10 +101,6 @@ export const EnvConfigs: EnvConfigs = {
         id: process.env.GITHUB_CRYPTLY_APP_ID!,
         privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
         organizationName: process.env.GITHUB_CRYPTLY_APP_ORGANIZATION_NAME!,
-      },
-      api: {
-        version: process.env.GITHUB_API_VERSION!,
-        baseUrl: process.env.GITHUB_API_BASE_URL!,
       },
     },
   },
