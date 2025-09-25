@@ -85,11 +85,11 @@ export class GithubIntegrationService implements IIntegrationProvider {
     const integration = await this.githubIntegrationReadService.findById(integrationId);
     const project = await this.projectReadService.findById(integration.cryptlyProjectId);
 
-    if (!project.githubInstallationId) {
+    if (!project.integrations.githubInstallationId) {
       return this.client.getInstallationId();
     }
 
-    return project.githubInstallationId;
+    return project.integrations.githubInstallationId;
   }
 
   public async getAccessibleRepositories(name: string): Promise<AccessibleRepositoryDto[]> {
@@ -107,7 +107,7 @@ export class GithubIntegrationService implements IIntegrationProvider {
     const project = result[0] as ProjectNormalized;
     const integration = result[1] as GithubIntegrationNormalized;
 
-    if (!project.githubInstallationId) {
+    if (!project.integrations.githubInstallationId) {
       this.logger.error('Cannot import secrets to project which has not installed the app', {
         projectId,
       });
@@ -116,7 +116,7 @@ export class GithubIntegrationService implements IIntegrationProvider {
 
     const repository = await this.client.getRepositoryById({
       repositoryId: integration.githubRepositoryId,
-      installationId: project.githubInstallationId,
+      installationId: project.integrations.githubInstallationId,
     });
 
     const { failedSecrets } = await this.client.upsertSecrets({
@@ -124,7 +124,7 @@ export class GithubIntegrationService implements IIntegrationProvider {
       keyId: integration.repositoryPublicKeyId,
       repositoryName: repository.name,
       repositoryOwner: repository.owner,
-      installationId: project.githubInstallationId,
+      installationId: project.integrations.githubInstallationId,
     });
 
     if (failedSecrets.length > 0) {
