@@ -10,6 +10,7 @@ export interface Repository {
 }
 
 export interface Integration {
+  id: string;
   projectId: string;
   repositoryId: string;
   publicKey: string;
@@ -26,6 +27,7 @@ export interface CreateIntegrationDto {
 }
 
 export interface Installation {
+  id: number;
   owner: string;
   avatar: string;
 }
@@ -78,5 +80,24 @@ export class IntegrationsApi {
     );
 
     return response.data;
+  }
+
+  public static async deleteInstallationFromProject(
+    jwtToken: string,
+    projectId: string
+  ): Promise<void> {
+    await axios.delete(
+      `/projects/${projectId}/integrations/github/installations`,
+      { headers: { Authorization: `Bearer ${jwtToken}` } }
+    );
+  }
+
+  public static async deleteIntegration(
+    jwtToken: string,
+    integrationId: string
+  ): Promise<void> {
+    await axios.delete(`/integrations/github/${integrationId}`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
   }
 }

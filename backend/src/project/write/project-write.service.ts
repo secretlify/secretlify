@@ -108,8 +108,13 @@ export class ProjectWriteService {
         ...(dto.encryptedSecretsKeys && {
           encryptedSecretsKeys: dto.encryptedSecretsKeys,
         }),
-        ...(dto.githubInstallationId !== undefined && {
+        ...(dto.githubInstallationId && {
           integrations: { githubInstallationId: dto.githubInstallationId },
+        }),
+      },
+      $unset: {
+        ...(dto.githubInstallationId === null && {
+          'integrations.githubInstallationId': null,
         }),
       },
     };

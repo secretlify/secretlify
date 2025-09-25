@@ -3,6 +3,8 @@ import { IsOptional, IsString } from 'class-validator';
 
 export class GetGithubIntegrationsDto {
   @ApiProperty()
+  public id: string;
+  @ApiProperty()
   public projectId: string;
   @ApiProperty()
   public repositoryId: number;

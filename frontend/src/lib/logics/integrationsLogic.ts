@@ -6,6 +6,7 @@ import {
   listeners,
   path,
   props,
+  reducers,
   selectors,
 } from "kea";
 
@@ -43,20 +44,34 @@ export const integrationsLogic = kea<integrationsLogicType>([
     loadRepositories: true,
     loadIntegrations: true,
     createIntegration: (repositoryId: number) => ({ repositoryId }),
+    removeIntegration: (integrationId: string) => ({ integrationId }),
+    setRepositories: (repositories: Repository[]) => ({ repositories }),
+    setIntegrations: (integrations: Integration[]) => ({ integrations }),
+    setInstallation: (installation: Installation | null) => ({ installation }),
   }),
 
-  listeners(({ values, actions, props }) => ({
-    removeInstallationFromProject: async () => {
-      await ProjectsApi.updateProject(values.jwtToken!, {
-        projectId: props.projectId,
-        githubInstallationId: null,
-      });
+  reducers({
+    repositories: [
+      [] as Repository[],
+      {
+        setRepositories: (_, { repositories }) => repositories,
+      },
+    ],
+    integrations: [
+      [] as Integration[],
+      {
+        setIntegrations: (_, { integrations }) => integrations,
+      },
+    ],
+    installation: [
+      null as Installation | null,
+      {
+        setInstallation: (_, { installation }) => installation,
+      },
+    ],
+  }),
 
-      await actions.loadProjectData();
-    },
-  })),
-
-  loaders(({ values, props, selectors }) => ({
+  loaders(({ values, props }) => ({
     repositories: [
       [] as Repository[],
       {
@@ -107,6 +122,17 @@ export const integrationsLogic = kea<integrationsLogicType>([
 
       actions.loadIntegrations();
     },
+    removeIntegration: async ({ integrationId }) => {
+      await IntegrationsApi.deleteIntegration(values.jwtToken!, integrationId);
+      actions.loadIntegrations();
+    },
+    removeInstallationFromProject: async () => {
+      await IntegrationsApi.deleteInstallationFromProject(
+        values.jwtToken!,
+        props.projectId
+      );
+      actions.loadProjectData();
+    },
   })),
 
   selectors({
@@ -120,6 +146,10 @@ export const integrationsLogic = kea<integrationsLogicType>([
   subscriptions(({ actions }) => ({
     githubInstallationId: (githubInstallationId) => {
       if (!githubInstallationId) {
+        actions.setRepositories([]);
+        actions.setIntegrations([]);
+        actions.setInstallation(null);
+
         return;
       }
 

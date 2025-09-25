@@ -72,6 +72,7 @@ export class GithubIntegrationService {
         });
 
         return {
+          id: integration.id,
           projectId,
           name: repo.name,
           owner: repo.owner,

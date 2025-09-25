@@ -17,18 +17,13 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { useActions, useAsyncActions, useValues } from "kea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { commonLogic } from "@/lib/logics/commonLogic";
 
 interface IntegrationsDialogProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-
-const MOCK_INSTALLATION = {
-  id: "github-installation-123",
-  name: "MyCompany Organization",
-  type: "github",
-};
 
 function InstallationStatusSection() {
   const [loading, setLoading] = useState(false);
@@ -36,12 +31,11 @@ function InstallationStatusSection() {
   const { installation } = useValues(integrationsLogic);
   const { removeInstallationFromProject } = useActions(integrationsLogic);
 
+  const { setShouldReopenIntegrationsDialog } = useActions(commonLogic);
+
   const handleInstallApp = () => {
-    // Open GitHub App installation page
-    window.open(
-      `https://github.com/apps/SecretAppTestAW/installations/new?state=\"projectId=${activeProject?.id}\"`,
-      "_blank"
-    );
+    setShouldReopenIntegrationsDialog(true);
+    window.location.href = `https://github.com/apps/SecretAppTestAW/installations/new?state="projectId=${activeProject?.id}"`;
   };
 
   const handleRemoveInstallation = () => {
@@ -63,12 +57,18 @@ function InstallationStatusSection() {
 
       {installation ? (
         <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
-          <IconBrandGithub className="size-5 text-foreground/70" />
+          <img
+            src={installation.avatar}
+            alt={`${installation.owner} avatar`}
+            className="size-8 rounded-full"
+          />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-foreground/90 truncate">
               {installation.owner}
             </div>
-            <div className="text-xs text-muted-foreground">todo</div>
+            <div className="text-xs text-muted-foreground">
+              Installation ID: {installation.id}
+            </div>
           </div>
           <Button
             onClick={handleRemoveInstallation}
@@ -95,18 +95,41 @@ function InstallationStatusSection() {
   );
 }
 
-function ExistingIntegrationsSection() {
-  const [loadingIntegrationId, setLoadingIntegrationId] = useState<string>("");
-  const { installation, integrations } = useValues(integrationsLogic);
+function IntegrationListItem({ integration }: { integration: Integration }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const { removeIntegration } = useActions(integrationsLogic);
 
-  const handleRemoveIntegration = (integration: Integration) => {
-    setLoadingIntegrationId(integration.repositoryId);
-
-    setTimeout(() => {
-      setLoadingIntegrationId("");
-      console.log(`Removing integration for ${integration.fullName}`);
-    }, 2000);
+  const handleRemoveIntegration = () => {
+    setIsLoading(true);
+    removeIntegration(integration.id);
   };
+
+  return (
+    <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
+      <IconBrandGithub className="size-5 text-foreground/70" />
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-foreground/90 truncate">
+          {integration.fullName}
+        </div>
+        <div className="text-xs text-muted-foreground">
+          Repository ID: {integration.repositoryId}
+        </div>
+      </div>
+      <Button
+        onClick={handleRemoveIntegration}
+        variant="ghost"
+        isLoading={isLoading}
+        size="sm"
+        className="cursor-pointer text-destructive hover:text-destructive"
+      >
+        <IconTrash className="size-4" />
+      </Button>
+    </div>
+  );
+}
+
+function ExistingIntegrationsSection() {
+  const { installation, integrations } = useValues(integrationsLogic);
 
   if (!installation) {
     return null;
@@ -122,29 +145,10 @@ function ExistingIntegrationsSection() {
       {integrations.length > 0 ? (
         <div className="space-y-3">
           {integrations.map((integration) => (
-            <div
+            <IntegrationListItem
               key={integration.repositoryId}
-              className="flex items-center gap-3 p-3 bg-muted/30 rounded-md"
-            >
-              <IconBrandGithub className="size-5 text-foreground/70" />
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-foreground/90 truncate">
-                  {integration.fullName}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Repository ID: {integration.repositoryId}
-                </div>
-              </div>
-              <Button
-                onClick={() => handleRemoveIntegration(integration)}
-                variant="ghost"
-                isLoading={loadingIntegrationId === integration.repositoryId}
-                size="sm"
-                className="cursor-pointer text-destructive hover:text-destructive"
-              >
-                <IconTrash className="size-4" />
-              </Button>
-            </div>
+              integration={integration}
+            />
           ))}
         </div>
       ) : (
@@ -194,8 +198,8 @@ function AddIntegrationSection() {
         <div className="flex gap-2">
           <Combobox
             options={repositories.map((repo) => ({
-              value: repo.name,
-              label: repo.name,
+              value: repo.fullName,
+              label: repo.fullName,
             }))}
             value={selectedRepository}
             onValueChange={setSelectedRepository}

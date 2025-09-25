@@ -7,6 +7,7 @@ import { ProjectSettingsDialog } from "@/components/dialogs/ProjectSettingsDialo
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authLogic } from "@/lib/logics/authLogic";
+import { commonLogic } from "@/lib/logics/commonLogic";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
 import {
@@ -140,6 +141,19 @@ function ProjectHeader() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
+
+  const { shouldReopenIntegrationsDialog } = useValues(commonLogic);
+  const { setShouldReopenIntegrationsDialog } = useActions(commonLogic);
+
+  useEffect(() => {
+    if (shouldReopenIntegrationsDialog) {
+      setShouldReopenIntegrationsDialog(false);
+
+      setTimeout(() => {
+        setIntegrationsDialogOpen(true);
+      }, 500);
+    }
+  }, []);
 
   return (
     <div className="relative flex h-10 items-center justify-center">
