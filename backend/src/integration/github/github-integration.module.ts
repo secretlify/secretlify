@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { GithubIntegrationService } from './github-integration.service';
 import { GithubClient } from 'src/integration/github/github.client';
 import { GithubIntegrationController } from 'src/integration/github/github-integration.controller';
-import { EncryptionModule } from 'src/shared/encryption/encryption.module';
 import { GithubIntegrationReadModule } from 'src/integration/github/read/github-integration-read.module';
 import { GithubIntegrationWriteModule } from 'src/integration/github/write/github-integration-write.module';
 import { App, Octokit } from 'octokit';
