@@ -30,6 +30,7 @@ export type RepoPublicKeyResponseDto = {
 };
 
 export type GithubInstallationResponseDto = {
+  id: number;
   owner: string;
   avatar: string;
 };
@@ -71,6 +72,7 @@ export class GithubClient {
     const account = response.data.account || { avatar_url: '', login: '' };
 
     return {
+      id: installationId,
       avatar: account?.avatar_url || '',
       owner: 'login' in account ? account.login : account?.name || '',
     };

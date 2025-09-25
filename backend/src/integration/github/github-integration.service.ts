@@ -85,12 +85,7 @@ export class GithubIntegrationService {
   }
 
   public async getInstallationById(installationId: number): Promise<GetGithubInstallationDto> {
-    const installation = await this.client.getInstallationById(installationId);
-
-    return {
-      id: installationId,
-      ...installation,
-    };
+    return this.client.getInstallationById(installationId);
   }
 
   public async deleteInstallation(projectId: string): Promise<void> {
