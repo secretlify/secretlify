@@ -11,6 +11,7 @@ import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-gi
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 import { UpdateSecretsBodyDto } from 'src/integration/github/dto/update-secrets.dto';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
+import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
 
 @Injectable()
 export class GithubIntegrationService {
@@ -83,8 +84,13 @@ export class GithubIntegrationService {
     );
   }
 
-  public async getInstallationById(installationId: number): Promise<GithubInstallationResponseDto> {
-    return this.client.getInstallationById(installationId);
+  public async getInstallationById(installationId: number): Promise<GetGithubInstallationDto> {
+    const installation = await this.client.getInstallationById(installationId);
+
+    return {
+      id: installationId,
+      ...installation,
+    };
   }
 
   public async deleteInstallation(projectId: string): Promise<void> {
