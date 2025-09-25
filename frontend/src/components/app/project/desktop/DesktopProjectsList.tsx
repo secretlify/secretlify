@@ -49,15 +49,18 @@ export function DesktopProjectsList() {
       layout="position"
     >
       <motion.h2
-        className="font-semibold text-muted-foreground tracking-wide text-center mb-2"
+        className="font-semibold text-muted-foreground tracking-wide text-center mb-2 flex items-center justify-center gap-2"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
       >
-        Projects
+        <div className="flex items-center justify-center gap-2">
+          <span>Projects</span>
+          <span className="text-sm">({projects.length})</span>
+        </div>
       </motion.h2>
       <motion.div
-        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm overflow-y-auto"
+        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm overflow-y-auto custom-scrollbar"
         layout="position"
       >
         <motion.nav className="space-y-2" variants={listVariants} layout>
