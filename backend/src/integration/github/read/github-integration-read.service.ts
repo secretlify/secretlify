@@ -25,16 +25,12 @@ export class GithubIntegrationReadService {
     return GithubIntegrationSerializer.normalize(integration);
   }
 
-  public async findByProjectId(cryptlyProjectId: string): Promise<GithubIntegrationNormalized> {
-    const integration = await this.githubIntegrationModel
-      .findOne({ cryptlyProjectId })
+  public async findByProjectId(cryptlyProjectId: string): Promise<GithubIntegrationNormalized[]> {
+    const integrations = await this.githubIntegrationModel
+      .find({ cryptlyProjectId })
       .lean<GithubIntegrationEntity>()
       .exec();
 
-    if (!integration) {
-      throw new NotFoundException(`Integration not found`);
-    }
-
-    return GithubIntegrationSerializer.normalize(integration);
+    return integrations.map((integration) => GithubIntegrationSerializer.normalize(integration));
   }
 }

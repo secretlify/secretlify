@@ -5,6 +5,7 @@ import { Role } from 'src/shared/types/role.enum';
 export interface Integrations {
   githubInstallationId: number;
 }
+
 @Schema({ collection: 'projects', timestamps: true })
 export class ProjectEntity {
   _id: Types.ObjectId;

@@ -8,7 +8,12 @@ import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessib
 import { ProjectReadService } from 'src/project/read/project-read.service';
 import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
 import { ProjectNormalized } from 'src/project/core/entities/project.interface';
-import { GithubIntegrationNormalized } from 'src/integration/github/entities/github-integration.interface';
+import {
+  GithubIntegrationNormalized,
+  GithubIntegrationSerialized,
+} from 'src/integration/github/entities/github-integration.interface';
+import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
+import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 
 @Injectable()
 export class GithubIntegrationService {
@@ -47,14 +52,11 @@ export class GithubIntegrationService {
     return this.client.createAccessToken();
   }
 
-  public async create(dto: any): Promise<any> {
-    const repositoryId = Number.parseInt(dto.repositoryId, 10);
-    if (isNaN(repositoryId)) {
-      this.logger.error('Invalid github repository id', { originalRepositoryId: dto.repositoryId });
-      throw new BadRequestException('Invalid github repository id');
-    }
-
-    const installationId = await this.getInstallationId(null);
+  public async create({
+    projectId,
+    repositoryId,
+    installationId,
+  }: CreateGithubIntegrationDto): Promise<GithubIntegrationSerialized> {
     const repository = await this.client.getRepositoryById({ repositoryId, installationId });
 
     const publicKey = await this.client.getRepositoryPublicKey({
@@ -64,11 +66,22 @@ export class GithubIntegrationService {
     });
 
     const integration = await this.githubIntegrationWriteService.create({
-      cryptlyProjectId: dto.projectId,
+      cryptlyProjectId: projectId,
       githubRepositoryId: repositoryId,
       repositoryPublicKey: publicKey.key,
       repositoryPublicKeyId: publicKey.keyId,
     });
+
+    return GithubIntegrationSerializer.serialize(integration);
+  }
+
+  public async getProjectIntegrations(projectId: string): Promise<GetGithubIntegrationsDto[]> {
+    const integrations = await this.githubIntegrationReadService.findByProjectId(projectId);
+
+    // todo: add a check not to ensure 1-1 projectId-repoId
+    const repositoryIds = integrations.map((integration) => integration.githubRepositoryId);
+
+    // const repository = await this.client.getRepositoryById({ repositoryId, installationId });
 
     return GithubIntegrationSerializer.serialize(integration);
   }
