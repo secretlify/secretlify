@@ -173,7 +173,7 @@ function AddIntegrationSection() {
     if (!selectedRepository) return;
 
     const repository = repositories.find(
-      (repo) => repo.name === selectedRepository
+      (repo) => repo.fullName === selectedRepository
     );
 
     if (!repository) return;
@@ -200,6 +200,7 @@ function AddIntegrationSection() {
             options={repositories.map((repo) => ({
               value: repo.fullName,
               label: repo.fullName,
+              avatarUrl: repo.avatarUrl,
             }))}
             value={selectedRepository}
             onValueChange={setSelectedRepository}
@@ -235,7 +236,8 @@ export function IntegrationsDialog({
               Integrations
             </DialogTitle>
             <DialogDescription>
-              Connect external services to sync and manage your project secrets.
+              Connect github repositories to sync and manage your project
+              secrets.
             </DialogDescription>
           </DialogHeader>
 

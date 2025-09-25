@@ -12,6 +12,7 @@ import { projectLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
 import {
   IconArrowLeft,
+  IconBrandGithub,
   IconHistory,
   IconLink,
   IconSettings,
@@ -244,12 +245,12 @@ function ProjectHeader() {
                 aria-label="Integrations"
                 className="cursor-pointer"
               >
-                <IconLink className="size-5" />
+                <IconBrandGithub className="size-5" />
               </Button>
               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                 <div className="font-medium">Integrations</div>
                 <div className="text-xs text-muted-foreground">
-                  Connect external services
+                  Connect github repositories
                 </div>
               </div>
             </div>
@@ -383,12 +384,12 @@ function ProjectHeaderSkeleton() {
                 aria-label="Integrations"
                 className="cursor-pointer"
               >
-                <IconLink className="size-5" />
+                <IconBrandGithub className="size-5" />
               </Button>
               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                 <div className="font-medium">Integrations</div>
                 <div className="text-xs text-muted-foreground">
-                  Connect external services
+                  Connect github repositories
                 </div>
               </div>
             </div>

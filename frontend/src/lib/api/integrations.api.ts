@@ -7,6 +7,7 @@ export interface Repository {
   owner: string;
   url: string;
   isPrivate: boolean;
+  avatarUrl: string;
 }
 
 export interface Integration {
