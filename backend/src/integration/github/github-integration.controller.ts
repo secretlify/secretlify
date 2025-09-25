@@ -7,17 +7,18 @@ import {
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
 import { CreateAccessTokenResponseDto } from 'src/integration/github/dto/create-access-token.dto';
 
-@Controller('github')
+@Controller('/integrations/github')
 @ApiTags('Github')
 @ApiBearerAuth()
 export class GithubIntegrationController {
   public constructor(private readonly githubIntegrationService: GithubIntegrationService) {}
 
-  @Get('/repositories')
+  @Get(`/installations/:installationId/repositories`)
   public async getAvailableRepos(
     @Query() { name }: GetAccessibleRepositoriesQueryDto,
+    @Param('installationId') installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
-    return this.githubIntegrationService.getAccessibleRepositories(name);
+    return this.githubIntegrationService.getAccessibleRepositories(name, installationId);
   }
 
   @Post('/test')
