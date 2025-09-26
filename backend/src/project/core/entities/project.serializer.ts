@@ -11,6 +11,7 @@ export class ProjectSerializer {
       encryptedSecretsKeys: entity.encryptedSecretsKeys,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      integrations: entity.integrations,
     };
   }
 
@@ -42,6 +43,7 @@ export class ProjectSerializer {
       encryptedSecrets: latestSecrets,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),
+      integrations: normalized.integrations,
     };
   }
 }

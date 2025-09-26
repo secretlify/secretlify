@@ -12,6 +12,7 @@ import { ProjectCoreModule } from './project/core/project-core.module';
 import { getEnvConfig } from './shared/config/env-config';
 import { LogdashModule } from './shared/logdash/logdash.module';
 import { UserCoreModule } from './user/core/user-core.module';
+import { GithubIntegrationModule } from './integration/github/github-integration.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserCoreModule } from './user/core/user-core.module';
     GoogleAuthModule,
     GithubAuthModule,
     HealthModule,
+    GithubIntegrationModule,
   ],
   controllers: [],
   providers: [],

@@ -18,6 +18,7 @@ import { Route as AppDeveloperRouteImport } from './routes/app/developer'
 import { Route as AppProjectProjectIdRouteImport } from './routes/app/project/$projectId'
 import { Route as AppCallbacksOauthGoogleRouteImport } from './routes/app/callbacks/oauth/google'
 import { Route as AppCallbacksOauthGithubRouteImport } from './routes/app/callbacks/oauth/github'
+import { Route as AppCallbacksIntegrationsGithubRouteImport } from './routes/app/callbacks/integrations/github'
 
 const ArchitectureRoute = ArchitectureRouteImport.update({
   id: '/architecture',
@@ -64,6 +65,12 @@ const AppCallbacksOauthGithubRoute = AppCallbacksOauthGithubRouteImport.update({
   path: '/app/callbacks/oauth/github',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCallbacksIntegrationsGithubRoute =
+  AppCallbacksIntegrationsGithubRouteImport.update({
+    id: '/app/callbacks/integrations/github',
+    path: '/app/callbacks/integrations/github',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/app/me': typeof AppMeRoute
   '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
+  '/app/callbacks/integrations/github': typeof AppCallbacksIntegrationsGithubRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/app/me': typeof AppMeRoute
   '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
+  '/app/callbacks/integrations/github': typeof AppCallbacksIntegrationsGithubRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/app/me': typeof AppMeRoute
   '/invite/$inviteId': typeof InviteInviteIdRoute
   '/app/project/$projectId': typeof AppProjectProjectIdRoute
+  '/app/callbacks/integrations/github': typeof AppCallbacksIntegrationsGithubRoute
   '/app/callbacks/oauth/github': typeof AppCallbacksOauthGithubRoute
   '/app/callbacks/oauth/google': typeof AppCallbacksOauthGoogleRoute
 }
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/invite/$inviteId'
     | '/app/project/$projectId'
+    | '/app/callbacks/integrations/github'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/invite/$inviteId'
     | '/app/project/$projectId'
+    | '/app/callbacks/integrations/github'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   id:
@@ -131,6 +143,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/invite/$inviteId'
     | '/app/project/$projectId'
+    | '/app/callbacks/integrations/github'
     | '/app/callbacks/oauth/github'
     | '/app/callbacks/oauth/google'
   fileRoutesById: FileRoutesById
@@ -143,6 +156,7 @@ export interface RootRouteChildren {
   AppMeRoute: typeof AppMeRoute
   InviteInviteIdRoute: typeof InviteInviteIdRoute
   AppProjectProjectIdRoute: typeof AppProjectProjectIdRoute
+  AppCallbacksIntegrationsGithubRoute: typeof AppCallbacksIntegrationsGithubRoute
   AppCallbacksOauthGithubRoute: typeof AppCallbacksOauthGithubRoute
   AppCallbacksOauthGoogleRoute: typeof AppCallbacksOauthGoogleRoute
 }
@@ -212,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCallbacksOauthGithubRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/callbacks/integrations/github': {
+      id: '/app/callbacks/integrations/github'
+      path: '/app/callbacks/integrations/github'
+      fullPath: '/app/callbacks/integrations/github'
+      preLoaderRoute: typeof AppCallbacksIntegrationsGithubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -223,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppMeRoute: AppMeRoute,
   InviteInviteIdRoute: InviteInviteIdRoute,
   AppProjectProjectIdRoute: AppProjectProjectIdRoute,
+  AppCallbacksIntegrationsGithubRoute: AppCallbacksIntegrationsGithubRoute,
   AppCallbacksOauthGithubRoute: AppCallbacksOauthGithubRoute,
   AppCallbacksOauthGoogleRoute: AppCallbacksOauthGoogleRoute,
 }

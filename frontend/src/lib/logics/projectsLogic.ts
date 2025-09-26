@@ -41,10 +41,11 @@ export const projectsLogic = kea<projectsLogicType>([
     readProjectById: [
       (state) => [state.projects],
       (projects) =>
-        (id: string): Project | undefined =>
-          projects.find((project) => {
+        (id: string): Project | undefined => {
+          return projects.find((project) => {
             return project.id === id;
-          }),
+          });
+        },
     ],
   }),
 

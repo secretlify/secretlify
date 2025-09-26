@@ -9,6 +9,7 @@ import { invitationsLogic } from "@/lib/logics/invitationsLogic";
 import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
+import { integrationsLogic } from "@/lib/logics/integrationsLogic";
 
 export function ProjectPage() {
   const { projects } = useValues(projectsLogic);
@@ -17,7 +18,7 @@ export function ProjectPage() {
 
   const { activeProject } = useProjects();
 
-  const projectId = useParams({
+  const { projectId } = useParams({
     from: "/app/project/$projectId",
   });
 
@@ -40,16 +41,12 @@ export function ProjectPage() {
   }, [projects, activeProject]);
 
   return (
-    <BindLogic logic={projectLogic} props={{ projectId: projectId.projectId }}>
-      <BindLogic
-        logic={invitationsLogic}
-        props={{ projectId: projectId.projectId }}
-      >
-        <BindLogic
-          logic={projectSettingsLogic}
-          props={{ projectId: projectId.projectId }}
-        >
-          <ProjectPageContent />
+    <BindLogic logic={projectLogic} props={{ projectId }}>
+      <BindLogic logic={invitationsLogic} props={{ projectId }}>
+        <BindLogic logic={projectSettingsLogic} props={{ projectId }}>
+          <BindLogic logic={integrationsLogic} props={{ projectId }}>
+            <ProjectPageContent />
+          </BindLogic>
         </BindLogic>
       </BindLogic>
     </BindLogic>

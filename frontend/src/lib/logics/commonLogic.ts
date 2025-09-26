@@ -9,6 +9,11 @@ export const commonLogic = kea<commonLogicType>([
     setInviteIdToShowAfterLogin: (inviteIdToShowAfterLogin: string | null) => ({
       inviteIdToShowAfterLogin,
     }),
+    setShouldReopenIntegrationsDialog: (
+      shouldReopenIntegrationsDialog: boolean
+    ) => ({
+      shouldReopenIntegrationsDialog,
+    }),
   }),
 
   reducers({
@@ -20,6 +25,18 @@ export const commonLogic = kea<commonLogicType>([
       {
         setInviteIdToShowAfterLogin: (_, { inviteIdToShowAfterLogin }) =>
           inviteIdToShowAfterLogin,
+      },
+    ],
+    shouldReopenIntegrationsDialog: [
+      false,
+      {
+        persist: true,
+      },
+      {
+        setShouldReopenIntegrationsDialog: (
+          _,
+          { shouldReopenIntegrationsDialog }
+        ) => shouldReopenIntegrationsDialog,
       },
     ],
   }),

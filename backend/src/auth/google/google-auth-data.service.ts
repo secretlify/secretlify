@@ -4,19 +4,19 @@ import { getEnvConfig } from 'src/shared/config/env-config';
 @Injectable()
 export class GoogleAuthDataService {
   public async getAccessToken(code: string, forceLocalLogin?: boolean): Promise<string> {
+    const config = getEnvConfig().oauth.google;
+
     const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        client_id: getEnvConfig().oauth.google.clientId,
-        client_secret: getEnvConfig().oauth.google.clientSecret,
+        client_id: config.clientId,
+        client_secret: config.clientSecret,
         code: decodeURIComponent(code),
         grant_type: 'authorization_code',
-        redirect_uri: forceLocalLogin
-          ? getEnvConfig().oauth.google.redirectUriAlternative!
-          : getEnvConfig().oauth.google.redirectUri,
+        redirect_uri: forceLocalLogin ? config.redirectUriAlternative! : config.redirectUri,
       }),
     });
 
