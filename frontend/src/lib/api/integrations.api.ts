@@ -164,26 +164,27 @@ export class IntegrationsApi {
       secrets.push({ key, plainValue: value });
     }
     for (const integration of integrations) {
-      for (const secret of secrets) {
-        const publicKey = integration.publicKey;
+      const publicKey = integration.publicKey;
 
-        const encryptedValue = await SodiumCrypto.encrypt(
-          secret.plainValue,
-          publicKey
-        );
+      const githubToken = await this.getAccessToken(jwtToken, {
+        installationId: integration.installationId,
+      });
+      await Promise.all(
+        secrets.map(async (secret) => {
+          const encryptedValue = await SodiumCrypto.encrypt(
+            secret.plainValue,
+            publicKey
+          );
 
-        const githubToken = await this.getAccessToken(jwtToken, {
-          installationId: integration.installationId,
-        });
-
-        await this.pushSecret(githubToken, {
-          encryptedValue,
-          keyId: integration.publicKeyId,
-          owner: integration.owner,
-          repo: integration.name,
-          secretName: secret.key,
-        });
-      }
+          await this.pushSecret(githubToken, {
+            encryptedValue,
+            keyId: integration.publicKeyId,
+            owner: integration.owner,
+            repo: integration.name,
+            secretName: secret.key,
+          });
+        })
+      );
     }
   }
 }
