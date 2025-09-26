@@ -19,14 +19,13 @@ import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import {
   ProjectsApi,
   type DecryptedVersion,
-  type Integrations,
   type ProjectMember,
 } from "../api/projects.api";
 import { subscriptions } from "kea-subscriptions";
 import { projectsLogic } from "./projectsLogic";
 import { createPatch } from "diff";
 import { SodiumCrypto } from "../crypto/crypto.sodium";
-import { IntegrationsApi } from "../api/integrations.api";
+import { IntegrationsApi, type Integration } from "../api/integrations.api";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -39,7 +38,9 @@ export interface DecryptedProject {
   passphraseAsKey: string;
   members: ProjectMember[];
   updatedAt: string;
-  integrations: Integrations;
+  integrations: {
+    githubInstallationId: number;
+  };
 }
 
 export interface Patch {
@@ -80,6 +81,7 @@ export const projectLogic = kea<projectLogicType>([
     computePatches: (versions: DecryptedVersion[]) => ({ versions }),
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
+    setIntegrations: (integrations: Integration[]) => ({ integrations }),
   }),
 
   reducers({
@@ -87,7 +89,7 @@ export const projectLogic = kea<projectLogicType>([
       null as string | null,
       {
         selectHistoryChange: (_, { changeId }) => changeId,
-        toggleHistoryView: () => null, // Clear selection when toggling
+        toggleHistoryView: () => null,
       },
     ],
     patches: [
@@ -120,6 +122,12 @@ export const projectLogic = kea<projectLogicType>([
         selectHistoryChange: () => true,
         setIsShowingHistory: (_, { isShowingHistory }) => isShowingHistory,
         toggleHistoryView: (state) => !state,
+      },
+    ],
+    integrations: [
+      [] as Integration[],
+      {
+        setIntegrations: (_, { integrations }) => integrations,
       },
     ],
   }),
@@ -217,30 +225,11 @@ export const projectLogic = kea<projectLogicType>([
         encryptedSecrets: encryptedContent,
       });
 
-      const publicKey = "MnHZLJHhP7HtOWl875N97yFFi8W2Fui9hrzw2XelzCk=";
-
-      const [secretName, secretValue] = values.inputValue.split("=");
-
-      const encrypted = await SodiumCrypto.encrypt(secretValue, publicKey);
-
-      const githubToken = await IntegrationsApi.getAccessToken(
+      await IntegrationsApi.pushSecrets(
         values.jwtToken!,
-        {
-          installationId: 87513586,
-        }
+        values.integrations,
+        values.inputValue
       );
-
-      console.log("Token", githubToken);
-
-      console.log("EncryptedValue", encrypted);
-
-      await IntegrationsApi.pushSecret(githubToken, {
-        owner: "arturwita",
-        repo: "jamaica",
-        encryptedValue: encrypted,
-        keyId: "3380204578043523366",
-        secretName,
-      });
 
       await Promise.all([
         asyncActions.loadProjectData(),

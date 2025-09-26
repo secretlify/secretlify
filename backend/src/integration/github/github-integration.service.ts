@@ -79,6 +79,7 @@ export class GithubIntegrationService {
           fullName: repo.fullName,
           publicKey: integration.repositoryPublicKey,
           publicKeyId: integration.repositoryPublicKeyId,
+          installationId,
         } satisfies GetGithubIntegrationsDto;
       }),
     );

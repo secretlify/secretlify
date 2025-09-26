@@ -14,7 +14,6 @@ import {
   IconArrowLeft,
   IconBrandGithub,
   IconHistory,
-  IconLink,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";

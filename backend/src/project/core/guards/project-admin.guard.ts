@@ -17,7 +17,7 @@ export class ProjectAdminGuard implements CanActivate {
 
     const project = await this.projectReadService.findById(projectId);
 
-    if (project.members.get(userId) !== Role.Admin) {
+    if (project.members.get(userId) !== Role.Admin && project.members.get(userId) !== Role.Owner) {
       throw new ForbiddenException('You are not an admin of this project');
     }
 

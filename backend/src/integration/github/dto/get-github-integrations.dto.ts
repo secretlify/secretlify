@@ -18,4 +18,6 @@ export class GetGithubIntegrationsDto {
   public owner: string;
   @ApiProperty()
   public fullName: string;
+  @ApiProperty()
+  public installationId: number;
 }

@@ -13,10 +13,6 @@ export interface ProjectMember {
   role: ProjectMemberRole;
 }
 
-export interface Integrations {
-  githubInstallationId: number;
-}
-
 export interface Project {
   id: string;
   name: string;
@@ -25,7 +21,9 @@ export interface Project {
   encryptedSecrets: string;
   members: ProjectMember[];
   updatedAt: string;
-  integrations: Integrations;
+  integrations: {
+    githubInstallationId: number;
+  };
 }
 
 interface BaseVersion {

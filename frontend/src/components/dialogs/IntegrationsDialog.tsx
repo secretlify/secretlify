@@ -35,7 +35,7 @@ function InstallationStatusSection() {
 
   const handleInstallApp = () => {
     setShouldReopenIntegrationsDialog(true);
-    window.location.href = `https://github.com/apps/SecretAppTestAW/installations/new?state="projectId=${activeProject?.id}"`;
+    window.location.href = `https://github.com/apps/cryptly-dev/installations/new?state="projectId=${activeProject?.id}"`;
   };
 
   const handleRemoveInstallation = () => {

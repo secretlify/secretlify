@@ -35,7 +35,7 @@ export const integrationsLogic = kea<integrationsLogicType>([
 
   connect({
     values: [authLogic, ["jwtToken"], projectLogic, ["projectData"]],
-    actions: [projectLogic, ["loadProjectData"]],
+    actions: [projectLogic, ["loadProjectData", "setIntegrations"]],
   }),
 
   actions({
@@ -93,7 +93,10 @@ export const integrationsLogic = kea<integrationsLogicType>([
             props.projectId
           );
 
-          console.log("Integrations", integrations);
+          // never do this. This is so wrong
+          projectLogic({
+            projectId: props.projectId,
+          }).actions.setIntegrations(integrations);
 
           return integrations;
         },

@@ -7,4 +7,6 @@ export class GetGithubInstallationDto {
   public owner: string;
   @ApiProperty()
   public avatar: string;
+  @ApiProperty()
+  public installationId: number;
 }

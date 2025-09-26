@@ -35,6 +35,7 @@ export type GithubInstallationResponseDto = {
   id: number;
   owner: string;
   avatar: string;
+  installationId: number;
 };
 
 export type AccessTokenResponseDto = {
@@ -66,6 +67,7 @@ export class GithubClient {
       id: installationId,
       avatar: account?.avatar_url || '',
       owner: 'login' in account ? account.login : account?.name || '',
+      installationId,
     };
   }
 

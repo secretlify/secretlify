@@ -1,4 +1,5 @@
 import axios from "axios";
+import { SodiumCrypto } from "../crypto/crypto.sodium";
 
 export interface Repository {
   id: number;
@@ -19,6 +20,7 @@ export interface Integration {
   name: string;
   owner: string;
   fullName: string;
+  installationId: number;
 }
 
 export interface CreateIntegrationDto {
@@ -43,6 +45,11 @@ export interface PushSecretDto {
   secretName: string;
   encryptedValue: string;
   keyId: string;
+}
+
+export interface SecretDto {
+  key: string;
+  plainValue: string;
 }
 
 export class IntegrationsApi {
@@ -118,9 +125,13 @@ export class IntegrationsApi {
     jwtToken: string,
     dto: GetInstallationAccessTokenDto
   ): Promise<string> {
-    const response = await axios.post<{ token: string }>(`/integrations/github/access-token`, dto, {
-      headers: { Authorization: `Bearer ${jwtToken}` },
-    });
+    const response = await axios.post<{ token: string }>(
+      `/integrations/github/access-token`,
+      dto,
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
 
     return response.data.token;
   }
@@ -139,8 +150,40 @@ export class IntegrationsApi {
         headers: { Authorization: `Bearer ${githubJwtToken}` },
       }
     );
+  }
 
-    console.log(response.status);
-    console.log(response.data);
+  public static async pushSecrets(
+    jwtToken: string,
+    integrations: Integration[],
+    content: string
+  ): Promise<void> {
+    const secrets: SecretDto[] = [];
+    const lines = content.split("\n");
+    for (const line of lines) {
+      const [key, value] = line.split("=");
+      secrets.push({ key, plainValue: value });
+    }
+    for (const integration of integrations) {
+      for (const secret of secrets) {
+        const publicKey = integration.publicKey;
+
+        const encryptedValue = await SodiumCrypto.encrypt(
+          secret.plainValue,
+          publicKey
+        );
+
+        const githubToken = await this.getAccessToken(jwtToken, {
+          installationId: integration.installationId,
+        });
+
+        await this.pushSecret(githubToken, {
+          encryptedValue,
+          keyId: integration.publicKeyId,
+          owner: integration.owner,
+          repo: integration.name,
+          secretName: secret.key,
+        });
+      }
+    }
   }
 }

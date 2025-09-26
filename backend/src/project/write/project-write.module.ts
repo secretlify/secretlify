@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectSecretsVersionWriteModule } from '../../project-secrets-version/write/project-secrets-version-write.module';
-import { UserReadModule } from '../../user/read/user-read.module';
 import { ProjectEntity, ProjectSchema } from '../core/entities/project.entity';
 import { ProjectEventModule } from '../events/project-event.module';
 import { ProjectWriteService } from './project-write.service';
@@ -11,7 +10,6 @@ import { ProjectWriteService } from './project-write.service';
     MongooseModule.forFeature([{ name: ProjectEntity.name, schema: ProjectSchema }]),
     ProjectSecretsVersionWriteModule,
     ProjectEventModule,
-    UserReadModule,
   ],
   providers: [ProjectWriteService],
   exports: [ProjectWriteService],
