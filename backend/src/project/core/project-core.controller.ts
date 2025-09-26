@@ -14,11 +14,13 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { Observable, filter, fromEvent, map } from 'rxjs';
+import { Role } from 'src/shared/types/role.enum';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { ProjectSecretsVersionSerialized } from '../../project-secrets-version/core/entities/project-secrets-version.interface';
 import { ProjectSecretsVersionReadService } from '../../project-secrets-version/read/project-secrets-version-read.service';
 import { UserSerializer } from '../../user/core/entities/user.serializer';
 import { UserReadService } from '../../user/read/user-read.service';
+import { RequireRole } from '../decorators/require-project-role.decorator';
 import { SecretsUpdatedEvent } from '../events/definitions/secrets-updated.event';
 import { ProjectEvent } from '../events/project-events.enum';
 import { ProjectReadService } from '../read/project-read.service';
@@ -29,7 +31,6 @@ import { UpdateProjectBody } from './dto/update-project.body';
 import { ProjectSerialized } from './entities/project.interface';
 import { ProjectSerializer } from './entities/project.serializer';
 import { ProjectMemberGuard } from './guards/project-member.guard';
-import { ProjectOwnerGuard } from './guards/project-owner.guard';
 import { RemoveProjectMemberGuard } from './guards/remove-project-member.guard';
 
 @Controller('')
@@ -46,6 +47,7 @@ export class ProjectCoreController {
 
   @Sse('projects/:projectId/events')
   @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Member, Role.Admin, Role.Owner)
   @ApiBearerAuth()
   public streamEvents(
     @Param('projectId') projectId: string,
@@ -102,6 +104,7 @@ export class ProjectCoreController {
 
   @Get('projects/:projectId')
   @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Member, Role.Admin, Role.Owner)
   @ApiResponse({ type: ProjectSerialized })
   public async findById(@Param('projectId') projectId: string): Promise<ProjectSerialized> {
     const project = await this.projectReadService.findById(projectId);
@@ -121,6 +124,7 @@ export class ProjectCoreController {
 
   @Get('projects/:projectId/history')
   @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Member, Role.Admin, Role.Owner)
   @ApiResponse({ type: [ProjectSecretsVersionSerialized] })
   public async findHistoryById(
     @Param('projectId') projectId: string,
@@ -130,6 +134,7 @@ export class ProjectCoreController {
 
   @Patch('projects/:projectId')
   @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Member, Role.Admin, Role.Owner)
   @ApiResponse({ type: ProjectSerialized })
   public async update(
     @Param('projectId') projectId: string,
@@ -170,7 +175,8 @@ export class ProjectCoreController {
   }
 
   @Patch('projects/:projectId/members/:memberId')
-  @UseGuards(ProjectOwnerGuard)
+  @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Owner)
   @HttpCode(204)
   public async updateMemberRole(
     @Param('projectId') projectId: string,
@@ -181,7 +187,8 @@ export class ProjectCoreController {
   }
 
   @Delete('projects/:projectId')
-  @UseGuards(ProjectOwnerGuard)
+  @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Owner)
   @HttpCode(204)
   public async delete(@Param('projectId') projectId: string): Promise<void> {
     await this.projectWriteService.delete(projectId);

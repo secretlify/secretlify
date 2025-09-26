@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProjectOwnerGuard } from 'src/project/core/guards/project-owner.guard';
+import { ProjectMemberGuard } from 'src/project/core/guards/project-member.guard';
+import { RequireRole } from 'src/project/decorators/require-project-role.decorator';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
+import { Role } from 'src/shared/types/role.enum';
 import { UserReadService } from 'src/user/read/user-read.service';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { InvitationReadService } from '../read/invitation-read.service';
@@ -24,7 +26,8 @@ export class InvitationCoreController {
   ) {}
 
   @Get('projects/:projectId/invitations')
-  @UseGuards(ProjectOwnerGuard)
+  @UseGuards(ProjectMemberGuard)
+  @RequireRole(Role.Owner)
   @ApiResponse({ type: [InvitationSerialized] })
   public async findProjectInvitations(
     @Param('projectId') projectId: string,
