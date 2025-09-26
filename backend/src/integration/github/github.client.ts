@@ -1,8 +1,11 @@
 import { Logger } from '@logdash/js-sdk';
 import { Inject, Injectable } from '@nestjs/common';
-import { GithubCryptlyApp } from 'src/shared/constants/symbol';
+import {
+  GITHUB_CONFIG,
+  GITHUB_CRYPTLY_APP,
+} from 'src/integration/github/github-integration.constants';
 import { Endpoints, OctokitResponse } from '@octokit/types';
-import { EnvConfig, getEnvConfig } from 'src/shared/config/env-config';
+import { EnvConfig } from 'src/shared/config/env-config';
 import { App } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 
@@ -41,14 +44,11 @@ export type AccessTokenResponseDto = {
 
 @Injectable()
 export class GithubClient {
-  private readonly githubConfig: EnvConfig['github'];
-
   public constructor(
     private readonly logger: Logger,
-    @Inject(GithubCryptlyApp) private readonly githubApp: App,
-  ) {
-    this.githubConfig = getEnvConfig().github;
-  }
+    @Inject(GITHUB_CRYPTLY_APP) private readonly githubApp: App,
+    @Inject(GITHUB_CONFIG) private readonly githubConfig: EnvConfig['github'],
+  ) {}
 
   private async getInstallationOctokit(installationId: number): Promise<Octokit> {
     return this.githubApp.getInstallationOctokit(installationId);

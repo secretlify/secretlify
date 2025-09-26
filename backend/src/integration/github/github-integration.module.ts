@@ -6,10 +6,15 @@ import { GithubIntegrationReadModule } from 'src/integration/github/read/github-
 import { GithubIntegrationWriteModule } from 'src/integration/github/write/github-integration-write.module';
 import { App } from 'octokit';
 
-import { GithubCryptlyApp } from 'src/shared/constants/symbol';
+import {
+  GITHUB_CONFIG,
+  GITHUB_CRYPTLY_APP,
+} from 'src/integration/github/github-integration.constants';
 import { getEnvConfig } from 'src/shared/config/env-config';
 import { ProjectReadModule } from 'src/project/read/project-read.module';
 import { ProjectWriteModule } from 'src/project/write/project-write.module';
+
+const githubConfig = getEnvConfig().github;
 
 @Module({
   imports: [
@@ -23,15 +28,15 @@ import { ProjectWriteModule } from 'src/project/write/project-write.module';
     GithubIntegrationService,
     GithubClient,
     {
-      provide: GithubCryptlyApp,
-      useFactory: () => {
-        const config = getEnvConfig().github;
-
-        return new App({
-          appId: config.app.id,
-          privateKey: config.app.privateKey,
-        });
-      },
+      provide: GITHUB_CRYPTLY_APP,
+      useValue: new App({
+        appId: githubConfig.app.id,
+        privateKey: githubConfig.app.privateKey,
+      }),
+    },
+    {
+      provide: GITHUB_CONFIG,
+      useValue: githubConfig,
     },
   ],
   exports: [GithubIntegrationService],
