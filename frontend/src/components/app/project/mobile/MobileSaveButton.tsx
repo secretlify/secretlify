@@ -1,12 +1,12 @@
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { cn } from "@/lib/utils";
 import { useActions, useValues } from "kea";
 import { motion } from "motion/react";
 import posthog from "posthog-js";
 
 export function MobileSaveButton() {
-  const { isSubmitting, isEditorDirty } = useValues(projectLogic);
-  const { updateProjectContent } = useActions(projectLogic);
+  const { isSubmitting, isEditorDirty } = useValues(projectTileLogic);
+  const { updateProjectContent } = useActions(projectTileLogic);
 
   const update = () => {
     posthog.capture("update_buttom_clicked");

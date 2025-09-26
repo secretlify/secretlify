@@ -1,6 +1,6 @@
 import { cn, getRelativeTime } from "@/lib/utils";
 import { useValues, useActions } from "kea";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { DiffEditor } from "@/components/app/project/DiffEditor";
 import { useEffect, useState } from "react";
 
@@ -9,8 +9,8 @@ const DEFAULT_AVATAR =
 
 export function MobileHistoryView() {
   const { patches, selectedHistoryChangeId, projectVersionsLoading } =
-    useValues(projectLogic);
-  const { selectHistoryChange } = useActions(projectLogic);
+    useValues(projectTileLogic);
+  const { selectHistoryChange } = useActions(projectTileLogic);
 
   const [, setRefreshKey] = useState(0);
 

@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useProjects } from "@/lib/hooks/useProjects";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { IconArrowLeft, IconHistory, IconShare } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -32,10 +32,10 @@ export function MobileProjectTile() {
     isSubmitting,
     isEditorDirty,
     inputValue,
-  } = useValues(projectLogic);
+  } = useValues(projectTileLogic);
   const { projects } = useValues(projectsLogic);
   const { activeProject } = useProjects();
-  const { updateProjectContent, setInputValue } = useActions(projectLogic);
+  const { updateProjectContent, setInputValue } = useActions(projectTileLogic);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -137,7 +137,7 @@ function MobileProjectHeader({
   isShowingHistory: boolean;
   projectData: any;
 }) {
-  const { toggleHistoryView } = useActions(projectLogic);
+  const { toggleHistoryView } = useActions(projectTileLogic);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 

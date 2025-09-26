@@ -1,4 +1,4 @@
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { cn } from "@/lib/utils";
 import { useActions, useValues } from "kea";
 import { CommandIcon } from "lucide-react";
@@ -7,8 +7,8 @@ import posthog from "posthog-js";
 import { useState } from "react";
 
 export function UpdateButton() {
-  const { isSubmitting, isEditorDirty } = useValues(projectLogic);
-  const { updateProjectContent } = useActions(projectLogic);
+  const { isSubmitting, isEditorDirty } = useValues(projectTileLogic);
+  const { updateProjectContent } = useActions(projectTileLogic);
 
   const [isHovered, setIsHovered] = useState(false);
 

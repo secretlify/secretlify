@@ -17,7 +17,7 @@ import {
   type RemoveMemberDto,
 } from "../api/projects.api";
 import { projectsLogic } from "./projectsLogic";
-import { projectLogic } from "./projectLogic";
+import { projectTileLogic } from "./projectLogic";
 import { authLogic } from "./authLogic";
 
 export interface ProjectSettingsLogicProps {
@@ -36,7 +36,7 @@ export const projectSettingsLogic = kea<projectSettingsLogicType>([
     actions: [
       projectsLogic,
       ["loadProjects"],
-      projectLogic,
+      projectTileLogic,
       ["loadProjectData"],
     ],
   }),

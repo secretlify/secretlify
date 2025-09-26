@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { ProjectMemberRole } from "@/lib/api/projects.api";
 import { authLogic } from "@/lib/logics/authLogic";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 import { IconEdit, IconTrash, IconUserMinus } from "@tabler/icons-react";
 import { useActions, useAsyncActions, useValues } from "kea";
@@ -20,7 +20,7 @@ interface ProjectSettingsDialogProps {
 }
 
 function RenameProjectSection() {
-  const { projectData, currentUserRole } = useValues(projectLogic);
+  const { projectData, currentUserRole } = useValues(projectTileLogic);
   const { jwtToken } = useValues(authLogic);
   const { updateProjectLoading } = useValues(projectSettingsLogic);
 
@@ -137,7 +137,7 @@ function RenameProjectSection() {
 function DangerZoneSection() {
   const { deleteProjectLoading } = useValues(projectSettingsLogic);
 
-  const { projectData } = useValues(projectLogic);
+  const { projectData } = useValues(projectTileLogic);
   const { userData } = useValues(authLogic);
   const { deleteProject, removeMember } = useActions(projectSettingsLogic);
   const [isLoading, setIsLoading] = useState(false);
@@ -236,7 +236,7 @@ export function ProjectSettingsDialog({
   open,
   onOpenChange,
 }: ProjectSettingsDialogProps) {
-  const { projectData } = useValues(projectLogic);
+  const { projectData } = useValues(projectTileLogic);
 
   if (!projectData) {
     return null;

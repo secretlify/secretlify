@@ -17,7 +17,7 @@ import type { Invitation } from "@/lib/api/invitations.api";
 import { ProjectMemberRole, type ProjectMember } from "@/lib/api/projects.api";
 import { authLogic } from "@/lib/logics/authLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 import { getRelativeTime } from "@/lib/utils";
 import {
@@ -53,7 +53,7 @@ function MemberItem({
 
   const { userData } = useValues(authLogic);
 
-  const { currentUserRole } = useValues(projectLogic);
+  const { currentUserRole } = useValues(projectTileLogic);
 
   const canEditRole = useMemo(() => {
     // Can't edit your own role
@@ -193,7 +193,7 @@ function MemberItem({
 }
 
 function MembersSection() {
-  const { projectData } = useValues(projectLogic);
+  const { projectData } = useValues(projectTileLogic);
 
   if (!projectData) return null;
 
@@ -281,7 +281,7 @@ function ActiveInviteLinkItem({ invitation }: { invitation: Invitation }) {
 }
 
 function ActiveInviteLinksSection() {
-  const { projectData, userData } = useValues(projectLogic);
+  const { projectData, userData } = useValues(projectTileLogic);
   const { invitations, invitationsLoading } = useValues(invitationsLogic);
   const { loadInvitations } = useActions(invitationsLogic);
 
@@ -355,7 +355,7 @@ function ActiveInviteLinksSection() {
 }
 
 function GenerateNewInviteLinkSection() {
-  const { projectData, userData } = useValues(projectLogic);
+  const { projectData, userData } = useValues(projectTileLogic);
   const { createInvitation } = useAsyncActions(invitationsLogic);
   const [passphrase, setPassphrase] = useState("");
   const [showPassphrase, setShowPassphrase] = useState(false);
@@ -488,7 +488,7 @@ export function ProjectAccessDialog({
   open,
   onOpenChange,
 }: ProjectAccessDialogProps) {
-  const { projectData } = useValues(projectLogic);
+  const { projectData } = useValues(projectTileLogic);
   const { invitationsLoading } = useValues(invitationsLogic);
 
   if (!projectData) {

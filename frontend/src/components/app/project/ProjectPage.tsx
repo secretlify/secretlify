@@ -2,7 +2,7 @@ import { DesktopProjectView } from "@/components/app/project/desktop/DesktopProj
 import { MobileProjectView } from "@/components/app/project/mobile/MobileProjectView";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { BindLogic, useValues } from "kea";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { useEffect, useState } from "react";
 import { authLogic } from "@/lib/logics/authLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
@@ -10,6 +10,7 @@ import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { integrationsLogic } from "@/lib/logics/integrationsLogic";
+import { projectDataLogic } from "@/lib/logics/projectDataLogic";
 
 export function ProjectPage() {
   const { projects } = useValues(projectsLogic);
@@ -41,11 +42,13 @@ export function ProjectPage() {
   }, [projects, activeProject]);
 
   return (
-    <BindLogic logic={projectLogic} props={{ projectId }}>
+    <BindLogic logic={projectTileLogic} props={{ projectId }}>
       <BindLogic logic={invitationsLogic} props={{ projectId }}>
         <BindLogic logic={projectSettingsLogic} props={{ projectId }}>
           <BindLogic logic={integrationsLogic} props={{ projectId }}>
-            <ProjectPageContent />
+            <BindLogic logic={projectDataLogic} props={{ projectId }}>
+              <ProjectPageContent />
+            </BindLogic>
           </BindLogic>
         </BindLogic>
       </BindLogic>

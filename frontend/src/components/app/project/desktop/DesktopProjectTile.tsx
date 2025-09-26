@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authLogic } from "@/lib/logics/authLogic";
 import { commonLogic } from "@/lib/logics/commonLogic";
-import { projectLogic } from "@/lib/logics/projectLogic";
+import { projectDataLogic } from "@/lib/logics/projectDataLogic";
+import { projectTileLogic } from "@/lib/logics/projectLogic";
 import { getRelativeTime } from "@/lib/utils";
 import {
   IconArrowLeft,
   IconBrandGithub,
   IconHistory,
-  IconLink,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
@@ -23,16 +23,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
 export function DesktopProjectTile() {
-  const {
-    projectData,
-    isShowingHistory,
-    isSubmitting,
-    isEditorDirty,
-    inputValue,
-    lastEditAuthor,
-  } = useValues(projectLogic);
+  const { isShowingHistory, isSubmitting, isEditorDirty, inputValue } =
+    useValues(projectTileLogic);
+
+  const { projectData, lastEditAuthor } = useValues(projectDataLogic);
+
   const { userData } = useValues(authLogic);
-  const { updateProjectContent, setInputValue } = useActions(projectLogic);
+  const { updateProjectContent, setInputValue } = useActions(projectTileLogic);
   const [_currentTime, setCurrentTime] = useState(Date.now()); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const changedBy = useMemo(() => {
@@ -137,8 +134,8 @@ export function DesktopProjectTile() {
 }
 
 function ProjectHeader() {
-  const { projectData, isShowingHistory } = useValues(projectLogic);
-  const { toggleHistoryView } = useActions(projectLogic);
+  const { projectData, isShowingHistory } = useValues(projectTileLogic);
+  const { toggleHistoryView } = useActions(projectTileLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
@@ -289,8 +286,8 @@ function ProjectHeader() {
 }
 
 function ProjectHeaderSkeleton() {
-  const { isShowingHistory } = useValues(projectLogic);
-  const { toggleHistoryView } = useActions(projectLogic);
+  const { isShowingHistory } = useValues(projectTileLogic);
+  const { toggleHistoryView } = useActions(projectTileLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);

@@ -12,7 +12,7 @@ import {
 
 import type { integrationsLogicType } from "./integrationsLogicType";
 import { authLogic } from "./authLogic";
-import { projectLogic, type DecryptedProject } from "./projectLogic";
+import { projectTileLogic, type DecryptedProject } from "./projectLogic";
 import { loaders } from "kea-loaders";
 import {
   IntegrationsApi,
@@ -34,8 +34,8 @@ export const integrationsLogic = kea<integrationsLogicType>([
   key((props) => props.projectId),
 
   connect({
-    values: [authLogic, ["jwtToken"], projectLogic, ["projectData"]],
-    actions: [projectLogic, ["loadProjectData"]],
+    values: [authLogic, ["jwtToken"], projectTileLogic, ["projectData"]],
+    actions: [projectTileLogic, ["loadProjectData"]],
   }),
 
   actions({
