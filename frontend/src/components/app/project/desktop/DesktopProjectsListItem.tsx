@@ -1,10 +1,6 @@
-import { type Project, ProjectsApi } from "@/lib/api/projects.api";
-import { authLogic } from "@/lib/logics/authLogic";
-import { projectsLogic } from "@/lib/logics/projectsLogic";
+import { type Project } from "@/lib/api/projects.api";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { useActions, useValues } from "kea";
-import { useState } from "react";
 
 interface DesktopProjectsListItemProps {
   project: Project;
@@ -15,21 +11,6 @@ export function DesktopProjectsListItem({
   project,
   isActive,
 }: DesktopProjectsListItemProps) {
-  const { jwtToken } = useValues(authLogic);
-  const { loadProjects } = useActions(projectsLogic);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const onDelete = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (isDeleting) return;
-    setIsDeleting(true);
-    await ProjectsApi.deleteProject(jwtToken!, project.id);
-    await loadProjects();
-  };
-
   return (
     <div
       className={cn(
