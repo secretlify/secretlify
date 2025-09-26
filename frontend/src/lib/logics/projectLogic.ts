@@ -10,20 +10,20 @@ import {
   selectors,
 } from "kea";
 
-import type { projectLogicType } from "./projectLogicType";
+import { createPatch } from "diff";
 import { loaders } from "kea-loaders";
-import { keyLogic } from "./keyLogic";
-import { authLogic } from "./authLogic";
-import { SymmetricCrypto } from "../crypto/crypto.symmetric";
-import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
+import { subscriptions } from "kea-subscriptions";
 import {
   ProjectsApi,
   type DecryptedVersion,
   type ProjectMember,
 } from "../api/projects.api";
-import { subscriptions } from "kea-subscriptions";
+import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
+import { SymmetricCrypto } from "../crypto/crypto.symmetric";
+import { authLogic } from "./authLogic";
+import { keyLogic } from "./keyLogic";
+import type { projectLogicType } from "./projectLogicType";
 import { projectsLogic } from "./projectsLogic";
-import { createPatch } from "diff";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -267,6 +267,11 @@ export const projectLogic = kea<projectLogicType>([
   })),
 
   subscriptions(({ actions }) => ({
+    privateKeyDecrypted: (privateKeyDecrypted) => {
+      if (privateKeyDecrypted) {
+        actions.loadProjectData();
+      }
+    },
     projects: (newProjects) => {
       if (!newProjects || newProjects.length === 0) {
         return;
