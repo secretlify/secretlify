@@ -29,7 +29,6 @@ export interface EnvConfig {
     app: {
       id: string;
       privateKey: string;
-      organizationName: string;
     };
   };
 }
@@ -68,7 +67,6 @@ export const EnvConfigs: EnvConfigs = {
       app: {
         id: process.env.GITHUB_CRYPTLY_APP_ID!,
         privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
-        organizationName: process.env.GITHUB_CRYPTLY_APP_ORGANIZATION_NAME!,
       },
     },
   },
@@ -100,7 +98,6 @@ export const EnvConfigs: EnvConfigs = {
       app: {
         id: process.env.GITHUB_CRYPTLY_APP_ID!,
         privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
-        organizationName: process.env.GITHUB_CRYPTLY_APP_ORGANIZATION_NAME!,
       },
     },
   },
