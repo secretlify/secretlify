@@ -1,15 +1,18 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
-import { CreateAccessTokenResponseDto } from 'src/integration/github/dto/create-access-token.dto';
+import {
+  CreateAccessTokenBodyDto,
+  CreateAccessTokenResponseDto,
+} from 'src/integration/github/dto/create-access-token.dto';
 import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
 
 @Controller('')
-@ApiTags('Github')
+@ApiTags('Github Integration')
 @ApiBearerAuth()
 export class GithubIntegrationController {
   public constructor(private readonly githubIntegrationService: GithubIntegrationService) {}
@@ -54,10 +57,9 @@ export class GithubIntegrationController {
     return this.githubIntegrationService.getProjectIntegrations(projectId);
   }
 
-  @Post('/access-token')
-  @ApiResponse({ type: CreateAccessTokenResponseDto })
+  @Post('/integrations/github/access-token')
   public async createAccessToken(
-    @Body() body: { installationId: number },
+    @Body() body: CreateAccessTokenBodyDto,
   ): Promise<CreateAccessTokenResponseDto> {
     return this.githubIntegrationService.createAccessToken(body.installationId);
   }

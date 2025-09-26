@@ -1,4 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsPositive } from 'class-validator';
+
+export class CreateAccessTokenBodyDto {
+  @ApiProperty()
+  @IsInt()
+  @IsPositive()
+  public installationId: number;
+}
 
 export class CreateAccessTokenResponseDto {
   @ApiProperty()

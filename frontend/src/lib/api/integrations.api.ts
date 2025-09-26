@@ -118,7 +118,7 @@ export class IntegrationsApi {
     jwtToken: string,
     dto: GetInstallationAccessTokenDto
   ): Promise<string> {
-    const response = await axios.post<{ token: string }>(`/access-token`, dto, {
+    const response = await axios.post<{ token: string }>(`/integrations/github/access-token`, dto, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
 

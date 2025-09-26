@@ -22,7 +22,7 @@ import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
 import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
-import { IntegrationCoreModule } from '../../src/integration/core/integration.core.module';
+import { GithubIntegrationModule } from '../../src/integration/github/github-integration.module';
 
 export interface TestApp {
   app: INestApplication;
@@ -47,7 +47,7 @@ export async function createTestApp(): Promise<TestApp> {
     imports: [
       rootMongooseTestModule(),
       UserCoreModule,
-      IntegrationCoreModule,
+      GithubIntegrationModule,
       ProjectCoreModule,
       InvitationCoreModule,
       ScheduleModule.forRoot(),
