@@ -10,8 +10,6 @@ type GithubInstallation = Endpoints['GET /app/installations/{installation_id}'][
 type GithubRepository = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
 type CreateAccessToken =
   Endpoints['POST /app/installations/{installation_id}/access_tokens']['response']['data'];
-type GithubAppOrganizationInstallation =
-  Endpoints['GET /orgs/{org}/installation']['response']['data'];
 type RepositoryPublicKey =
   Endpoints['GET /repos/{owner}/{repo}/actions/secrets/public-key']['response']['data'];
 
@@ -77,15 +75,6 @@ export class GithubClient {
     });
   }
 
-  public async getInstallationId(): Promise<number> {
-    const response: OctokitResponse<GithubAppOrganizationInstallation> =
-      await this.githubApp.octokit.request('GET /orgs/{org}/installation', {
-        org: this.githubConfig.app.organizationName,
-      });
-
-    return response.data.id;
-  }
-
   public async getAccessibleRepositories(installationId: number): Promise<GithubRepoDto[]> {
     const octokit = await this.getInstallationOctokit(installationId);
     const repositories = await octokit.paginate('GET /installation/repositories', {
@@ -109,7 +98,6 @@ export class GithubClient {
   }
 
   public async createAccessToken(installationId: number): Promise<AccessTokenResponseDto> {
-    // const installationId = await this.getInstallationId();
     const response: OctokitResponse<CreateAccessToken> = await this.githubApp.octokit.request(
       'POST /app/installations/{installation_id}/access_tokens',
       { installation_id: installationId },

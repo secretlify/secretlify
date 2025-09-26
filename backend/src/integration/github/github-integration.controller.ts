@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
 import { GithubIntegrationService } from 'src/integration/github/github-integration.service';
@@ -10,6 +10,8 @@ import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-gi
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
 import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
 import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
+import { ProjectAdminGuard } from 'src/project/core/guards/project-admin.guard';
+import { ProjectMemberGuard } from 'src/project/core/guards/project-member.guard';
 
 @Controller('')
 @ApiTags('Github Integration')
@@ -18,6 +20,7 @@ export class GithubIntegrationController {
   public constructor(private readonly githubIntegrationService: GithubIntegrationService) {}
 
   @Get('/integrations/github/installations/:installationId/repositories')
+  // @UseGuards(ProjectMemberGuard) // todo: add projectId
   public async getAvailableRepos(
     @Param('installationId') installationId: number,
   ): Promise<AccessibleRepositoryDto[]> {
@@ -25,6 +28,7 @@ export class GithubIntegrationController {
   }
 
   @Get('/integrations/github/installations/:installationId')
+  // @UseGuards(ProjectMemberGuard) // todo: add projectId
   public async getInstallationById(
     @Param('installationId') installationId: number,
   ): Promise<GetGithubInstallationDto> {
@@ -32,6 +36,7 @@ export class GithubIntegrationController {
   }
 
   @Post('/integrations/github')
+  @UseGuards(ProjectAdminGuard)
   public async createIntegration(
     @Body() body: CreateGithubIntegrationDto,
   ): Promise<GithubIntegrationSerialized> {
@@ -40,17 +45,20 @@ export class GithubIntegrationController {
 
   @Delete('/projects/:projectId/integrations/github/installations')
   @HttpCode(204)
+  @UseGuards(ProjectAdminGuard)
   public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
     await this.githubIntegrationService.deleteInstallation(projectId);
   }
 
   @Delete('integrations/github/:integrationId')
   @HttpCode(204)
+  // @UseGuards(ProjectAdminGuard) // todo: add projectId
   public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
     await this.githubIntegrationService.deleteIntegration(integrationId);
   }
 
   @Get('/projects/:projectId/integrations/github')
+  @UseGuards(ProjectAdminGuard)
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,
   ): Promise<GetGithubIntegrationsDto[]> {
@@ -58,6 +66,7 @@ export class GithubIntegrationController {
   }
 
   @Post('/integrations/github/access-token')
+  // @UseGuards(ProjectMemberGuard) // todo: add projectId
   public async createAccessToken(
     @Body() body: CreateAccessTokenBodyDto,
   ): Promise<CreateAccessTokenResponseDto> {

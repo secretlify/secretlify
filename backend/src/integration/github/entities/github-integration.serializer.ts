@@ -3,7 +3,6 @@ import {
   GithubIntegrationSerialized,
 } from './github-integration.interface';
 import { GithubIntegrationEntity } from 'src/integration/github/entities/github-integration.entity';
-import { IntegrationType } from 'src/integration/core/enums/integration-type.enum';
 
 export class GithubIntegrationSerializer {
   public static normalize(entity: GithubIntegrationEntity): GithubIntegrationNormalized {

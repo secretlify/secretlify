@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from 'src/shared/types/role.enum';
 import { Branded } from '../../../shared/types/branded';
 import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
-import { Integrations } from './project.entity';
 
 export type EnvName = Branded<string, 'EnvName'>;
 

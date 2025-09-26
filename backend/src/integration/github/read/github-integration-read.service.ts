@@ -33,17 +33,4 @@ export class GithubIntegrationReadService {
 
     return integrations.map((integration) => GithubIntegrationSerializer.normalize(integration));
   }
-
-  public async findByRepositoryId(repositoryId: number): Promise<GithubIntegrationNormalized> {
-    const integration = await this.githubIntegrationModel
-      .findOne({ repositoryId })
-      .lean<GithubIntegrationEntity>()
-      .exec();
-
-    if (!integration) {
-      throw new NotFoundException(`Integration not found`);
-    }
-
-    return GithubIntegrationSerializer.normalize(integration);
-  }
 }
