@@ -56,7 +56,9 @@ export class GithubIntegrationController {
 
   @Post('/access-token')
   @ApiResponse({ type: CreateAccessTokenResponseDto })
-  public async createAccessToken(): Promise<CreateAccessTokenResponseDto> {
-    return this.githubIntegrationService.createAccessToken();
+  public async createAccessToken(
+    @Body() body: { installationId: number },
+  ): Promise<CreateAccessTokenResponseDto> {
+    return this.githubIntegrationService.createAccessToken(body.installationId);
   }
 }

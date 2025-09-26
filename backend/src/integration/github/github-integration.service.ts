@@ -23,8 +23,8 @@ export class GithubIntegrationService {
     private readonly projectWriteService: ProjectWriteService,
   ) {}
 
-  public async createAccessToken() {
-    return this.client.createAccessToken();
+  public async createAccessToken(installationId: number) {
+    return this.client.createAccessToken(installationId);
   }
 
   public async createIntegration({

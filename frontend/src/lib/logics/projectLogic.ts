@@ -232,6 +232,8 @@ export const projectLogic = kea<projectLogicType>([
 
       console.log("Token", githubToken);
 
+      console.log("EncryptedValue", encrypted);
+
       await IntegrationsApi.pushSecret(githubToken, {
         owner: "arturwita",
         repo: "jamaica",

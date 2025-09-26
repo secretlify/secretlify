@@ -108,8 +108,8 @@ export class GithubClient {
     return this.mapRepository(response.data);
   }
 
-  public async createAccessToken(): Promise<AccessTokenResponseDto> {
-    const installationId = await this.getInstallationId();
+  public async createAccessToken(installationId: number): Promise<AccessTokenResponseDto> {
+    // const installationId = await this.getInstallationId();
     const response: OctokitResponse<CreateAccessToken> = await this.githubApp.octokit.request(
       'POST /app/installations/{installation_id}/access_tokens',
       { installation_id: installationId },
