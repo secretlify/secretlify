@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
@@ -149,6 +150,8 @@ export class ProjectCoreController {
       new Types.ObjectId(projectId),
     );
 
+    this.requireIsAllowedUpdate(project.members.get(userId)!, body);
+
     if (body.encryptedSecrets) {
       const author = membersHydrated.find((m) => m.id === userId);
       this.eventEmitter.emit(
@@ -162,6 +165,21 @@ export class ProjectCoreController {
       membersHydrated,
       latestVersion.encryptedSecrets,
     );
+  }
+
+  private requireIsAllowedUpdate(userRole: Role, body: UpdateProjectBody): void {
+    const allowedUpdates = {
+      [Role.Member]: ['encryptedSecretsKeys', 'encryptedSecrets'],
+      [Role.Admin]: ['encryptedSecretsKeys', 'encryptedSecrets'],
+      [Role.Owner]: ['name', 'encryptedSecretsKeys', 'encryptedSecrets'],
+    };
+
+    const isForbidden =
+      Object.keys(body).filter((key) => !allowedUpdates[userRole].includes(key)).length > 0;
+
+    if (isForbidden) {
+      throw new ForbiddenException('You are not allowed to perform this action');
+    }
   }
 
   @Delete('projects/:projectId/members/:memberId')

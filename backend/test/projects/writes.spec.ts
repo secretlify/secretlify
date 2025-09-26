@@ -133,14 +133,20 @@ describe('ProjectCoreController (writes)', () => {
         .patch(`/projects/${project.id}`)
         .set('authorization', `Bearer ${memberToken}`)
         .send({
-          name: 'new-name-by-member',
+          encryptedSecretsKeys: {
+            [member.id]: 'new-passphrase',
+          },
+          encryptedSecrets: 'new-secrets',
         });
 
       // then
       expect(response.status).toEqual(200);
       expect(response.body).toMatchObject({
         id: project.id,
-        name: 'new-name-by-member',
+        encryptedSecretsKeys: {
+          [member.id]: 'new-passphrase',
+        },
+        encryptedSecrets: 'new-secrets',
       });
     });
 
@@ -162,6 +168,31 @@ describe('ProjectCoreController (writes)', () => {
 
       // then
       expect(response.status).toEqual(403);
+    });
+
+    it('does not update project name when member or admin', async () => {
+      // given
+      const { token: adminToken, project } = await bootstrap.utils.projectUtils.setupAdmin();
+      const { user: member, token: memberToken } = await bootstrap.utils.userUtils.createDefault({
+        email: 'member@test.com',
+      });
+      await bootstrap.utils.projectUtils.addMemberToProject(project.id, member.id);
+
+      const memberResponse = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${memberToken}`)
+        .send({ name: 'new-name' });
+
+      // then
+      expect(memberResponse.status).toEqual(403);
+
+      const adminResponse = await request(bootstrap.app.getHttpServer())
+        .patch(`/projects/${project.id}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({ name: 'new-name' });
+
+      // then
+      expect(adminResponse.status).toEqual(403);
     });
 
     it('does not update when not logged in', async () => {
