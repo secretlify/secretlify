@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="15 15 70 70" width="100" height="100">
+  <style>
+    /* Light mode */
+    :root { color: #000; }
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root { color: #fff; }
+    }
+  </style>
+
+  <!-- C (unchanged) -->
+  <path d="M74.5,29.4
+           A32,32 0 1 0 74.5,70.6
+           L65.3,62.9
+           A20,20 0 1 1 65.3,37.1
+           Z" fill="currentColor"/>
+
+  <!-- Key: flipped horizontally; ring centered at (50,50) -->
+  <!-- Using translate(120,0) scale(-1,1): ring original cx=70 -> 120-70 = 50 -->
+  <g transform="translate(120,0) scale(-1,1)">
+    <!-- Horizontal shaft -->
+    <path d="M60,47 H44
+             a4,4 0 0 0 -4,4
+             a4,4 0 0 0 4,4
+             H60 Z" fill="currentColor"/>
+    <!-- Vertical tooth (your latest proportions) -->
+    <rect x="50" y="49" width="8" height="9" rx="2" ry="2" fill="currentColor"/>
+    <!-- Ring (now centered with the C) -->
+    <circle cx="70" cy="50" r="8" fill="none" stroke="currentColor" stroke-width="6"/>
+  </g>
+</svg>
