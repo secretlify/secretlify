@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Waves from "@/components/Waves";
 import { authLogic } from "@/lib/logics/authLogic";
 import { useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
@@ -36,7 +37,17 @@ export function MePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="absolute inset-0 z-0 opacity-20">
+        <Waves
+          lineColor="rgba(50, 50, 50, 1)"
+          backgroundColor="transparent"
+          waveSpeedX={0.01}
+          waveSpeedY={0.005}
+          waveAmpX={25}
+          waveAmpY={25}
+        />
+      </div>
+      <div className="w-full max-w-md z-10">
         <motion.div
           className="bg-card rounded-xl shadow-lg border border-border p-8"
           variants={containerVariants}
