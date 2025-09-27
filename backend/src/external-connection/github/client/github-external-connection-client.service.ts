@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoints, OctokitResponse } from '@octokit/types';
 import { App } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 import { GithubRepository } from './dto/github-repository.dto';
 import { GithubInstallationLiveData } from './dto/github-installation.dto';
-import { GITHUB_CRYPTLY_APP } from './github-external-connection-client.module';
 import { getEnvConfig } from 'src/shared/config/env-config';
 
 type OctokitGithubInstallation =
