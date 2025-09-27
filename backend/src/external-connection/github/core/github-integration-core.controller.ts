@@ -13,6 +13,7 @@ import { GithubIntegrationSerialized } from './entities/github-integration.inter
 import { GithubIntegrationReadService } from '../read/github-integration-read.service';
 import { GithubIntegrationWriteService } from '../write/github-integration-write.service';
 import { GithubIntegrationSerializer } from './entities/github-integration.serializer';
+import { TokenResponse } from 'src/shared/responses/token.response';
 
 @Controller('')
 @ApiTags('Github external connections')
@@ -83,8 +84,11 @@ export class GithubExternalConnectionCoreController {
     return installations.map((inst) => GithubInstallationSerializer.serialize(inst));
   }
 
+  @ApiResponse({ type: GithubIntegrationSerialized })
   @Post('/external-connections/github/installations')
-  public async createIntegration(@Body() body: CreateGithubIntegrationBody): Promise<any> {
+  public async createIntegration(
+    @Body() body: CreateGithubIntegrationBody,
+  ): Promise<GithubIntegrationSerialized> {
     const existingIntegration =
       await this.integrationReadService.findByProjectIdAndInstallationEntityId({
         projectId: body.projectId,
@@ -114,8 +118,11 @@ export class GithubExternalConnectionCoreController {
       repositoryPublicKey: githubRepositoryKey.key,
       repositoryPublicKeyId: githubRepositoryKey.keyId,
     });
+
+    return GithubIntegrationSerializer.serialize(integration);
   }
 
+  @ApiResponse({ type: GithubIntegrationSerialized, isArray: true })
   @Get('/projects/:projectId/integrations/github')
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,
@@ -124,6 +131,21 @@ export class GithubExternalConnectionCoreController {
 
     return integrations.map(GithubIntegrationSerializer.serialize);
   }
+
+  @ApiResponse({ type: TokenResponse })
+  @Get('/external-connections/github/installations/:installationEntityId')
+  public async getInstallationAccessToken(
+    @Param('installationEntityId') installationEntityId: string,
+  ): Promise<any> {
+    const installation = await this.installationReadService.findById(installationEntityId);
+
+    const token = await this.client.getInstallationAccessToken(installation.githubInstallationId);
+
+    return {
+      token,
+    };
+  }
+
   //   @Delete('/projects/:projectId/integrations/github/installations')
   //   @UseGuards(ProjectAdminGuard)
   //   public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
@@ -133,13 +155,5 @@ export class GithubExternalConnectionCoreController {
   //   @Delete('integrations/github/:integrationId')
   //   public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
   //     await this.githubIntegrationService.deleteIntegration(integrationId);
-  //   }
-
-  //   @Post('/integrations/github/access-token')
-  //   // @UseGuards(ProjectMemberGuard) // todo: add projectId
-  //   public async createAccessToken(
-  //     @Body() body: CreateAccessTokenBodyDto,
-  //   ): Promise<CreateAccessTokenResponseDto> {
-  //     return this.githubIntegrationService.createAccessToken(body.installationId);
   //   }
 }
