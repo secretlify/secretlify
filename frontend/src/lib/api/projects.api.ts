@@ -133,11 +133,15 @@ export class ProjectsApi {
     jwtToken: string,
     dto: UpdateProjectContentDto
   ): Promise<void> {
-    await axios.patch(`/projects/${dto.projectId}`, dto, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    });
+    await axios.patch(
+      `/projects/${dto.projectId}`,
+      { encryptedSecrets: dto.encryptedSecrets },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
   }
 
   public static async updateProject(
