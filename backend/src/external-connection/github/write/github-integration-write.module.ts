@@ -4,7 +4,7 @@ import { GithubIntegrationWriteService } from './github-integration-write.servic
 import {
   GithubIntegrationEntity,
   GithubIntegrationSchema,
-} from 'src/integration/github/entities/github-integration.entity';
+} from '../core/entities/github-integration.entity';
 
 @Module({
   imports: [

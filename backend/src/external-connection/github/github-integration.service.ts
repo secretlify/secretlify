@@ -1,21 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GithubClient } from 'src/integration/github/github.client';
-import { GithubIntegrationWriteService } from 'src/integration/github/write/github-integration-write.service';
-import { GithubIntegrationReadService } from 'src/integration/github/read/github-integration-read.service';
+import { GithubIntegrationClient } from 'src/external-connection/github/client/github-integration-client.service';
+import { GithubIntegrationWriteService } from 'src/external-connection/github/write/github-integration-write.service';
+import { GithubIntegrationReadService } from 'src/external-connection/github/read/github-integration-read.service';
 import { Logger } from '@logdash/js-sdk';
-import { AccessibleRepositoryDto } from 'src/integration/github/dto/get-accessible-repositories.dto';
+import { GithubRepositorySerialized } from 'src/integration/github/core/dto/get-accessible-repositories.dto';
 import { ProjectReadService } from 'src/project/read/project-read.service';
 import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
 import { GithubIntegrationSerialized } from 'src/integration/github/entities/github-integration.interface';
-import { CreateGithubIntegrationDto } from 'src/integration/github/dto/create-github-integration.dto';
-import { GetGithubIntegrationsDto } from 'src/integration/github/dto/get-github-integrations.dto';
+import { CreateGithubIntegrationBody } from 'src/external-connection/github/core/dto/create-github-integration.body';
+import { GetGithubIntegrationsDto } from 'src/external-connection/github/core/dto/get-github-integrations.dto';
 import { ProjectWriteService } from 'src/project/write/project-write.service';
-import { GetGithubInstallationDto } from 'src/integration/github/dto/get-github-installation.dto';
+import { GetGithubInstallationDto } from 'src/external-connection/github/core/dto/get-github-installation.dto';
 
 @Injectable()
 export class GithubIntegrationService {
   public constructor(
-    private readonly client: GithubClient,
+    private readonly client: GithubIntegrationClient,
     private readonly logger: Logger,
     private readonly githubIntegrationWriteService: GithubIntegrationWriteService,
     private readonly githubIntegrationReadService: GithubIntegrationReadService,
@@ -24,20 +24,23 @@ export class GithubIntegrationService {
   ) {}
 
   public async createAccessToken(installationId: number) {
-    return this.client.createAccessToken(installationId);
+    return this.client.getInstallationAccessToken(installationId);
   }
 
   public async createIntegration({
     projectId,
     repositoryId,
     installationId,
-  }: CreateGithubIntegrationDto): Promise<GithubIntegrationSerialized> {
-    const repository = await this.client.getRepositoryById({ repositoryId, installationId });
+  }: CreateGithubIntegrationBody): Promise<GithubIntegrationSerialized> {
+    const repository = await this.client.getRepositoryInfoByInstallationIdAndRepositoryId({
+      repositoryId,
+      githubInstallationId: installationId,
+    });
 
     const publicKey = await this.client.getRepositoryPublicKey({
       repositoryName: repository.name,
       owner: repository.owner,
-      installationId,
+      githubInstallationId: installationId,
     });
 
     const integration = await this.githubIntegrationWriteService.create({
@@ -65,9 +68,9 @@ export class GithubIntegrationService {
 
     return Promise.all(
       integrations.map(async (integration) => {
-        const repo = await this.client.getRepositoryById({
+        const repo = await this.client.getRepositoryInfoByInstallationIdAndRepositoryId({
           repositoryId: integration.githubRepositoryId,
-          installationId,
+          githubInstallationId: installationId,
         });
 
         return {
@@ -79,14 +82,13 @@ export class GithubIntegrationService {
           fullName: repo.fullName,
           publicKey: integration.repositoryPublicKey,
           publicKeyId: integration.repositoryPublicKeyId,
-          installationId,
         } satisfies GetGithubIntegrationsDto;
       }),
     );
   }
 
   public async getInstallationById(installationId: number): Promise<GetGithubInstallationDto> {
-    return this.client.getInstallationById(installationId);
+    return this.client.getInstallationByGithubInstallationId(installationId);
   }
 
   public async deleteInstallation(projectId: string): Promise<void> {
@@ -111,7 +113,7 @@ export class GithubIntegrationService {
 
   public async getAccessibleRepositories(
     installationId: number,
-  ): Promise<AccessibleRepositoryDto[]> {
-    return this.client.getAccessibleRepositories(installationId);
+  ): Promise<GithubRepositorySerialized[]> {
+    return this.client.getRepositoriesAvailableForInstallation(installationId);
   }
 }

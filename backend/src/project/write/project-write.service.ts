@@ -21,7 +21,6 @@ export class ProjectWriteService {
       name: dto.name,
       members: new Map([[userId, Role.Owner]]),
       encryptedSecretsKeys: dto.encryptedSecretsKeys,
-      integrations: {},
     });
 
     await this.projectSecretsVersionWriteService.create({
@@ -107,14 +106,6 @@ export class ProjectWriteService {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.encryptedSecretsKeys && {
           encryptedSecretsKeys: dto.encryptedSecretsKeys,
-        }),
-        ...(dto.githubInstallationId && {
-          integrations: { githubInstallationId: dto.githubInstallationId },
-        }),
-      },
-      $unset: {
-        ...(dto.githubInstallationId === null && {
-          'integrations.githubInstallationId': null,
         }),
       },
     };

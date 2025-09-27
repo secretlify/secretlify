@@ -1,17 +1,17 @@
+import { GithubIntegrationEntity } from './github-integration.entity';
 import {
   GithubIntegrationNormalized,
   GithubIntegrationSerialized,
 } from './github-integration.interface';
-import { GithubIntegrationEntity } from 'src/integration/github/entities/github-integration.entity';
 
 export class GithubIntegrationSerializer {
   public static normalize(entity: GithubIntegrationEntity): GithubIntegrationNormalized {
     return {
       id: entity._id.toString(),
-      cryptlyProjectId: entity.cryptlyProjectId.toString(),
+      projectId: entity.projectId.toString(),
       githubRepositoryId: entity.githubRepositoryId,
-      repositoryPublicKey: entity.repositoryPublicKey,
-      repositoryPublicKeyId: entity.repositoryPublicKeyId,
+      githubRepositoryPublicKey: entity.githubRepositoryPublicKey,
+      githubRepositoryPublicKeyId: entity.githubRepositoryPublicKeyId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
@@ -20,10 +20,10 @@ export class GithubIntegrationSerializer {
   public static serialize(normalized: GithubIntegrationNormalized): GithubIntegrationSerialized {
     return {
       id: normalized.id,
-      cryptlyProjectId: normalized.cryptlyProjectId,
+      projectId: normalized.projectId,
       githubRepositoryId: normalized.githubRepositoryId,
-      repositoryPublicKey: normalized.repositoryPublicKey,
-      repositoryPublicKeyId: normalized.repositoryPublicKeyId,
+      githubRepositoryPublicKey: normalized.githubRepositoryPublicKey,
+      githubRepositoryPublicKeyId: normalized.githubRepositoryPublicKeyId,
       createdAt: normalized.createdAt.toISOString(),
       updatedAt: normalized.updatedAt.toISOString(),
     };

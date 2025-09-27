@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 
-export class CreateGithubIntegrationDto {
+export class CreateGithubIntegrationBody {
   @ApiProperty()
   @IsInt()
   @IsPositive()
@@ -10,7 +10,7 @@ export class CreateGithubIntegrationDto {
   @ApiProperty()
   @IsInt()
   @IsPositive()
-  public installationId: number;
+  public installationEntityId: string;
 
   @ApiProperty()
   @IsString()

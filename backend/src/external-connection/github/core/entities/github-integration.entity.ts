@@ -6,16 +6,19 @@ export class GithubIntegrationEntity {
   _id: Types.ObjectId;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'ProjectEntity', required: true })
-  public cryptlyProjectId: Types.ObjectId;
+  public projectId: Types.ObjectId;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'GithubInstallationEntity', required: true })
+  public installationEntityId: Types.ObjectId;
 
   @Prop({ required: true })
   public githubRepositoryId: number;
 
   @Prop({ required: true })
-  public repositoryPublicKey: string;
+  public githubRepositoryPublicKey: string;
 
   @Prop({ required: true })
-  public repositoryPublicKeyId: string;
+  public githubRepositoryPublicKeyId: string;
 
   @Prop()
   public createdAt: Date;

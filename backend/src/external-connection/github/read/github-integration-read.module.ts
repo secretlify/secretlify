@@ -4,7 +4,7 @@ import { GithubIntegrationReadService } from './github-integration-read.service'
 import {
   GithubIntegrationEntity,
   GithubIntegrationSchema,
-} from 'src/integration/github/entities/github-integration.entity';
+} from '../core/entities/github-integration.entity';
 
 @Module({
   imports: [

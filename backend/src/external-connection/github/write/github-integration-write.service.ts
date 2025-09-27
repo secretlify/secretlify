@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { GithubIntegrationEntity } from 'src/integration/github/entities/github-integration.entity';
-import { GithubIntegrationSerializer } from 'src/integration/github/entities/github-integration.serializer';
-import { CreateGithubIntegrationDto } from 'src/integration/github/write/dto/create-github-integration.dto';
-import { GithubIntegrationNormalized } from 'src/integration/github/entities/github-integration.interface';
+import { GithubIntegrationEntity } from '../core/entities/github-integration.entity';
+import { GithubIntegrationNormalized } from '../core/entities/github-integration.interface';
+import { GithubIntegrationSerializer } from '../core/entities/github-integration.serializer';
+import { CreateGithubIntegrationDto } from './dto/create-github-integration.dto';
 
 @Injectable()
 export class GithubIntegrationWriteService {
@@ -15,10 +15,10 @@ export class GithubIntegrationWriteService {
 
   public async create(dto: CreateGithubIntegrationDto): Promise<GithubIntegrationNormalized> {
     const integration = await this.githubIntegrationModel.create({
-      cryptlyProjectId: dto.cryptlyProjectId,
+      projectId: dto.cryptlyProjectId,
       githubRepositoryId: dto.githubRepositoryId,
-      repositoryPublicKey: dto.repositoryPublicKey,
-      repositoryPublicKeyId: dto.repositoryPublicKeyId,
+      githubRepositoryPublicKey: dto.repositoryPublicKey,
+      githubRepositoryPublicKeyId: dto.repositoryPublicKeyId,
     });
 
     return GithubIntegrationSerializer.normalize(integration);
@@ -29,6 +29,6 @@ export class GithubIntegrationWriteService {
   }
 
   public async deleteByProjectId(cryptlyProjectId: string): Promise<void> {
-    await this.githubIntegrationModel.deleteMany({ cryptlyProjectId });
+    await this.githubIntegrationModel.deleteMany({ projectId: cryptlyProjectId });
   }
 }

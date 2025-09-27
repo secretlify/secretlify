@@ -24,11 +24,6 @@ export class ProjectMemberSerialized extends UserPartialSerialized {
   public role: Role;
 }
 
-export class IntegrationsSerialized {
-  @ApiProperty()
-  public githubInstallationId?: number;
-}
-
 export class ProjectSerialized {
   @ApiProperty()
   public id: string;
@@ -50,7 +45,4 @@ export class ProjectSerialized {
 
   @ApiProperty()
   public updatedAt: string;
-
-  @ApiPropertyOptional()
-  public integrations: IntegrationsSerialized;
 }
