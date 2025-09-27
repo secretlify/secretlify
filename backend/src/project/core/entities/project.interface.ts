@@ -5,10 +5,6 @@ import { UserPartialSerialized } from '../../../user/core/entities/user.interfac
 
 export type EnvName = Branded<string, 'EnvName'>;
 
-export class IntegrationsNormalized {
-  public githubInstallationId?: number;
-}
-
 export class ProjectNormalized {
   public id: string;
   public name: string;
@@ -16,7 +12,6 @@ export class ProjectNormalized {
   public encryptedSecretsKeys: Record<string, string>;
   public createdAt: Date;
   public updatedAt: Date;
-  public integrations: IntegrationsNormalized;
 }
 
 export class ProjectMemberSerialized extends UserPartialSerialized {

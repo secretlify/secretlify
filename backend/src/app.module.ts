@@ -12,7 +12,7 @@ import { ProjectCoreModule } from './project/core/project-core.module';
 import { getEnvConfig } from './shared/config/env-config';
 import { LogdashModule } from './shared/logdash/logdash.module';
 import { UserCoreModule } from './user/core/user-core.module';
-import { GithubIntegrationModule } from './external-connection/github/github-integration.module';
+import { GithubExternalConnectionCoreModule } from './external-connection/github/core/github-external-connection-core.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { GithubIntegrationModule } from './external-connection/github/github-int
     GoogleAuthModule,
     GithubAuthModule,
     HealthModule,
-    GithubIntegrationModule,
+    GithubExternalConnectionCoreModule,
   ],
   controllers: [],
   providers: [],

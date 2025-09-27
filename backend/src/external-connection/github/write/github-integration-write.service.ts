@@ -28,6 +28,7 @@ export class GithubIntegrationWriteService {
     await this.githubIntegrationModel.deleteOne({ _id: new Types.ObjectId(integrationId) });
   }
 
+  // todo: very important
   public async deleteByProjectId(cryptlyProjectId: string): Promise<void> {
     await this.githubIntegrationModel.deleteMany({ projectId: cryptlyProjectId });
   }

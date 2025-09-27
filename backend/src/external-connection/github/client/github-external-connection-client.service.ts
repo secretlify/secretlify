@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GITHUB_CRYPTLY_APP } from 'src/external-connection/github/github-integration.constants';
 import { Endpoints, OctokitResponse } from '@octokit/types';
 import { App } from 'octokit';
 import { Octokit } from 'src/shared/types/octokit';
 import { GithubRepository } from './dto/github-repository.dto';
 import { GithubInstallationLiveData } from './dto/github-installation.dto';
+import { GITHUB_CRYPTLY_APP } from './github-external-connection-client.module';
+import { getEnvConfig } from 'src/shared/config/env-config';
 
 type OctokitGithubInstallation =
   Endpoints['GET /app/installations/{installation_id}']['response']['data'];
@@ -25,8 +26,11 @@ export type AccessTokenResponseDto = {
 };
 
 @Injectable()
-export class GithubIntegrationClient {
-  public constructor(@Inject(GITHUB_CRYPTLY_APP) private readonly githubApp: App) {}
+export class GithubExternalConnectionClientService {
+  private githubApp = new App({
+    appId: getEnvConfig().github.app.id,
+    privateKey: getEnvConfig().github.app.privateKey,
+  });
 
   private async getInstallationOctokit(installationId: number): Promise<Octokit> {
     return this.githubApp.getInstallationOctokit(installationId);

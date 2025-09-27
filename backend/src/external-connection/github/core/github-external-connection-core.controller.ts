@@ -1,7 +1,7 @@
-import { Body, ConflictException, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, ConflictException, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubRepositorySerialized } from '../client/dto/github-repository.dto';
-import { GithubIntegrationClient } from '../client/github-integration-client.service';
+import { GithubExternalConnectionClientService } from '../client/github-external-connection-client.service';
 import { CurrentUserId } from 'src/auth/core/decorators/current-user-id.decorator';
 import { GithubInstallationWriteService } from '../write/github-installation-write.service';
 import { GithubInstallationReadService } from '../read/github-installation-read.service';
@@ -20,7 +20,7 @@ import { TokenResponse } from 'src/shared/responses/token.response';
 @ApiBearerAuth()
 export class GithubExternalConnectionCoreController {
   constructor(
-    private readonly client: GithubIntegrationClient,
+    private readonly client: GithubExternalConnectionClientService,
     private readonly installationWriteService: GithubInstallationWriteService,
     private readonly installationReadService: GithubInstallationReadService,
     private readonly integrationReadService: GithubIntegrationReadService,
@@ -146,14 +146,13 @@ export class GithubExternalConnectionCoreController {
     };
   }
 
-  //   @Delete('/projects/:projectId/integrations/github/installations')
-  //   @UseGuards(ProjectAdminGuard)
-  //   public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
-  //     await this.githubIntegrationService.deleteInstallation(projectId);
-  //   }
+  // @Delete('/users/me/external-connections/github/installations')
+  // public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
+  //   await this.githubIntegrationService.deleteInstallation(projectId);
+  // }
 
-  //   @Delete('integrations/github/:integrationId')
-  //   public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
-  //     await this.githubIntegrationService.deleteIntegration(integrationId);
-  //   }
+  @Delete('external-connections/github/integrations/:integrationId')
+  public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
+    await this.integrationWriteService.deleteById(integrationId);
+  }
 }
