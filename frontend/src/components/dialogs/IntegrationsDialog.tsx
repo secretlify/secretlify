@@ -104,8 +104,12 @@ function AddIntegrationSection() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { activeProject } = useProjects();
-  const { installations, repositories, selectedInstallationEntityId } =
-    useValues(integrationsLogic);
+  const {
+    installations,
+    repositories,
+    selectedInstallationEntityId,
+    repositoriesLoading,
+  } = useValues(integrationsLogic);
   const { createIntegration } = useAsyncActions(integrationsLogic);
   const { setSelectedInstallationEntityId } = useActions(integrationsLogic);
   const { setShouldReopenIntegrationsDialog } = useActions(commonLogic);
@@ -146,7 +150,8 @@ function AddIntegrationSection() {
     setSelectedRepository(""); // Reset after successful connection
   };
 
-  const isRepositoryDisabled = !selectedInstallationEntityId;
+  const isRepositoryDisabled =
+    !selectedInstallationEntityId || repositoriesLoading;
 
   return (
     <div className="space-y-4">
@@ -203,7 +208,7 @@ function AddIntegrationSection() {
           }))}
           value={selectedRepository}
           onValueChange={setSelectedRepository}
-          placeholder="Choose repository"
+          placeholder={repositoriesLoading ? "Loading..." : "Choose repository"}
           searchPlaceholder="Search repositories..."
           emptyMessage="No repositories found."
           className="flex-1"
