@@ -66,7 +66,7 @@ describe('GithubExternalConnectionCoreController (integrations)', () => {
       });
     });
 
-    it('returns 409 if integration already exists for the project', async () => {
+    it('returns 409 if integration already exists for the project and repository', async () => {
       const setup = await bootstrap.utils.userUtils.createDefault();
       const project = await bootstrap.utils.projectUtils.createProject(setup.token);
       const installation = await bootstrap.utils.githubExternalConnectionUtils.createInstallation(

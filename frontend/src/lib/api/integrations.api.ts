@@ -171,7 +171,7 @@ export class IntegrationsApi {
     githubJwtToken: string,
     dto: PushSecretDto
   ): Promise<void> {
-    const response = await axios.put(
+    await axios.put(
       `https://api.github.com/repos/${dto.owner}/${dto.repo}/actions/secrets/${dto.secretName}`,
       {
         encrypted_value: dto.encryptedValue,

@@ -1,5 +1,4 @@
 import { IntegrationsApi } from "@/lib/api/integrations.api";
-import { ProjectsApi } from "@/lib/api/projects.api";
 import { authLogic } from "@/lib/logics/authLogic";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useValues } from "kea";

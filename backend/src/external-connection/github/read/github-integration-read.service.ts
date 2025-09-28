@@ -34,12 +34,12 @@ export class GithubIntegrationReadService {
     return integrations.map((integration) => GithubIntegrationSerializer.normalize(integration));
   }
 
-  public async findByProjectIdAndInstallationEntityId(dto: {
+  public async findByProjectIdAndRepositoryId(dto: {
     projectId: string;
-    installationEntityId: string;
+    githubRepositoryId: number;
   }): Promise<GithubIntegrationNormalized | null> {
     const integration = await this.githubIntegrationModel
-      .findOne({ projectId: dto.projectId, installationEntityId: dto.installationEntityId })
+      .findOne({ projectId: dto.projectId, githubRepositoryId: dto.githubRepositoryId })
       .lean<GithubIntegrationEntity>()
       .exec();
 

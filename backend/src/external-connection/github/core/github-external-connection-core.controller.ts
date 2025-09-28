@@ -137,11 +137,10 @@ export class GithubExternalConnectionCoreController {
       throw new ForbiddenException('You are not the owner or admin of this project');
     }
 
-    const existingIntegration =
-      await this.integrationReadService.findByProjectIdAndInstallationEntityId({
-        projectId: body.projectId,
-        installationEntityId: body.installationEntityId,
-      });
+    const existingIntegration = await this.integrationReadService.findByProjectIdAndRepositoryId({
+      projectId: body.projectId,
+      githubRepositoryId: body.repositoryId,
+    });
 
     if (existingIntegration) {
       throw new ConflictException(

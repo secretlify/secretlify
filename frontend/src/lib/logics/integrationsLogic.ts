@@ -50,7 +50,7 @@ export const integrationsLogic = kea<integrationsLogicType>([
     }),
     removeIntegration: (integrationId: string) => ({ integrationId }),
     setRepositories: (repositories: Repository[]) => ({ repositories }),
-    setIntegrations: (integrations: Integration[]) => ({ integrations }),
+    setLocalIntegrations: (integrations: Integration[]) => ({ integrations }),
     setInstallations: (installations: Installation[]) => ({ installations }),
     setSelectedInstallationEntityId: (installationEntityId: string) => ({
       installationEntityId,
@@ -67,7 +67,7 @@ export const integrationsLogic = kea<integrationsLogicType>([
     integrations: [
       [] as Integration[],
       {
-        setIntegrations: (_, { integrations }) => integrations,
+        setLocalIntegrations: (_, { integrations }) => integrations,
       },
     ],
     installation: [
