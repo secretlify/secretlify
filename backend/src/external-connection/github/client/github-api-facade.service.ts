@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { getEnvConfig } from '../../../shared/config/env-config';
+import { sign } from 'jsonwebtoken';
 
 export interface GithubApiInstallation {
   id: number;
@@ -47,7 +48,7 @@ export class GithubApiFacadeService {
       iss: this.config.id,
     };
 
-    return (null as any).sign(payload, this.config.privateKey, { algorithm: 'RS256' });
+    return sign(payload, this.config.privateKey, { algorithm: 'RS256' });
   }
 
   private async getInstallationAccessToken(installationId: number): Promise<string> {

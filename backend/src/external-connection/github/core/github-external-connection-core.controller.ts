@@ -186,11 +186,6 @@ export class GithubExternalConnectionCoreController {
     };
   }
 
-  // @Delete('/users/me/external-connections/github/installations')
-  // public async deleteInstallation(@Param('projectId') projectId: string): Promise<void> {
-  //   await this.githubIntegrationService.deleteInstallation(projectId);
-  // }
-
   @Delete('external-connections/github/integrations/:integrationId')
   public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
     await this.integrationWriteService.deleteById(integrationId);
