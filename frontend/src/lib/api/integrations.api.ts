@@ -30,9 +30,12 @@ export interface CreateIntegrationDto {
 }
 
 export interface Installation {
-  id: number;
-  owner: string;
-  avatar: string;
+  id: string;
+  userId: string;
+  githubInstallationId: number;
+  liveData?: {};
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface GetInstallationAccessTokenDto {
@@ -74,7 +77,7 @@ export class IntegrationsApi {
     projectId: string
   ): Promise<Integration[]> {
     const response = await axios.get<Integration[]>(
-      `/projects/${projectId}/integrations/github`,
+      `/projects/${projectId}/external-connections/github/integrations`,
       { headers: { Authorization: `Bearer ${jwtToken}` } }
     );
 
@@ -88,6 +91,17 @@ export class IntegrationsApi {
     await axios.post<void>(`/integrations/github`, dto, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
+  }
+
+  public static async getInstallationAvailableForUser(
+    jwtToken: string
+  ): Promise<Installation[]> {
+    const response = await axios.get<Installation[]>(
+      `/users/me/external-connections/github/installations`,
+      { headers: { Authorization: `Bearer ${jwtToken}` } }
+    );
+
+    return response.data;
   }
 
   public static async getInstallation(

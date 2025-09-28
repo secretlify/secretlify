@@ -102,14 +102,14 @@ export const integrationsLogic = kea<integrationsLogicType>([
         },
       },
     ],
-    installation: [
-      null as Installation | null,
+    installations: [
+      [] as Installation[],
       {
         loadInstallation: async () => {
-          const installation = await IntegrationsApi.getInstallation(
-            values.jwtToken!,
-            values.projectData?.integrations?.githubInstallationId!
-          );
+          const installation =
+            await IntegrationsApi.getInstallationAvailableForUser(
+              values.jwtToken!
+            );
           return installation;
         },
       },
