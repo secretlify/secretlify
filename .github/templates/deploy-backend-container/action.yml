@@ -91,7 +91,7 @@ runs:
           -e GITHUB_CLIENT_ID_ALTERNATIVE=${{ inputs.github-client-id-alternative }} \
           -e GITHUB_CLIENT_SECRET_ALTERNATIVE=${{ inputs.github-client-secret-alternative }} \
           -e GITHUB_CRYPTLY_APP_ID=${{ inputs.github-cryptly-app-id }} \
-          -e GITHUB_CRYPTLY_APP_PRIVATE_KEY=${{ inputs.github-cryptly-app-private-key }} \
+          -e GITHUB_CRYPTLY_APP_PRIVATE_KEY="${{ inputs.github-cryptly-app-private-key }}" \
           -e POSTHOG_API_KEY=${{ inputs.posthog-api-key }} \
           -e POSTHOG_HOST=${{ inputs.posthog-host }} \
           -e POSTHOG_SAMPLE_RATE=${{ inputs.posthog-sample-rate }} \
