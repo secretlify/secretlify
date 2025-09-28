@@ -1,7 +1,7 @@
 import { getOurEnv, OurEnv } from '../types/our-env.enum';
 require('dotenv').config();
 
-interface EnvConfig {
+export interface EnvConfig {
   oauth: {
     github: {
       clientId: string;
@@ -29,6 +29,12 @@ interface EnvConfig {
     apiKey: string;
     host: string;
     sampleRate: number;
+  };
+  github: {
+    app: {
+      id: string;
+      privateKey: string;
+    };
   };
 }
 
@@ -67,6 +73,12 @@ export const EnvConfigs: EnvConfigs = {
       host: process.env.POSTHOG_HOST!,
       sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
     },
+    github: {
+      app: {
+        id: process.env.GITHUB_CRYPTLY_APP_ID!,
+        privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
+      },
+    },
   },
   [OurEnv.Dev]: {
     oauth: {
@@ -96,6 +108,12 @@ export const EnvConfigs: EnvConfigs = {
       apiKey: process.env.POSTHOG_API_KEY!,
       host: process.env.POSTHOG_HOST!,
       sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
+    },
+    github: {
+      app: {
+        id: process.env.GITHUB_CRYPTLY_APP_ID!,
+        privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
+      },
     },
   },
 };

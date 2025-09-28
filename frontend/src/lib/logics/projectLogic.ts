@@ -24,6 +24,7 @@ import { authLogic } from "./authLogic";
 import { keyLogic } from "./keyLogic";
 import type { projectLogicType } from "./projectLogicType";
 import { projectsLogic } from "./projectsLogic";
+import { IntegrationsApi, type Integration } from "../api/integrations.api";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -36,6 +37,9 @@ export interface DecryptedProject {
   passphraseAsKey: string;
   members: ProjectMember[];
   updatedAt: string;
+  integrations: {
+    githubInstallationId: number;
+  };
 }
 
 export interface Patch {
@@ -76,6 +80,7 @@ export const projectLogic = kea<projectLogicType>([
     computePatches: (versions: DecryptedVersion[]) => ({ versions }),
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
+    setIntegrations: (integrations: Integration[]) => ({ integrations }),
   }),
 
   reducers({
@@ -83,7 +88,7 @@ export const projectLogic = kea<projectLogicType>([
       null as string | null,
       {
         selectHistoryChange: (_, { changeId }) => changeId,
-        toggleHistoryView: () => null, // Clear selection when toggling
+        toggleHistoryView: () => null,
       },
     ],
     patches: [
@@ -118,6 +123,12 @@ export const projectLogic = kea<projectLogicType>([
         toggleHistoryView: (state) => !state,
       },
     ],
+    integrations: [
+      [] as Integration[],
+      {
+        setIntegrations: (_, { integrations }) => integrations,
+      },
+    ],
   }),
 
   loaders(({ values, props, actions }) => ({
@@ -147,6 +158,7 @@ export const projectLogic = kea<projectLogicType>([
             passphraseAsKey: projectKeyDecrypted,
             members: projectData?.members!,
             updatedAt: projectData?.updatedAt!,
+            integrations: projectData?.integrations!,
           };
         },
       },
@@ -192,8 +204,9 @@ export const projectLogic = kea<projectLogicType>([
     currentUserRole: [
       (s) => [s.projectData],
       (projectData) =>
-        projectData?.members.find((member) => member.id === values.userData?.id)
-          ?.role,
+        projectData?.members?.find(
+          (member) => member.id === values.userData?.id
+        )?.role,
     ],
   })),
 
@@ -210,6 +223,12 @@ export const projectLogic = kea<projectLogicType>([
         projectId: props.projectId,
         encryptedSecrets: encryptedContent,
       });
+
+      await IntegrationsApi.pushSecrets(
+        values.jwtToken!,
+        values.integrations,
+        values.inputValue
+      );
 
       await Promise.all([
         asyncActions.loadProjectData(),

@@ -15,24 +15,35 @@ import { ProjectCoreModule } from '../../src/project/core/project-core.module';
 import { LogdashModule } from '../../src/shared/logdash/logdash.module';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { UserCoreModule } from '../../src/user/core/user-core.module';
-import { AuthCoreModule } from './../../src/auth/core/auth-core.module';
+import { AuthCoreModule } from '../../src/auth/core/auth-core.module';
 import { InvitationUtils } from './invitation.utils';
 import { LoggerMock } from './mocks/logger-mock';
 import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
 import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
+import { GithubExternalConnectionClientService } from '../../src/external-connection/github/client/github-external-connection-client.service';
+import { githubExternalConnectionClientMock } from './mocks/github-client-mock';
+import { GithubExternalConnectionCoreModule } from '../../src/external-connection/github/core/github-external-connection-core.module';
+import { GithubExternalConnectionUtils } from './github-external-connection.utils';
+import { ProjectEntity } from '../../src/project/core/entities/project.entity';
+import { GithubIntegrationEntity } from '../../src/external-connection/github/core/entities/github-integration.entity';
+import { GithubInstallationEntity } from '../../src/external-connection/github/core/entities/github-installation.entity';
 
 export interface TestApp {
   app: INestApplication;
   module: TestingModule;
   models: {
     userModel: Model<UserEntity>;
+    projectModel: Model<ProjectEntity>;
+    githubIntegrationModel: Model<GithubIntegrationEntity>;
+    githubInstallationModel: Model<GithubInstallationEntity>;
   };
   utils: {
     userUtils: UserUtils;
     projectUtils: ProjectUtils;
     invitationUtils: InvitationUtils;
+    githubExternalConnectionUtils: GithubExternalConnectionUtils;
   };
   methods: {
     clearDatabase: () => Promise<void>;
@@ -55,6 +66,7 @@ export async function createTestApp(): Promise<TestApp> {
       GoogleAuthModule,
       GithubAuthModule,
       HealthModule,
+      GithubExternalConnectionCoreModule,
     ],
   })
     .overrideProvider(Logger)
@@ -63,6 +75,8 @@ export async function createTestApp(): Promise<TestApp> {
     .useClass(MetricsMock)
     .overrideProvider(PROJECT_HISTORY_SIZE)
     .useValue(2)
+    .overrideProvider(GithubExternalConnectionClientService)
+    .useValue(githubExternalConnectionClientMock)
     .compile();
 
   const app = module.createNestApplication();
@@ -77,9 +91,21 @@ export async function createTestApp(): Promise<TestApp> {
   await app.init();
 
   const userModel: Model<UserEntity> = module.get(getModelToken(UserEntity.name));
+  const projectModel: Model<ProjectEntity> = module.get(getModelToken(ProjectEntity.name));
+  const githubIntegrationModel: Model<GithubIntegrationEntity> = module.get(
+    getModelToken(GithubIntegrationEntity.name),
+  );
+  const githubInstallationModel: Model<GithubInstallationEntity> = module.get(
+    getModelToken(GithubInstallationEntity.name),
+  );
 
   const clearDatabase = async () => {
-    await Promise.all([userModel.deleteMany({})]);
+    await Promise.all([
+      userModel.deleteMany({}),
+      projectModel.deleteMany({}),
+      githubIntegrationModel.deleteMany({}),
+      githubInstallationModel.deleteMany({}),
+    ]);
   };
 
   const beforeEach = async () => {
@@ -104,11 +130,15 @@ export async function createTestApp(): Promise<TestApp> {
     module,
     models: {
       userModel,
+      projectModel,
+      githubIntegrationModel,
+      githubInstallationModel,
     },
     utils: {
       userUtils: userUtils,
       projectUtils: projectUtils,
       invitationUtils: new InvitationUtils(app),
+      githubExternalConnectionUtils: new GithubExternalConnectionUtils(app),
     },
     methods: {
       clearDatabase,

@@ -5,7 +5,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Role } from 'src/shared/types/role.enum';
+import { Role } from '../../../shared/types/role.enum';
 import { ProjectReadService } from '../../../project/read/project-read.service';
 import { InvitationReadService } from '../../read/invitation-read.service';
 
