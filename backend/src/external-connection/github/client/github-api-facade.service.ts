@@ -125,19 +125,7 @@ export class GithubApiFacadeService {
         total_count: number;
       }>('GET', `/installation/repositories?per_page=100&page=${page}`, installationId);
 
-      const repositories = response.repositories.map(
-        (repo): GithubApiRepository => ({
-          id: repo.id,
-          name: repo.name,
-          owner: {
-            login: repo.owner.login,
-            avatar_url: repo.owner.avatar_url,
-          },
-          url: repo.url,
-          private: repo.private,
-          full_name: repo.full_name,
-        }),
-      );
+      const repositories = response.repositories;
 
       allRepositories = allRepositories.concat(repositories);
       hasNextPage = response.repositories.length === 100;
