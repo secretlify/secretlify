@@ -24,7 +24,7 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { useActions, useAsyncActions, useValues } from "kea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { commonLogic } from "@/lib/logics/commonLogic";
 
 function repositoryFullName(dto: { name?: string; owner?: string }) {
@@ -34,74 +34,6 @@ function repositoryFullName(dto: { name?: string; owner?: string }) {
 interface IntegrationsDialogProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
-}
-
-function InstallationSelector() {
-  const { activeProject } = useProjects();
-  const { installations, selectedInstallationEntityId } =
-    useValues(integrationsLogic);
-  const { setShouldReopenIntegrationsDialog } = useActions(commonLogic);
-
-  const { setSelectedInstallationEntityId } = useActions(integrationsLogic);
-
-  const handleInstallApp = () => {
-    setShouldReopenIntegrationsDialog(true);
-    window.location.href = `https://github.com/apps/cryptly-dev/installations/new?state="projectId=${activeProject?.id}"`;
-  };
-
-  const handleSelectChange = (value: string) => {
-    if (value === "add-installation") {
-      handleInstallApp();
-    } else {
-      setSelectedInstallationEntityId(value);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <IconBrandGithub className="size-4 text-muted-foreground" />
-        <h3 className="text-sm font-medium">Select Installation</h3>
-      </div>
-
-      <Select
-        value={selectedInstallationEntityId ?? undefined}
-        onValueChange={handleSelectChange}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Choose a GitHub installation" />
-        </SelectTrigger>
-        <SelectContent>
-          {installations.map((installation) => (
-            <SelectItem key={installation.id} value={installation.id}>
-              <div className="flex items-center gap-2">
-                {installation.liveData?.avatar && (
-                  <img
-                    src={installation.liveData.avatar}
-                    alt={`${installation.liveData.owner} avatar`}
-                    className="size-5 rounded-full"
-                  />
-                )}
-                <span className="truncate">
-                  {installation.liveData?.owner ||
-                    `Installation ${installation.githubInstallationId}`}
-                </span>
-              </div>
-            </SelectItem>
-          ))}
-          <SelectItem
-            value="add-installation"
-            className="text-muted-foreground cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <IconPlus className="size-4" />
-              <span>Add new installation</span>
-            </div>
-          </SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
 }
 
 function IntegrationListItem({ integration }: { integration: Integration }) {
@@ -171,9 +103,30 @@ function AddIntegrationSection() {
   const [selectedRepository, setSelectedRepository] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { repositories, selectedInstallationEntityId } =
+  const { activeProject } = useProjects();
+  const { installations, repositories, selectedInstallationEntityId } =
     useValues(integrationsLogic);
   const { createIntegration } = useAsyncActions(integrationsLogic);
+  const { setSelectedInstallationEntityId } = useActions(integrationsLogic);
+  const { setShouldReopenIntegrationsDialog } = useActions(commonLogic);
+
+  // Reset repository selection when installation changes
+  useEffect(() => {
+    setSelectedRepository("");
+  }, [selectedInstallationEntityId]);
+
+  const handleInstallApp = () => {
+    setShouldReopenIntegrationsDialog(true);
+    window.location.href = `https://github.com/apps/cryptly-dev/installations/new?state="projectId=${activeProject?.id}"`;
+  };
+
+  const handleInstallationSelectChange = (value: string) => {
+    if (value === "add-installation") {
+      handleInstallApp();
+    } else {
+      setSelectedInstallationEntityId(value);
+    }
+  };
 
   const handleConnectRepository = async () => {
     if (!selectedRepository || !selectedInstallationEntityId) return;
@@ -190,9 +143,10 @@ function AddIntegrationSection() {
       Number(selectedInstallationEntityId)
     );
     setIsLoading(false);
+    setSelectedRepository(""); // Reset after successful connection
   };
 
-  const isDisabled = !selectedInstallationEntityId;
+  const isRepositoryDisabled = !selectedInstallationEntityId;
 
   return (
     <div className="space-y-4">
@@ -201,40 +155,69 @@ function AddIntegrationSection() {
         <h3 className="text-sm font-medium">Connect New Repository</h3>
       </div>
 
-      <div className="space-y-2">
-        {isDisabled ? (
-          <div className="text-center py-4 px-4 bg-muted/20 rounded-md border border-dashed">
-            <div className="text-sm text-muted-foreground">
-              Please select an installation first to view available
-              repositories.
+      {/* Installation selector on its own line */}
+      <Select
+        value={selectedInstallationEntityId ?? undefined}
+        onValueChange={handleInstallationSelectChange}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Choose a GitHub installation" />
+        </SelectTrigger>
+        <SelectContent>
+          {installations.map((installation) => (
+            <SelectItem key={installation.id} value={installation.id}>
+              <div className="flex items-center gap-2">
+                {installation.liveData?.avatar && (
+                  <img
+                    src={installation.liveData.avatar}
+                    alt={`${installation.liveData.owner} avatar`}
+                    className="size-5 rounded-full"
+                  />
+                )}
+                <span className="truncate">
+                  {installation.liveData?.owner ||
+                    `Installation ${installation.githubInstallationId}`}
+                </span>
+              </div>
+            </SelectItem>
+          ))}
+          <SelectItem
+            value="add-installation"
+            className="text-muted-foreground cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <IconPlus className="size-4" />
+              <span>Add new installation</span>
             </div>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <Combobox
-              options={repositories.map((repo) => ({
-                value: `${repo.owner}/${repo.name}`,
-                label: `${repo.owner}/${repo.name}`,
-                avatarUrl: repo.avatarUrl,
-              }))}
-              value={selectedRepository}
-              onValueChange={setSelectedRepository}
-              placeholder="Choose a repository"
-              searchPlaceholder="Search repositories..."
-              emptyMessage="No repositories found."
-              className="flex-1"
-              disabled={isDisabled}
-            />
-            <Button
-              onClick={handleConnectRepository}
-              disabled={!selectedRepository || isDisabled}
-              isLoading={isLoading}
-              className="cursor-pointer"
-            >
-              Connect
-            </Button>
-          </div>
-        )}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Repository selector and connect button on the same line */}
+      <div className="flex gap-2">
+        <Combobox
+          options={repositories.map((repo) => ({
+            value: `${repo.owner}/${repo.name}`,
+            label: `${repo.owner}/${repo.name}`,
+            avatarUrl: repo.avatarUrl,
+          }))}
+          value={selectedRepository}
+          onValueChange={setSelectedRepository}
+          placeholder="Choose repository"
+          searchPlaceholder="Search repositories..."
+          emptyMessage="No repositories found."
+          className="flex-1"
+          disabled={isRepositoryDisabled}
+        />
+
+        <Button
+          onClick={handleConnectRepository}
+          disabled={!selectedRepository || isRepositoryDisabled}
+          isLoading={isLoading}
+          className="cursor-pointer"
+        >
+          Connect
+        </Button>
       </div>
     </div>
   );
@@ -257,8 +240,6 @@ export function IntegrationsDialog({
               secrets.
             </DialogDescription>
           </DialogHeader>
-
-          <InstallationSelector />
 
           <ExistingIntegrationsSection />
 
