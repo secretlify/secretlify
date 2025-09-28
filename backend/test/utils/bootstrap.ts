@@ -22,7 +22,9 @@ import { MetricsMock } from './mocks/metrics-mock';
 import { closeInMemoryMongoServer, rootMongooseTestModule } from './mongo-in-memory-server';
 import { ProjectUtils } from './project.utils';
 import { UserUtils } from './user.utils';
-import { GithubIntegrationModule } from '../../src/integration/github/github-integration.module';
+import { GithubExternalConnectionClientService } from '../../src/external-connection/github/client/github-external-connection-client.service';
+import { githubExternalConnectionClientMock } from './mocks/github-client-mock';
+import { GithubExternalConnectionCoreModule } from '../../src/external-connection/github/core/github-external-connection-core.module';
 
 export interface TestApp {
   app: INestApplication;
@@ -47,7 +49,6 @@ export async function createTestApp(): Promise<TestApp> {
     imports: [
       rootMongooseTestModule(),
       UserCoreModule,
-      GithubIntegrationModule,
       ProjectCoreModule,
       InvitationCoreModule,
       ScheduleModule.forRoot(),
@@ -57,6 +58,7 @@ export async function createTestApp(): Promise<TestApp> {
       GoogleAuthModule,
       GithubAuthModule,
       HealthModule,
+      GithubExternalConnectionCoreModule,
     ],
   })
     .overrideProvider(Logger)
@@ -65,6 +67,8 @@ export async function createTestApp(): Promise<TestApp> {
     .useClass(MetricsMock)
     .overrideProvider(PROJECT_HISTORY_SIZE)
     .useValue(2)
+    .overrideProvider(GithubExternalConnectionClientService)
+    .useClass(githubExternalConnectionClientMock)
     .compile();
 
   const app = module.createNestApplication();
