@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Role } from 'src/shared/types/role.enum';
+import { Role } from '../../../shared/types/role.enum';
 import { Branded } from '../../../shared/types/branded';
 import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 

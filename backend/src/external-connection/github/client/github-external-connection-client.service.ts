@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GithubRepository } from './dto/github-repository.dto';
 import { GithubInstallationLiveData } from './dto/github-installation.dto';
-import {
-  GithubApiFacadeService,
-  GithubApiRepository,
-  GithubApiInstallation,
-  GithubApiAccessToken,
-  GithubApiRepositoryPublicKey,
-} from './github-api-facade.service';
+import { GithubApiFacadeService, GithubApiRepository } from './github-api-facade.service';
 
 export type GithubRepositoryKey = {
   keyId: string;

@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
 import { GithubExternalConnectionClientService } from './github-external-connection-client.service';
 import { GithubApiFacadeService } from './github-api-facade.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [],
   providers: [GithubExternalConnectionClientService, GithubApiFacadeService],
   exports: [GithubExternalConnectionClientService],
 })

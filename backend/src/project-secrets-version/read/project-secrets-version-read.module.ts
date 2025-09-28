@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserReadModule } from 'src/user/read/user-read.module';
+import { UserReadModule } from '../../user/read/user-read.module';
 import {
   ProjectSecretsVersionEntity,
   ProjectSecretsVersionSchema,

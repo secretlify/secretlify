@@ -70,7 +70,7 @@ export async function createTestApp(): Promise<TestApp> {
     .overrideProvider(PROJECT_HISTORY_SIZE)
     .useValue(2)
     .overrideProvider(GithubExternalConnectionClientService)
-    .useClass(githubExternalConnectionClientMock)
+    .useValue(githubExternalConnectionClientMock)
     .compile();
 
   const app = module.createNestApplication();

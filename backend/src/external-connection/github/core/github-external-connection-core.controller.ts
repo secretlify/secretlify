@@ -2,7 +2,7 @@ import { Body, ConflictException, Controller, Delete, Get, Param, Post } from '@
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubRepositorySerialized } from '../client/dto/github-repository.dto';
 import { GithubExternalConnectionClientService } from '../client/github-external-connection-client.service';
-import { CurrentUserId } from 'src/auth/core/decorators/current-user-id.decorator';
+import { CurrentUserId } from '../../../auth/core/decorators/current-user-id.decorator';
 import { GithubInstallationWriteService } from '../write/github-installation-write.service';
 import { GithubInstallationReadService } from '../read/github-installation-read.service';
 import { CreateGithubInstallationBody } from './dto/create-github-installation.body';
@@ -13,7 +13,7 @@ import { GithubIntegrationSerialized } from './entities/github-integration.inter
 import { GithubIntegrationReadService } from '../read/github-integration-read.service';
 import { GithubIntegrationWriteService } from '../write/github-integration-write.service';
 import { GithubIntegrationSerializer } from './entities/github-integration.serializer';
-import { TokenResponse } from 'src/shared/responses/token.response';
+import { TokenResponse } from '../../../shared/responses/token.response';
 
 @Controller('')
 @ApiTags('Github external connections')

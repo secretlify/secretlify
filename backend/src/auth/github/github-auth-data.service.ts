@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getEnvConfig } from 'src/shared/config/env-config';
+import { getEnvConfig } from '../../shared/config/env-config';
 
 @Injectable()
 export class GithubAuthDataService {

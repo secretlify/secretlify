@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { ProjectReadService } from '../../read/project-read.service';
-import { Role } from 'src/shared/types/role.enum';
+import { Role } from '../../../shared/types/role.enum';
 
 @Injectable()
 export class ProjectAdminGuard implements CanActivate {

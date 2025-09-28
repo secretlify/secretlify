@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import * as jwt from 'jsonwebtoken';
-import { getEnvConfig } from 'src/shared/config/env-config';
+import { getEnvConfig } from '../../../shared/config/env-config';
 
 export interface GithubApiInstallation {
   id: number;
@@ -41,7 +38,7 @@ export class GithubApiFacadeService {
   private readonly config = getEnvConfig().github.app;
   private readonly installationTokens = new Map<number, { token: string; expiresAt: Date }>();
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor() {}
 
   private generateJwtToken(): string {
     const payload = {
@@ -50,7 +47,7 @@ export class GithubApiFacadeService {
       iss: this.config.id,
     };
 
-    return jwt.sign(payload, this.config.privateKey, { algorithm: 'RS256' });
+    return (null as any).sign(payload, this.config.privateKey, { algorithm: 'RS256' });
   }
 
   private async getInstallationAccessToken(installationId: number): Promise<string> {
@@ -60,22 +57,27 @@ export class GithubApiFacadeService {
     }
 
     const jwtToken = this.generateJwtToken();
-    const response = await firstValueFrom(
-      this.httpService.post<GithubApiAccessToken>(
-        `${this.baseUrl}/app/installations/${installationId}/access_tokens`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'Secretlify',
-          },
+    const response = await fetch(
+      `${this.baseUrl}/app/installations/${installationId}/access_tokens`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'Secretlify',
+          'Content-Type': 'application/json',
         },
-      ),
+        body: JSON.stringify({}),
+      },
     );
 
-    const token = response.data.token;
-    const expiresAt = new Date(response.data.expires_at);
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data: GithubApiAccessToken = await response.json();
+    const token = data.token;
+    const expiresAt = new Date(data.expires_at);
     this.installationTokens.set(installationId, { token, expiresAt });
 
     return token;
@@ -100,18 +102,32 @@ export class GithubApiFacadeService {
       headers.Authorization = `Bearer ${jwtToken}`;
     }
 
+    if (data && method !== 'GET') {
+      headers['Content-Type'] = 'application/json';
+    }
+
     const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
 
-    const response = await firstValueFrom(
-      this.httpService.request<T>({
-        method,
-        url: fullUrl,
-        headers,
-        data,
-      }),
-    );
+    const fetchOptions: RequestInit = {
+      method,
+      headers,
+    };
 
-    return response.data;
+    if (data && method !== 'GET') {
+      fetchOptions.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(fullUrl, fetchOptions);
+
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+    }
+
+    if (method === 'DELETE' && response.status === 204) {
+      return undefined as unknown as T;
+    }
+
+    return response.json();
   }
 
   public async getInstallationRepositories(installationId: number): Promise<GithubApiRepository[]> {
@@ -178,21 +194,25 @@ export class GithubApiFacadeService {
     installationId: number,
   ): Promise<GithubApiAccessToken> {
     const jwtToken = this.generateJwtToken();
-    const response = await firstValueFrom(
-      this.httpService.post<GithubApiAccessToken>(
-        `${this.baseUrl}/app/installations/${installationId}/access_tokens`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'Secretlify',
-          },
+    const response = await fetch(
+      `${this.baseUrl}/app/installations/${installationId}/access_tokens`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'Secretlify',
+          'Content-Type': 'application/json',
         },
-      ),
+        body: JSON.stringify({}),
+      },
     );
 
-    return response.data;
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
   }
 
   public async getRepositoryPublicKey(params: {

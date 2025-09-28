@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProjectOwnerGuard } from 'src/project/core/guards/project-owner.guard';
-import { ProjectWriteService } from 'src/project/write/project-write.service';
-import { UserReadService } from 'src/user/read/user-read.service';
+import { ProjectOwnerGuard } from '../../project/core/guards/project-owner.guard';
+import { ProjectWriteService } from '../../project/write/project-write.service';
+import { UserReadService } from '../../user/read/user-read.service';
 import { CurrentUserId } from '../../auth/core/decorators/current-user-id.decorator';
 import { InvitationReadService } from '../read/invitation-read.service';
 import { InvitationWriteService } from '../write/invitation-write.service';

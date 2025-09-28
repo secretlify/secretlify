@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserPartialSerialized } from 'src/user/core/entities/user.interface';
+import { UserPartialSerialized } from '../../../user/core/entities/user.interface';
 import { Role } from '../../../shared/types/role.enum';
 
 export class InvitationNormalized {
