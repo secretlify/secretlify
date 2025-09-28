@@ -2,6 +2,7 @@ import * as request from 'supertest';
 import { createTestApp } from '../utils/bootstrap';
 import { githubExternalConnectionClientMock } from '../utils/mocks/github-client-mock';
 import { GithubExternalConnectionClientService } from '../../src/external-connection/github/client/github-external-connection-client.service';
+import { Role } from '../../src/shared/types/role.enum';
 
 describe('GithubExternalConnectionCoreController (integrations)', () => {
   let bootstrap: Awaited<ReturnType<typeof createTestApp>>;
@@ -122,6 +123,47 @@ describe('GithubExternalConnectionCoreController (integrations)', () => {
         });
 
       expect(response.status).toEqual(404);
+    });
+
+    it('returns 403 if user is not a project member', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const project = await bootstrap.utils.projectUtils.createProject(setupA.token);
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .post('/external-connections/github/integrations')
+        .set('authorization', `Bearer ${setupB.token}`)
+        .send({
+          repositoryId: 789,
+          installationEntityId: '60f7eabc1234567890abcdef',
+          projectId: project.id,
+        });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.message).toEqual('You are not a member of this project');
+    });
+
+    it('returns 403 if user is not a project owner or admin', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const project = await bootstrap.utils.projectUtils.createProject(setupA.token);
+      await bootstrap.utils.projectUtils.addMemberToProject(
+        project.id,
+        setupB.user.id,
+        Role.Member,
+      );
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .post('/external-connections/github/integrations')
+        .set('authorization', `Bearer ${setupB.token}`)
+        .send({
+          repositoryId: 789,
+          installationEntityId: '60f7eabc1234567890abcdef',
+          projectId: project.id,
+        });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.message).toEqual('You are not the owner or admin of this project');
     });
 
     it('returns 401 when not authenticated', async () => {
@@ -314,6 +356,50 @@ describe('GithubExternalConnectionCoreController (integrations)', () => {
         .set('authorization', `Bearer ${setupB.token}`);
 
       expect(response.status).toEqual(403);
+    });
+
+    it('returns 403 when user is not a project owner or admin', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const project = await bootstrap.utils.projectUtils.createProject(setupA.token);
+      const installation = await bootstrap.utils.githubExternalConnectionUtils.createInstallation(
+        setupA.token,
+        123456,
+      );
+      await bootstrap.utils.projectUtils.addMemberToProject(
+        project.id,
+        setupB.user.id,
+        Role.Member,
+      );
+
+      githubExternalConnectionClientMock.getRepositoryInfoByInstallationIdAndRepositoryId.mockResolvedValue(
+        {
+          id: 789,
+          owner: 'test-owner',
+          name: 'test-repo',
+        },
+      );
+
+      githubExternalConnectionClientMock.getRepositoryPublicKey.mockResolvedValue({
+        key: 'test-public-key',
+        keyId: 'test-key-id',
+      });
+
+      const integration = await bootstrap.utils.githubExternalConnectionUtils.createIntegration(
+        setupA.token,
+        {
+          repositoryId: 789,
+          installationEntityId: installation.id,
+          projectId: project.id,
+        },
+      );
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .delete(`/external-connections/github/integrations/${integration.id}`)
+        .set('authorization', `Bearer ${setupB.token}`);
+
+      expect(response.status).toEqual(403);
+      expect(response.body.message).toEqual('You are not the owner or admin of this project');
     });
 
     it('returns 401 when not authenticated', async () => {

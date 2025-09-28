@@ -26,12 +26,18 @@ import { GithubExternalConnectionClientService } from '../../src/external-connec
 import { githubExternalConnectionClientMock } from './mocks/github-client-mock';
 import { GithubExternalConnectionCoreModule } from '../../src/external-connection/github/core/github-external-connection-core.module';
 import { GithubExternalConnectionUtils } from './github-external-connection.utils';
+import { ProjectEntity } from '../../src/project/core/entities/project.entity';
+import { GithubIntegrationEntity } from '../../src/external-connection/github/core/entities/github-integration.entity';
+import { GithubInstallationEntity } from '../../src/external-connection/github/core/entities/github-installation.entity';
 
 export interface TestApp {
   app: INestApplication;
   module: TestingModule;
   models: {
     userModel: Model<UserEntity>;
+    projectModel: Model<ProjectEntity>;
+    githubIntegrationModel: Model<GithubIntegrationEntity>;
+    githubInstallationModel: Model<GithubInstallationEntity>;
   };
   utils: {
     userUtils: UserUtils;
@@ -85,9 +91,21 @@ export async function createTestApp(): Promise<TestApp> {
   await app.init();
 
   const userModel: Model<UserEntity> = module.get(getModelToken(UserEntity.name));
+  const projectModel: Model<ProjectEntity> = module.get(getModelToken(ProjectEntity.name));
+  const githubIntegrationModel: Model<GithubIntegrationEntity> = module.get(
+    getModelToken(GithubIntegrationEntity.name),
+  );
+  const githubInstallationModel: Model<GithubInstallationEntity> = module.get(
+    getModelToken(GithubInstallationEntity.name),
+  );
 
   const clearDatabase = async () => {
-    await Promise.all([userModel.deleteMany({})]);
+    await Promise.all([
+      userModel.deleteMany({}),
+      projectModel.deleteMany({}),
+      githubIntegrationModel.deleteMany({}),
+      githubInstallationModel.deleteMany({}),
+    ]);
   };
 
   const beforeEach = async () => {
@@ -112,6 +130,9 @@ export async function createTestApp(): Promise<TestApp> {
     module,
     models: {
       userModel,
+      projectModel,
+      githubIntegrationModel,
+      githubInstallationModel,
     },
     utils: {
       userUtils: userUtils,

@@ -156,15 +156,11 @@ export class GithubExternalConnectionCoreController {
       githubInstallationId: installation.githubInstallationId,
     });
 
-    console.log('repositoryInfo', repositoryInfo);
-
     const githubRepositoryKey = await this.client.getRepositoryPublicKey({
       owner: repositoryInfo.owner,
       repositoryName: repositoryInfo.name,
       githubInstallationId: installation.githubInstallationId,
     });
-
-    console.log('githubRepositoryKey', githubRepositoryKey);
 
     const integration = await this.integrationWriteService.create({
       projectId: body.projectId,

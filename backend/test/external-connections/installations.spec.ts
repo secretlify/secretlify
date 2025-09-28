@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 import { createTestApp } from '../utils/bootstrap';
-import { githubExternalConnectionClientMock } from '../utils/mocks/github-client-mock';
 import { GithubExternalConnectionClientService } from '../../src/external-connection/github/client/github-external-connection-client.service';
 
 describe('GithubExternalConnectionCoreController (installations)', () => {
@@ -172,6 +171,21 @@ describe('GithubExternalConnectionCoreController (installations)', () => {
 
       expect(response.status).toEqual(401);
     });
+
+    it('returns 403 when installation does not belong to user', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const installation = await bootstrap.utils.githubExternalConnectionUtils.createInstallation(
+        setupA.token,
+        123456,
+      );
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/external-connections/github/installations/${installation.id}`)
+        .set('authorization', `Bearer ${setupB.token}`);
+
+      expect(response.status).toEqual(403);
+    });
   });
 
   describe('GET /external-connections/github/installations/:installationEntityId/repositories', () => {
@@ -229,6 +243,21 @@ describe('GithubExternalConnectionCoreController (installations)', () => {
 
       expect(response.status).toEqual(401);
     });
+
+    it('returns 403 when installation does not belong to user', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const installation = await bootstrap.utils.githubExternalConnectionUtils.createInstallation(
+        setupA.token,
+        123456,
+      );
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/external-connections/github/installations/${installation.id}/repositories`)
+        .set('authorization', `Bearer ${setupB.token}`);
+
+      expect(response.status).toEqual(403);
+    });
   });
 
   describe('GET /external-connections/github/installations/:installationEntityId/access-token', () => {
@@ -268,6 +297,21 @@ describe('GithubExternalConnectionCoreController (installations)', () => {
       );
 
       expect(response.status).toEqual(401);
+    });
+
+    it('returns 403 when installation does not belong to user', async () => {
+      const setupA = await bootstrap.utils.userUtils.createDefault();
+      const setupB = await bootstrap.utils.userUtils.createDefault();
+      const installation = await bootstrap.utils.githubExternalConnectionUtils.createInstallation(
+        setupA.token,
+        123456,
+      );
+
+      const response = await request(bootstrap.app.getHttpServer())
+        .get(`/external-connections/github/installations/${installation.id}/access-token`)
+        .set('authorization', `Bearer ${setupB.token}`);
+
+      expect(response.status).toEqual(403);
     });
   });
 });
