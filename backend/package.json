@@ -89,6 +89,9 @@
         }
       ]
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(octokit|@octokit)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
