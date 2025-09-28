@@ -63,6 +63,8 @@ jobs:
           github-client-secret: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET }}
           github-client-id-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_ID_ALTERNATIVE }}
           github-client-secret-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE }}
+          github-cryptly-app-id: ${{ secrets.BACKEND_GITHUB_CRYPTLY_APP_ID }}
+          github-cryptly-app-private-key: ${{ secrets.BACKEND_GITHUB_CRYPTLY_APP_PRIVATE_KEY }}
 
           logdash-api-key: ${{ secrets.BACKEND_LOGDASH_API_KEY }}
 
