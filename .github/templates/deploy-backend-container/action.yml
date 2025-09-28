@@ -31,6 +31,13 @@ inputs:
   logdash-api-key:
     required: true
 
+  posthog-api-key:
+    required: true
+  posthog-host:
+    required: true
+  posthog-sample-rate:
+    required: true
+
   google-client-id:
     required: true
   google-client-secret:
@@ -79,5 +86,8 @@ runs:
           -e GITHUB_CLIENT_SECRET=${{ inputs.github-client-secret }} \
           -e GITHUB_CLIENT_ID_ALTERNATIVE=${{ inputs.github-client-id-alternative }} \
           -e GITHUB_CLIENT_SECRET_ALTERNATIVE=${{ inputs.github-client-secret-alternative }} \
+          -e POSTHOG_API_KEY=${{ inputs.posthog-api-key }} \
+          -e POSTHOG_HOST=${{ inputs.posthog-host }} \
+          -e POSTHOG_SAMPLE_RATE=${{ inputs.posthog-sample-rate }} \
           -e PORT=${{ inputs.application-port }} \
           ${{ inputs.image-name }}

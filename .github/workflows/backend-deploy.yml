@@ -65,6 +65,10 @@ jobs:
           github-client-secret-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE }}
 
           logdash-api-key: ${{ secrets.BACKEND_LOGDASH_API_KEY }}
+
+          posthog-api-key: ${{ secrets.BACKEND_POSTHOG_API_KEY }}
+          posthog-host: ${{ secrets.BACKEND_POSTHOG_HOST }}
+          posthog-sample-rate: ${{ secrets.BACKEND_POSTHOG_SAMPLE_RATE }}
       - name: Prune
         uses: "./.github/templates/prune"
         with:

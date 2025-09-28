@@ -39,6 +39,7 @@
     "dotenv": "^16.4.7",
     "express-basic-auth": "^1.2.1",
     "mongoose": "^8.10.1",
+    "posthog-node": "^5.9.1",
     "reflect-metadata": "^0.2.2",
     "resend": "^4.1.2",
     "rxjs": "^7.8.1",

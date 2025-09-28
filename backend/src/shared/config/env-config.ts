@@ -25,6 +25,11 @@ interface EnvConfig {
   logdash: {
     apiKey: string;
   };
+  posthog: {
+    apiKey: string;
+    host: string;
+    sampleRate: number;
+  };
 }
 
 interface EnvConfigs {
@@ -57,6 +62,11 @@ export const EnvConfigs: EnvConfigs = {
     logdash: {
       apiKey: process.env.LOGDASH_API_KEY!,
     },
+    posthog: {
+      apiKey: process.env.POSTHOG_API_KEY!,
+      host: process.env.POSTHOG_HOST!,
+      sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
+    },
   },
   [OurEnv.Dev]: {
     oauth: {
@@ -81,6 +91,11 @@ export const EnvConfigs: EnvConfigs = {
     },
     logdash: {
       apiKey: process.env.LOGDASH_API_KEY!,
+    },
+    posthog: {
+      apiKey: process.env.POSTHOG_API_KEY!,
+      host: process.env.POSTHOG_HOST!,
+      sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
     },
   },
 };
