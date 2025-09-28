@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubRepositorySerialized } from '../client/dto/github-repository.dto';
@@ -24,8 +25,9 @@ import { GithubIntegrationReadService } from '../read/github-integration-read.se
 import { GithubIntegrationWriteService } from '../write/github-integration-write.service';
 import { GithubIntegrationSerializer } from './entities/github-integration.serializer';
 import { TokenResponse } from '../../../shared/responses/token.response';
-import { ProjectReadService } from 'src/project/read/project-read.service';
-import { Role } from 'src/shared/types/role.enum';
+import { ProjectReadService } from '../../../project/read/project-read.service';
+import { Role } from '../../../shared/types/role.enum';
+import { ProjectMemberGuard } from '../../../project/core/guards/project-member.guard';
 
 @Controller('')
 @ApiTags('Github external connections')
@@ -44,8 +46,13 @@ export class GithubExternalConnectionCoreController {
   @Get('/external-connections/github/installations/:installationEntityId/repositories')
   public async getRepositoriesAvailableForInstallation(
     @Param('installationEntityId') installationEntityId: string,
+    @CurrentUserId() currentUserId: string,
   ): Promise<GithubRepositorySerialized[]> {
     const installation = await this.installationReadService.findById(installationEntityId);
+
+    if (installation.userId !== currentUserId) {
+      throw new ForbiddenException('You are not the owner of this installation');
+    }
 
     return this.client.getRepositoriesAvailableForInstallation(installation.githubInstallationId);
   }
@@ -53,8 +60,13 @@ export class GithubExternalConnectionCoreController {
   @Get('/external-connections/github/installations/:installationEntityId')
   public async getInstallationById(
     @Param('installationEntityId') installationEntityId: string,
+    @CurrentUserId() currentUserId: string,
   ): Promise<GithubInstallationSerialized> {
     const installation = await this.installationReadService.findById(installationEntityId);
+
+    if (installation.userId !== currentUserId) {
+      throw new ForbiddenException('You are not the owner of this installation');
+    }
 
     const liveData = await this.client.getInstallationByGithubInstallationId(
       installation.githubInstallationId,
@@ -111,7 +123,20 @@ export class GithubExternalConnectionCoreController {
   @Post('/external-connections/github/integrations')
   public async createIntegration(
     @Body() body: CreateGithubIntegrationBody,
+    @CurrentUserId() currentUserId: string,
   ): Promise<GithubIntegrationSerialized> {
+    const project = await this.projectReadService.findById(body.projectId);
+
+    const role = project.members.get(currentUserId);
+
+    if (!role) {
+      throw new ForbiddenException('You are not a member of this project');
+    }
+
+    if (role !== Role.Owner && role !== Role.Admin) {
+      throw new ForbiddenException('You are not the owner or admin of this project');
+    }
+
     const existingIntegration =
       await this.integrationReadService.findByProjectIdAndInstallationEntityId({
         projectId: body.projectId,
@@ -154,6 +179,7 @@ export class GithubExternalConnectionCoreController {
 
   @ApiResponse({ type: GithubIntegrationSerialized, isArray: true })
   @Get('/projects/:projectId/external-connections/github/integrations')
+  @UseGuards(ProjectMemberGuard)
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,
   ): Promise<GithubIntegrationSerialized[]> {
