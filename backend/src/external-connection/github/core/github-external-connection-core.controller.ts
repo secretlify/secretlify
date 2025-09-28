@@ -1,4 +1,14 @@
-import { Body, ConflictException, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubRepositorySerialized } from '../client/dto/github-repository.dto';
 import { GithubExternalConnectionClientService } from '../client/github-external-connection-client.service';
@@ -14,6 +24,8 @@ import { GithubIntegrationReadService } from '../read/github-integration-read.se
 import { GithubIntegrationWriteService } from '../write/github-integration-write.service';
 import { GithubIntegrationSerializer } from './entities/github-integration.serializer';
 import { TokenResponse } from '../../../shared/responses/token.response';
+import { ProjectReadService } from 'src/project/read/project-read.service';
+import { Role } from 'src/shared/types/role.enum';
 
 @Controller('')
 @ApiTags('Github external connections')
@@ -25,6 +37,7 @@ export class GithubExternalConnectionCoreController {
     private readonly installationReadService: GithubInstallationReadService,
     private readonly integrationReadService: GithubIntegrationReadService,
     private readonly integrationWriteService: GithubIntegrationWriteService,
+    private readonly projectReadService: ProjectReadService,
   ) {}
 
   @ApiResponse({ type: GithubRepositorySerialized, isArray: true })
@@ -176,8 +189,13 @@ export class GithubExternalConnectionCoreController {
   @Get('/external-connections/github/installations/:installationEntityId/access-token')
   public async getInstallationAccessToken(
     @Param('installationEntityId') installationEntityId: string,
+    @CurrentUserId() currentUserId: string,
   ): Promise<any> {
     const installation = await this.installationReadService.findById(installationEntityId);
+
+    if (installation.userId !== currentUserId) {
+      throw new ForbiddenException('You are not the owner of this installation');
+    }
 
     const token = await this.client.getInstallationAccessToken(installation.githubInstallationId);
 
@@ -187,7 +205,28 @@ export class GithubExternalConnectionCoreController {
   }
 
   @Delete('external-connections/github/integrations/:integrationId')
-  public async deleteIntegration(@Param('integrationId') integrationId: string): Promise<void> {
+  public async deleteIntegration(
+    @Param('integrationId') integrationId: string,
+    @CurrentUserId() currentUserId: string,
+  ): Promise<void> {
+    const integration = await this.integrationReadService.findById(integrationId);
+
+    if (!integration) {
+      throw new NotFoundException('Integration not found');
+    }
+
+    const project = await this.projectReadService.findById(integration.projectId);
+
+    const role = project.members.get(currentUserId);
+
+    if (!role) {
+      throw new ForbiddenException('You are not a member of this project');
+    }
+
+    if (role !== Role.Owner && role !== Role.Admin) {
+      throw new ForbiddenException('You are not the owner or admin of this project');
+    }
+
     await this.integrationWriteService.deleteById(integrationId);
   }
 }
