@@ -15,10 +15,11 @@ export class GithubIntegrationWriteService {
 
   public async create(dto: CreateGithubIntegrationDto): Promise<GithubIntegrationNormalized> {
     const integration = await this.githubIntegrationModel.create({
-      projectId: dto.cryptlyProjectId,
+      projectId: dto.projectId,
       githubRepositoryId: dto.githubRepositoryId,
       githubRepositoryPublicKey: dto.repositoryPublicKey,
       githubRepositoryPublicKeyId: dto.repositoryPublicKeyId,
+      installationEntityId: dto.installationEntityId,
     });
 
     return GithubIntegrationSerializer.normalize(integration);

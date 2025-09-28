@@ -24,17 +24,13 @@ export class GithubInstallationReadService {
 
   public async findByGithubInstallationId(
     githubInstallationId: number,
-  ): Promise<GithubInstallationNormalized> {
+  ): Promise<GithubInstallationNormalized | null> {
     const installation = await this.model
       .findOne({ githubInstallationId })
       .lean<GithubInstallationEntity>()
       .exec();
 
-    if (!installation) {
-      throw new NotFoundException(`Installation not found`);
-    }
-
-    return GithubInstallationSerializer.normalize(installation);
+    return installation ? GithubInstallationSerializer.normalize(installation) : null;
   }
 
   public async findByUserId(userId: string): Promise<GithubInstallationNormalized[]> {

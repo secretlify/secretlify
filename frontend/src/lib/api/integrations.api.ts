@@ -4,7 +4,6 @@ import { SodiumCrypto } from "../crypto/crypto.sodium";
 export interface Repository {
   id: number;
   name: string;
-  fullName: string;
   owner: string;
   url: string;
   isPrivate: boolean;
@@ -14,18 +13,18 @@ export interface Repository {
 export interface Integration {
   id: string;
   projectId: string;
-  repositoryId: string;
-  publicKey: string;
-  publicKeyId: string;
-  name: string;
-  owner: string;
-  fullName: string;
-  installationId: number;
+  githubRepositoryId: number;
+  githubRepositoryPublicKey: string;
+  githubRepositoryPublicKeyId: string;
+  installationEntityId: string;
+  repositoryData?: Repository;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateIntegrationDto {
   repositoryId: number;
-  installationId: number;
+  installationEntityId: string;
   projectId: string;
 }
 
@@ -33,13 +32,16 @@ export interface Installation {
   id: string;
   userId: string;
   githubInstallationId: number;
-  liveData?: {};
+  liveData?: {
+    owner: string;
+    avatar: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
 
-export interface GetInstallationAccessTokenDto {
-  installationId: number;
+export interface CreateInstallationDto {
+  githubInstallationId: number;
 }
 
 export interface PushSecretDto {
@@ -58,10 +60,10 @@ export interface SecretDto {
 export class IntegrationsApi {
   public static async getRepositories(
     jwtToken: string,
-    installationId: number
+    installationEntityId: string
   ): Promise<Repository[]> {
     const response = await axios.get<Repository[]>(
-      `/integrations/github/installations/${installationId}/repositories`,
+      `/external-connections/github/installations/${installationEntityId}/repositories`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -88,9 +90,22 @@ export class IntegrationsApi {
     jwtToken: string,
     dto: CreateIntegrationDto
   ): Promise<void> {
-    await axios.post<void>(`/integrations/github`, dto, {
+    await axios.post<void>(`/external-connections/github/integrations`, dto, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
+  }
+
+  public static async createInstallation(
+    jwtToken: string,
+    dto: CreateInstallationDto
+  ): Promise<void> {
+    await axios.post<void>(
+      `/users/me/external-connections/github/installations`,
+      dto,
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
   }
 
   public static async getInstallationAvailableForUser(
@@ -130,18 +145,20 @@ export class IntegrationsApi {
     jwtToken: string,
     integrationId: string
   ): Promise<void> {
-    await axios.delete(`/integrations/github/${integrationId}`, {
-      headers: { Authorization: `Bearer ${jwtToken}` },
-    });
+    await axios.delete(
+      `/external-connections/github/integrations/${integrationId}`,
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
   }
 
   public static async getAccessToken(
     jwtToken: string,
-    dto: GetInstallationAccessTokenDto
+    installationEntityId: string
   ): Promise<string> {
-    const response = await axios.post<{ token: string }>(
-      `/integrations/github/access-token`,
-      dto,
+    const response = await axios.get<{ token: string }>(
+      `/external-connections/github/installations/${installationEntityId}/access-token`,
       {
         headers: { Authorization: `Bearer ${jwtToken}` },
       }
@@ -178,11 +195,12 @@ export class IntegrationsApi {
       secrets.push({ key, plainValue: value });
     }
     for (const integration of integrations) {
-      const publicKey = integration.publicKey;
+      const publicKey = integration.githubRepositoryPublicKey;
 
-      const githubToken = await this.getAccessToken(jwtToken, {
-        installationId: integration.installationId,
-      });
+      const githubToken = await this.getAccessToken(
+        jwtToken,
+        integration.installationEntityId
+      );
       await Promise.all(
         secrets.map(async (secret) => {
           const encryptedValue = await SodiumCrypto.encrypt(
@@ -192,9 +210,9 @@ export class IntegrationsApi {
 
           await this.pushSecret(githubToken, {
             encryptedValue,
-            keyId: integration.publicKeyId,
-            owner: integration.owner,
-            repo: integration.name,
+            keyId: integration.githubRepositoryPublicKeyId,
+            owner: integration.repositoryData?.owner!,
+            repo: integration.repositoryData?.name!,
             secretName: secret.key,
           });
         })

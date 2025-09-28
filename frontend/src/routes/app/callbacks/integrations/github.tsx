@@ -1,3 +1,4 @@
+import { IntegrationsApi } from "@/lib/api/integrations.api";
 import { ProjectsApi } from "@/lib/api/projects.api";
 import { authLogic } from "@/lib/logics/authLogic";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -43,8 +44,7 @@ function RouteComponent() {
     projectId: string,
     installationId: string
   ) => {
-    await ProjectsApi.updateProject(jwtToken!, {
-      projectId: projectId!,
+    await IntegrationsApi.createInstallation(jwtToken!, {
       githubInstallationId: parseInt(installationId!),
     });
 

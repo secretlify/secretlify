@@ -81,11 +81,21 @@ export class GithubExternalConnectionCoreController {
   ): Promise<GithubInstallationSerialized[]> {
     const installations = await this.installationReadService.findByUserId(currentUserId);
 
-    return installations.map((inst) => GithubInstallationSerializer.serialize(inst));
+    const ghInstallations = await Promise.all(
+      installations.map(async (inst) => {
+        return this.client.getInstallationByGithubInstallationId(inst.githubInstallationId);
+      }),
+    );
+
+    return installations.map((inst) =>
+      GithubInstallationSerializer.serialize(inst, {
+        liveData: ghInstallations.find((ghInst) => ghInst.id === inst.githubInstallationId),
+      }),
+    );
   }
 
   @ApiResponse({ type: GithubIntegrationSerialized })
-  @Post('/external-connections/github/installations')
+  @Post('/external-connections/github/integrations')
   public async createIntegration(
     @Body() body: CreateGithubIntegrationBody,
   ): Promise<GithubIntegrationSerialized> {
@@ -96,7 +106,9 @@ export class GithubExternalConnectionCoreController {
       });
 
     if (existingIntegration) {
-      throw new Error('Integration between this installation and project already exists');
+      throw new ConflictException(
+        'Integration between this installation and project already exists',
+      );
     }
 
     const installation = await this.installationReadService.findById(body.installationEntityId);
@@ -106,34 +118,62 @@ export class GithubExternalConnectionCoreController {
       githubInstallationId: installation.githubInstallationId,
     });
 
+    console.log('repositoryInfo', repositoryInfo);
+
     const githubRepositoryKey = await this.client.getRepositoryPublicKey({
       owner: repositoryInfo.owner,
       repositoryName: repositoryInfo.name,
       githubInstallationId: installation.githubInstallationId,
     });
 
+    console.log('githubRepositoryKey', githubRepositoryKey);
+
     const integration = await this.integrationWriteService.create({
-      cryptlyProjectId: body.projectId,
+      projectId: body.projectId,
       githubRepositoryId: body.repositoryId,
       repositoryPublicKey: githubRepositoryKey.key,
       repositoryPublicKeyId: githubRepositoryKey.keyId,
+      installationEntityId: body.installationEntityId,
     });
 
     return GithubIntegrationSerializer.serialize(integration);
   }
 
   @ApiResponse({ type: GithubIntegrationSerialized, isArray: true })
-  @Get('/projects/:projectId/integrations/github')
+  @Get('/projects/:projectId/external-connections/github/integrations')
   public async getProjectIntegrations(
     @Param('projectId') projectId: string,
   ): Promise<GithubIntegrationSerialized[]> {
     const integrations = await this.integrationReadService.findByProjectId(projectId);
 
-    return integrations.map(GithubIntegrationSerializer.serialize);
+    const installations = await Promise.all(
+      integrations.map(async (integration) => {
+        return this.installationReadService.findById(integration.installationEntityId);
+      }),
+    );
+
+    const ghRepositoriesInfo = await Promise.all(
+      integrations.map(async (integration) => {
+        return this.client.getRepositoryInfoByInstallationIdAndRepositoryId({
+          repositoryId: integration.githubRepositoryId,
+          githubInstallationId: installations.find(
+            (installation) => installation.id === integration.installationEntityId,
+          )?.githubInstallationId!,
+        });
+      }),
+    );
+
+    return integrations.map((integration) =>
+      GithubIntegrationSerializer.serialize(integration, {
+        repositoryData: ghRepositoriesInfo.find(
+          (repository) => repository.id === integration.githubRepositoryId,
+        ),
+      }),
+    );
   }
 
   @ApiResponse({ type: TokenResponse })
-  @Get('/external-connections/github/installations/:installationEntityId')
+  @Get('/external-connections/github/installations/:installationEntityId/access-token')
   public async getInstallationAccessToken(
     @Param('installationEntityId') installationEntityId: string,
   ): Promise<any> {

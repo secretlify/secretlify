@@ -1,6 +1,7 @@
 import {
   actions,
   connect,
+  events,
   kea,
   key,
   listeners,
@@ -42,11 +43,18 @@ export const integrationsLogic = kea<integrationsLogicType>([
     removeInstallationFromProject: true,
     loadRepositories: true,
     loadIntegrations: true,
-    createIntegration: (repositoryId: number) => ({ repositoryId }),
+    loadInstallations: true,
+    createIntegration: (repositoryId: number, installationId: number) => ({
+      repositoryId,
+      installationId,
+    }),
     removeIntegration: (integrationId: string) => ({ integrationId }),
     setRepositories: (repositories: Repository[]) => ({ repositories }),
     setIntegrations: (integrations: Integration[]) => ({ integrations }),
-    setInstallation: (installation: Installation | null) => ({ installation }),
+    setInstallations: (installations: Installation[]) => ({ installations }),
+    setSelectedInstallationEntityId: (installationEntityId: string) => ({
+      installationEntityId,
+    }),
   }),
 
   reducers({
@@ -68,6 +76,19 @@ export const integrationsLogic = kea<integrationsLogicType>([
         setInstallation: (_, { installation }) => installation,
       },
     ],
+    installations: [
+      [] as Installation[],
+      {
+        setInstallations: (_, { installations }) => installations,
+      },
+    ],
+    selectedInstallationEntityId: [
+      null as string | null,
+      {
+        setSelectedInstallationEntityId: (_, { installationEntityId }) =>
+          installationEntityId,
+      },
+    ],
   }),
 
   loaders(({ values, props }) => ({
@@ -75,9 +96,13 @@ export const integrationsLogic = kea<integrationsLogicType>([
       [] as Repository[],
       {
         loadRepositories: async () => {
+          if (!values.selectedInstallationEntityId) {
+            return [];
+          }
+
           const repositories = await IntegrationsApi.getRepositories(
             values.jwtToken!,
-            values.projectData?.integrations.githubInstallationId!
+            values.selectedInstallationEntityId!
           );
 
           return repositories;
@@ -105,12 +130,12 @@ export const integrationsLogic = kea<integrationsLogicType>([
     installations: [
       [] as Installation[],
       {
-        loadInstallation: async () => {
-          const installation =
+        loadInstallations: async () => {
+          const installations =
             await IntegrationsApi.getInstallationAvailableForUser(
               values.jwtToken!
             );
-          return installation;
+          return installations;
         },
       },
     ],
@@ -121,7 +146,7 @@ export const integrationsLogic = kea<integrationsLogicType>([
       await IntegrationsApi.createIntegration(values.jwtToken!, {
         projectId: props.projectId,
         repositoryId,
-        installationId: values.projectData?.integrations?.githubInstallationId!,
+        installationEntityId: values.selectedInstallationEntityId!,
       });
 
       actions.loadIntegrations();
@@ -152,14 +177,23 @@ export const integrationsLogic = kea<integrationsLogicType>([
       if (!githubInstallationId) {
         actions.setRepositories([]);
         actions.setIntegrations([]);
-        actions.setInstallation(null);
 
         return;
       }
 
-      actions.loadRepositories();
       actions.loadIntegrations();
-      actions.loadInstallation();
+      actions.loadInstallations();
+    },
+    selectedInstallationEntityId: () => {
+      console.log("Id changed to loading repos");
+      actions.loadRepositories();
+    },
+  })),
+
+  events(({ actions }) => ({
+    afterMount: () => {
+      actions.loadInstallations();
+      actions.loadIntegrations();
     },
   })),
 ]);

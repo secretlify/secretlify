@@ -8,8 +8,8 @@ export class CreateGithubIntegrationBody {
   public repositoryId: number;
 
   @ApiProperty()
-  @IsInt()
-  @IsPositive()
+  @IsString()
+  @IsNotEmpty()
   public installationEntityId: string;
 
   @ApiProperty()
