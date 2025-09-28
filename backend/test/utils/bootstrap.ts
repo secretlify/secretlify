@@ -25,6 +25,7 @@ import { UserUtils } from './user.utils';
 import { GithubExternalConnectionClientService } from '../../src/external-connection/github/client/github-external-connection-client.service';
 import { githubExternalConnectionClientMock } from './mocks/github-client-mock';
 import { GithubExternalConnectionCoreModule } from '../../src/external-connection/github/core/github-external-connection-core.module';
+import { GithubExternalConnectionUtils } from './github-external-connection.utils';
 
 export interface TestApp {
   app: INestApplication;
@@ -36,6 +37,7 @@ export interface TestApp {
     userUtils: UserUtils;
     projectUtils: ProjectUtils;
     invitationUtils: InvitationUtils;
+    githubExternalConnectionUtils: GithubExternalConnectionUtils;
   };
   methods: {
     clearDatabase: () => Promise<void>;
@@ -115,6 +117,7 @@ export async function createTestApp(): Promise<TestApp> {
       userUtils: userUtils,
       projectUtils: projectUtils,
       invitationUtils: new InvitationUtils(app),
+      githubExternalConnectionUtils: new GithubExternalConnectionUtils(app),
     },
     methods: {
       clearDatabase,
