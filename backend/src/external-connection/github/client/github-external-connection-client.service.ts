@@ -1,18 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Endpoints, OctokitResponse } from '@octokit/types';
-import { App } from 'octokit';
-import { Octokit } from 'src/shared/types/octokit';
 import { GithubRepository } from './dto/github-repository.dto';
 import { GithubInstallationLiveData } from './dto/github-installation.dto';
-import { getEnvConfig } from 'src/shared/config/env-config';
-
-type OctokitGithubInstallation =
-  Endpoints['GET /app/installations/{installation_id}']['response']['data'];
-type OctokitGithubRepository = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
-type CreateAccessToken =
-  Endpoints['POST /app/installations/{installation_id}/access_tokens']['response']['data'];
-type RepositoryPublicKey =
-  Endpoints['GET /repos/{owner}/{repo}/actions/secrets/public-key']['response']['data'];
+import {
+  GithubApiFacadeService,
+  GithubApiRepository,
+  GithubApiInstallation,
+  GithubApiAccessToken,
+  GithubApiRepositoryPublicKey,
+} from './github-api-facade.service';
 
 export type GithubRepositoryKey = {
   keyId: string;
@@ -26,69 +21,49 @@ export type AccessTokenResponseDto = {
 
 @Injectable()
 export class GithubExternalConnectionClientService {
-  private githubApp = new App({
-    appId: getEnvConfig().github.app.id,
-    privateKey: getEnvConfig().github.app.privateKey,
-  });
-
-  private async getInstallationOctokit(installationId: number): Promise<Octokit> {
-    return this.githubApp.getInstallationOctokit(installationId);
-  }
+  constructor(private readonly githubApiFacadeService: GithubApiFacadeService) {}
 
   public async getRepositoriesAvailableForInstallation(
     installationId: number,
   ): Promise<GithubRepository[]> {
-    const octokit = await this.getInstallationOctokit(installationId);
-    const repositories = await octokit.paginate('GET /installation/repositories', {
-      per_page: 100,
-    });
+    const repositories =
+      await this.githubApiFacadeService.getInstallationRepositories(installationId);
 
-    return repositories.map((repo) => this.mapOctokitGithubRepository(repo));
+    return repositories.map((repo) => this.mapGithubApiRepository(repo));
   }
 
   public async getInstallationByGithubInstallationId(
     installationId: number,
   ): Promise<GithubInstallationLiveData> {
-    const response: OctokitResponse<OctokitGithubInstallation> =
-      await this.githubApp.octokit.request('GET /app/installations/{installation_id}', {
-        installation_id: installationId,
-      });
+    const installation = await this.githubApiFacadeService.getInstallationById(installationId);
 
-    const account = response.data.account || { avatar_url: '', login: '' };
+    const account = installation.account || { avatar_url: '', login: '' };
 
     return {
       id: installationId,
       avatar: account?.avatar_url || '',
-      owner: 'login' in account ? account.login : account?.name || '',
+      owner: 'login' in account ? account.login! : account?.name || '',
     };
   }
 
   public async deleteInstallation(installationId: number): Promise<void> {
-    await this.githubApp.octokit.request('DELETE /app/installations/{installation_id}', {
-      installation_id: installationId,
-    });
+    await this.githubApiFacadeService.deleteInstallation(installationId);
   }
 
   public async getRepositoryInfoByInstallationIdAndRepositoryId(params: {
     repositoryId: number;
     githubInstallationId: number;
   }): Promise<GithubRepository> {
-    const octokit = await this.getInstallationOctokit(params.githubInstallationId);
-    const response: OctokitResponse<OctokitGithubRepository> = await octokit.request(
-      'GET /repositories/{repositoryId}',
-      { repositoryId: params.repositoryId },
-    );
+    const repository = await this.githubApiFacadeService.getRepositoryById(params);
 
-    return this.mapOctokitGithubRepository(response.data);
+    return this.mapGithubApiRepository(repository);
   }
 
   public async getInstallationAccessToken(installationId: number): Promise<string> {
-    const response: OctokitResponse<CreateAccessToken> = await this.githubApp.octokit.request(
-      'POST /app/installations/{installation_id}/access_tokens',
-      { installation_id: installationId },
-    );
+    const accessToken =
+      await this.githubApiFacadeService.createInstallationAccessToken(installationId);
 
-    return response.data.token;
+    return accessToken.token;
   }
 
   public async getRepositoryPublicKey(params: {
@@ -96,21 +71,15 @@ export class GithubExternalConnectionClientService {
     githubInstallationId: number;
     repositoryName: string;
   }): Promise<GithubRepositoryKey> {
-    const octokit = await this.getInstallationOctokit(params.githubInstallationId);
-    const response: OctokitResponse<RepositoryPublicKey> = await octokit.request(
-      'GET /repos/{owner}/{repo}/actions/secrets/public-key',
-      { owner: params.owner, repo: params.repositoryName },
-    );
+    const publicKey = await this.githubApiFacadeService.getRepositoryPublicKey(params);
 
     return {
-      keyId: response.data.key_id,
-      key: response.data.key,
+      keyId: publicKey.key_id,
+      key: publicKey.key,
     };
   }
 
-  private mapOctokitGithubRepository(
-    dto: Pick<OctokitGithubRepository, 'name' | 'id' | 'owner' | 'url' | 'private' | 'full_name'>,
-  ): GithubRepository {
+  private mapGithubApiRepository(dto: GithubApiRepository): GithubRepository {
     return {
       id: dto.id,
       name: dto.name,
