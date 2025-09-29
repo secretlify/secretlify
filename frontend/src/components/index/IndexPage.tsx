@@ -311,7 +311,7 @@ export function IndexPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-800 py-8 px-6">
+      <footer className="border-t border-neutral-900 py-8 px-6">
         <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-neutral-500">
             © 2025 Cryptly. Zero-knowledge secrets management.
