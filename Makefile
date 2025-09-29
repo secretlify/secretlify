@@ -32,7 +32,7 @@ install:
 	@echo "Installing backend dependencies..."
 	cd backend && npm install
 	@echo "Installing frontend dependencies..."
-	cd frontend && npm install
+	cd frontend && pnpm install
 
 # Clean build artifacts and node_modules
 clean:
