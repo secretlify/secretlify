@@ -5,5 +5,6 @@ export class SecretsUpdatedEvent {
     public readonly projectId: string,
     public readonly newEncryptedSecrets: string,
     public readonly user: UserPartialSerialized,
+    public readonly updatedAt: Date,
   ) {}
 }

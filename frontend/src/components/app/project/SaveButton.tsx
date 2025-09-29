@@ -9,6 +9,7 @@ import { useState } from "react";
 export function UpdateButton() {
   const { isSubmitting, isEditorDirty } = useValues(projectLogic);
   const { updateProjectContent } = useActions(projectLogic);
+  const { isExternallyUpdated } = useValues(projectLogic);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -22,7 +23,7 @@ export function UpdateButton() {
       type="button"
       aria-label="Save"
       onClick={update}
-      disabled={isSubmitting || !isEditorDirty}
+      disabled={isSubmitting || !isEditorDirty || isExternallyUpdated}
       whileTap={isSubmitting || !isEditorDirty ? undefined : { scale: 0.95 }}
       layout
       transition={{

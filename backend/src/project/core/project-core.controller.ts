@@ -156,7 +156,7 @@ export class ProjectCoreController {
       const author = membersHydrated.find((m) => m.id === userId);
       this.eventEmitter.emit(
         ProjectEvent.SecretsUpdated,
-        new SecretsUpdatedEvent(projectId, body.encryptedSecrets, author!),
+        new SecretsUpdatedEvent(projectId, body.encryptedSecrets, author!, latestVersion.updatedAt),
       );
     }
 

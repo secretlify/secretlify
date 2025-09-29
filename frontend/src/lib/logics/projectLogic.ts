@@ -11,8 +11,10 @@ import {
 } from "kea";
 
 import { createPatch } from "diff";
+import { EventSource } from "eventsource";
 import { loaders } from "kea-loaders";
 import { subscriptions } from "kea-subscriptions";
+import { IntegrationsApi, type Integration } from "../api/integrations.api";
 import {
   ProjectsApi,
   type DecryptedVersion,
@@ -24,7 +26,6 @@ import { authLogic } from "./authLogic";
 import { keyLogic } from "./keyLogic";
 import type { projectLogicType } from "./projectLogicType";
 import { projectsLogic } from "./projectsLogic";
-import { IntegrationsApi, type Integration } from "../api/integrations.api";
 
 export interface ProjectLogicProps {
   projectId: string;
@@ -40,6 +41,17 @@ export interface DecryptedProject {
   integrations: {
     githubInstallationId: number;
   };
+}
+
+export interface SecretsUpdatedEvent {
+  newEncryptedSecrets: string;
+  projectId: string;
+  user: {
+    id: string;
+    email: string;
+    avatarUrl: string;
+  };
+  updatedAt: string;
 }
 
 export interface Patch {
@@ -81,9 +93,41 @@ export const projectLogic = kea<projectLogicType>([
     setInputValue: (content: string) => ({ content }),
     setIsSubmitting: (isSubmitting: boolean) => ({ isSubmitting }),
     setIntegrations: (integrations: Integration[]) => ({ integrations }),
+    handleSecretsUpdate: (secretsUpdatedEvent: SecretsUpdatedEvent) => ({
+      secretsUpdatedEvent,
+    }),
+    setProjectData: (projectData: DecryptedProject | null) => ({ projectData }),
+    syncProject: true,
+    unsyncProject: true,
+    openProjectStream: (projectId: string) => ({ projectId }),
+    setSyncConnection: (connection: EventSource | null) => ({ connection }),
+    setIsExternallyUpdated: (isExternallyUpdated: boolean) => ({
+      isExternallyUpdated,
+    }),
   }),
 
   reducers({
+    isExternallyUpdated: [
+      false,
+      {
+        setIsExternallyUpdated: (_, { isExternallyUpdated }) =>
+          isExternallyUpdated,
+      },
+    ],
+    syncConnection: [
+      null as EventSource | null,
+      {
+        setSyncConnection: (_, { connection }) => connection,
+        unsyncProject: () => null,
+      },
+    ],
+    shouldReconnect: [
+      true,
+      {
+        syncProject: () => true,
+        unsyncProject: () => false,
+      },
+    ],
     selectedHistoryChangeId: [
       null as string | null,
       {
@@ -211,6 +255,83 @@ export const projectLogic = kea<projectLogicType>([
   })),
 
   listeners(({ values, actions, props, asyncActions }) => ({
+    loadProjectDataSuccess: () => {
+      actions.syncProject();
+    },
+    syncProject: async () => {
+      if (!values.jwtToken || values.syncConnection) {
+        return;
+      }
+      await actions.openProjectStream(props.projectId);
+    },
+
+    unsyncProject: () => {
+      values.syncConnection?.close();
+    },
+
+    openProjectStream: async ({ projectId }: { projectId: string }) => {
+      const connect = () => {
+        const eventSource = new EventSource(
+          `${import.meta.env.VITE_API_URL}/projects/${projectId}/events`,
+          {
+            fetch: (input, init) =>
+              fetch(input, {
+                ...init,
+                headers: {
+                  ...init.headers,
+                  Authorization: `Bearer ${values.jwtToken}`,
+                },
+              }),
+          }
+        );
+
+        eventSource.onmessage = (event) => {
+          try {
+            const secretsUpdatedEvent = JSON.parse(event.data);
+
+            if (values.isEditorDirty) {
+              actions.setIsExternallyUpdated(true);
+            } else {
+              actions.handleSecretsUpdate(secretsUpdatedEvent);
+            }
+          } catch (e) {}
+        };
+
+        eventSource.onerror = () => {
+          eventSource.close();
+
+          if (values.shouldReconnect) {
+            setTimeout(() => {
+              connect();
+            }, 3000);
+          }
+        };
+
+        actions.setSyncConnection(eventSource);
+      };
+
+      connect();
+    },
+    handleSecretsUpdate: async ({ secretsUpdatedEvent }) => {
+      const { newEncryptedSecrets, updatedAt } = secretsUpdatedEvent;
+      const projectKeyDecrypted = values.projectData?.passphraseAsKey;
+      if (!projectKeyDecrypted) return;
+
+      const contentDecrypted = await SymmetricCrypto.decrypt(
+        newEncryptedSecrets,
+        projectKeyDecrypted
+      );
+
+      actions.setInputValue(contentDecrypted);
+
+      if (values.projectData) {
+        actions.setProjectData({
+          ...values.projectData,
+          content: contentDecrypted,
+          updatedAt: updatedAt,
+        });
+      }
+    },
     updateProjectContent: async () => {
       actions.setIsSubmitting(true);
 
@@ -223,6 +344,7 @@ export const projectLogic = kea<projectLogicType>([
         projectId: props.projectId,
         encryptedSecrets: encryptedContent,
       });
+      actions.setIsExternallyUpdated(false);
 
       await IntegrationsApi.pushSecrets(
         values.jwtToken!,

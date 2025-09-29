@@ -18,6 +18,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useActions, useValues } from "kea";
+import { AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -29,6 +30,7 @@ export function DesktopProjectTile() {
     isEditorDirty,
     inputValue,
     lastEditAuthor,
+    isExternallyUpdated,
   } = useValues(projectLogic);
   const { userData } = useValues(authLogic);
   const { updateProjectContent, setInputValue } = useActions(projectLogic);
@@ -51,7 +53,12 @@ export function DesktopProjectTile() {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
-        if (!isSubmitting && isEditorDirty && !isShowingHistory) {
+        if (
+          !isSubmitting &&
+          isEditorDirty &&
+          !isShowingHistory &&
+          !isExternallyUpdated
+        ) {
           updateProjectContent();
         }
       }
@@ -65,6 +72,7 @@ export function DesktopProjectTile() {
     updateProjectContent,
     inputValue,
     isShowingHistory,
+    isExternallyUpdated,
   ]);
 
   // Update the current time every second to refresh the relative time display
@@ -130,7 +138,9 @@ export function DesktopProjectTile() {
 }
 
 function ProjectHeader() {
-  const { projectData, isShowingHistory } = useValues(projectLogic);
+  const { projectData, isShowingHistory, isExternallyUpdated } =
+    useValues(projectLogic);
+
   const { toggleHistoryView } = useActions(projectLogic);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
@@ -261,7 +271,19 @@ function ProjectHeader() {
       </div>
 
       {/* Right button - fixed width */}
-      <div className="absolute right-0 top-1/2 flex -translate-y-1/2">
+      <div className="absolute right-0 top-1/2 flex -translate-y-1/2 items-center gap-4">
+        {isExternallyUpdated && (
+          <div className="relative group/tooltip">
+            <AlertTriangle className="size-5 text-amber-500" />
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max max-w-m bg-black text-white text-sm rounded-md py-2 px-3 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">
+              <p className="font-medium">
+                This project has just been updated by someone else.
+              </p>
+              <p className="font-medium">Refresh to get the new content.</p>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-black"></div>
+            </div>
+          </div>
+        )}
         {!isShowingHistory && <UpdateButton />}
       </div>
 

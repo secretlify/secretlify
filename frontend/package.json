@@ -31,6 +31,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "diff": "^8.0.2",
+    "eventsource": "^4.0.0",
     "kea": "^3.1.7",
     "kea-loaders": "^3.1.1",
     "kea-localstorage": "^3.1.0",
