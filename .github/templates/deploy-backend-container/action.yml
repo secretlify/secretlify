@@ -94,6 +94,5 @@ runs:
           -e GITHUB_CRYPTLY_APP_PRIVATE_KEY="${{ inputs.github-cryptly-app-private-key }}" \
           -e POSTHOG_API_KEY=${{ inputs.posthog-api-key }} \
           -e POSTHOG_HOST=${{ inputs.posthog-host }} \
-          -e POSTHOG_SAMPLE_RATE=${{ inputs.posthog-sample-rate }} \
           -e PORT=${{ inputs.application-port }} \
           ${{ inputs.image-name }}

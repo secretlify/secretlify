@@ -71,7 +71,7 @@ export const EnvConfigs: EnvConfigs = {
     posthog: {
       apiKey: process.env.POSTHOG_API_KEY!,
       host: process.env.POSTHOG_HOST!,
-      sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
+      sampleRate: 1,
     },
     github: {
       app: {
@@ -107,7 +107,7 @@ export const EnvConfigs: EnvConfigs = {
     posthog: {
       apiKey: process.env.POSTHOG_API_KEY!,
       host: process.env.POSTHOG_HOST!,
-      sampleRate: parseFloat(process.env.POSTHOG_SAMPLE_RATE!),
+      sampleRate: 1,
     },
     github: {
       app: {

@@ -70,7 +70,6 @@ jobs:
 
           posthog-api-key: ${{ secrets.BACKEND_POSTHOG_API_KEY }}
           posthog-host: ${{ secrets.BACKEND_POSTHOG_HOST }}
-          posthog-sample-rate: ${{ secrets.BACKEND_POSTHOG_SAMPLE_RATE }}
       - name: Prune
         uses: "./.github/templates/prune"
         with:
