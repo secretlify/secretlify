@@ -1,5 +1,5 @@
 import { FileEditor } from "@/components/app/project/FileEditor";
-import { UpdateButton } from "@/components/app/project/SaveButton";
+import { AutoSaveIndicator } from "@/components/app/project/AutoSaveIndicator";
 import { DesktopHistoryView } from "@/components/app/project/desktop/DesktopHistoryView";
 import { IntegrationsDialog } from "@/components/dialogs/IntegrationsDialog";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
@@ -167,7 +167,7 @@ function ProjectHeader() {
           <div className="relative group">
             <Button
               variant="ghost"
-              size="lg"
+              size="icon"
               onClick={toggleHistoryView}
               aria-label="Go back"
               className="cursor-pointer"
@@ -186,7 +186,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant={isShowingHistory ? "default" : "ghost"}
-                size="lg"
+                size="icon"
                 onClick={toggleHistoryView}
                 aria-label={
                   isShowingHistory ? "Exit history mode" : "View history"
@@ -209,7 +209,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setShareDialogOpen(true)}
                 aria-label="Share project"
                 className="cursor-pointer"
@@ -226,7 +226,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setSettingsDialogOpen(true)}
                 aria-label="Project settings"
                 className="cursor-pointer"
@@ -243,7 +243,7 @@ function ProjectHeader() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setIntegrationsDialogOpen(true)}
                 aria-label="Integrations"
                 className="cursor-pointer"
@@ -284,7 +284,7 @@ function ProjectHeader() {
             </div>
           </div>
         )}
-        {!isShowingHistory && <UpdateButton />}
+        {!isShowingHistory && <AutoSaveIndicator />}
       </div>
 
       <ProjectAccessDialog
@@ -318,7 +318,7 @@ function ProjectHeaderSkeleton() {
           <div className="relative group">
             <Button
               variant="ghost"
-              size="lg"
+              size="icon"
               onClick={toggleHistoryView}
               aria-label="Go back"
               className="cursor-pointer"
@@ -337,7 +337,7 @@ function ProjectHeaderSkeleton() {
             <div className="relative group">
               <Button
                 variant={isShowingHistory ? "default" : "ghost"}
-                size="lg"
+                size="icon"
                 onClick={toggleHistoryView}
                 aria-label={
                   isShowingHistory ? "Exit history mode" : "View history"
@@ -360,7 +360,7 @@ function ProjectHeaderSkeleton() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setShareDialogOpen(true)}
                 aria-label="Share project"
                 className="cursor-pointer"
@@ -377,7 +377,7 @@ function ProjectHeaderSkeleton() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setSettingsDialogOpen(true)}
                 aria-label="Project settings"
                 className="cursor-pointer"
@@ -394,7 +394,7 @@ function ProjectHeaderSkeleton() {
             <div className="relative group">
               <Button
                 variant="ghost"
-                size="lg"
+                size="icon"
                 onClick={() => setIntegrationsDialogOpen(true)}
                 aria-label="Integrations"
                 className="cursor-pointer"
@@ -421,7 +421,7 @@ function ProjectHeaderSkeleton() {
 
       {/* Right button - fixed width */}
       <div className="absolute right-0 top-1/2 flex -translate-y-1/2">
-        {!isShowingHistory && <UpdateButton />}
+        {!isShowingHistory && <AutoSaveIndicator />}
       </div>
 
       <ProjectAccessDialog
