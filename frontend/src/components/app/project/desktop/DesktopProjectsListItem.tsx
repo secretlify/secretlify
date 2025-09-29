@@ -14,10 +14,10 @@ export function DesktopProjectsListItem({
   return (
     <div
       className={cn(
-        "group relative flex items-center justify-between rounded-xl px-3 py-5 text-sm transition border",
+        "group relative flex items-center justify-between px-4 py-2.5 rounded-xl transition",
         isActive
-          ? "bg-primary/10 text-primary border-primary/20"
-          : "border-transparent hover:bg-accent hover:text-accent-foreground"
+          ? "bg-primary/10 backdrop-blur-sm text-primary border border-primary/5"
+          : "hover:bg-accent hover:text-accent-foreground"
       )}
     >
       <Link

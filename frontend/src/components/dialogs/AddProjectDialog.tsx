@@ -34,18 +34,25 @@ export function AddProjectDialog({
   }, [open]);
 
   const handleAddProject = async () => {
-    if (!name || submitting) return;
+    if (!name.trim() || submitting) return;
     try {
       setSubmitting(true);
       await addProject(
         {
-          name: name,
+          name: name.trim(),
         },
         (projectId) => navigate({ to: `/app/project/${projectId}` })
       );
       onOpenChange?.(false);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddProject();
     }
   };
 
@@ -68,6 +75,7 @@ export function AddProjectDialog({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="w-full rounded-md border px-3 py-2 bg-background text-base sm:text-sm"
             autoFocus
             required

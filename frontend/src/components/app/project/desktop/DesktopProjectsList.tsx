@@ -5,6 +5,7 @@ import { useValues } from "kea";
 import { motion } from "motion/react";
 import { useState } from "react";
 import DesktopProjectsListItem from "./DesktopProjectsListItem";
+import { PlusIcon } from "lucide-react";
 
 export function DesktopProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
@@ -47,20 +48,28 @@ export function DesktopProjectsList() {
       initial="hidden"
       animate="visible"
       layout="position"
+      className="bg-card/60 backdrop-blur pt-2 rounded-xl border border-border/60 overflow-hidden"
     >
       <motion.h2
-        className="font-semibold text-muted-foreground tracking-wide text-center mb-2 flex items-center justify-center gap-2"
+        className="text-muted-foreground tracking-wide text-center mb-2 flex items-center justify-between px-4 pr-2 gap-2"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
       >
-        <div className="flex items-center justify-center gap-2">
-          <span>Projects</span>
+        <div className="flex items-center justify-center gap-2 text-sm py-1">
+          <span>Your Projects</span>
           <span className="text-sm">({projects.length})</span>
         </div>
+
+        <button
+          onClick={() => setAddDialogOpen(true)}
+          className="cursor-pointer bg-primary/10 rounded-md p-1"
+        >
+          <PlusIcon className="size-4" />
+        </button>
       </motion.h2>
       <motion.div
-        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm overflow-y-auto custom-scrollbar"
+        className="max-h-[65vh] shadow-sm overflow-y-auto custom-scrollbar p-0.5"
         layout="position"
       >
         <motion.nav className="space-y-2" variants={listVariants} layout>
@@ -79,21 +88,6 @@ export function DesktopProjectsList() {
         </motion.nav>
       </motion.div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-      <motion.div
-        className="mt-2"
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
-      >
-        <button
-          type="button"
-          aria-label="Add project"
-          className="w-full text-center text-xs text-muted-foreground hover:underline cursor-pointer"
-          onClick={() => setAddDialogOpen(true)}
-        >
-          Add project
-        </button>
-      </motion.div>
     </motion.div>
   );
 }

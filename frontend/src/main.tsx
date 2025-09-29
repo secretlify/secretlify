@@ -1,3 +1,4 @@
+import "@fontsource-variable/open-sans";
 import "./index.css";
 
 import { RouterProvider, createRouter } from "@tanstack/react-router";

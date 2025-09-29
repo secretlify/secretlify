@@ -1,17 +1,22 @@
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
-import { Button } from "@/components/ui/button";
+import Waves from "@/components/Waves";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useValues } from "kea";
-import { Meh } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DesktopProjectsList } from "./DesktopProjectsList";
 import { DesktopProjectTile } from "./DesktopProjectTile";
-import Waves from "@/components/Waves";
 
 export function DesktopProjectView() {
   const { projectsLoading, projects } = useValues(projectsLogic);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  // Automatically open the modal when there are no projects
+  useEffect(() => {
+    if (!projectsLoading && projects.length === 0) {
+      setAddDialogOpen(true);
+    }
+  }, [projectsLoading, projects.length]);
 
   if (!projectsLoading && !projects.length) {
     return (
@@ -26,20 +31,6 @@ export function DesktopProjectView() {
             waveAmpX={20}
             waveAmpY={10}
           />
-        </div>
-
-        {/* Content */}
-        <div className="text-center relative z-10">
-          <Meh className="size-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-md text-muted-foreground/60 mb-6">
-            Oops. There are no projects.
-          </p>
-          <Button
-            onClick={() => setAddDialogOpen(true)}
-            className="cursor-pointer"
-          >
-            Create project
-          </Button>
         </div>
 
         <AddProjectDialog

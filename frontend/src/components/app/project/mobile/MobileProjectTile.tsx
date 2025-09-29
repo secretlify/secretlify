@@ -18,7 +18,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { MobileFileEditor } from "./MobileFileEditor";
 import { MobileHistoryView } from "./MobileHistoryView";
-import { MobileSaveButton } from "./MobileSaveButton";
+import { MobileAutoSaveIndicator } from "../MobileAutoSaveIndicator";
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
@@ -141,6 +141,13 @@ function MobileProjectHeader({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
+  // Automatically open the modal when there are no projects
+  useEffect(() => {
+    if (projects.length === 0) {
+      setAddDialogOpen(true);
+    }
+  }, [projects.length]);
+
   const handleSelectChange = (value: string) => {
     if (value === "add-project") {
       setAddDialogOpen(true);
@@ -199,19 +206,19 @@ function MobileProjectHeader({
                 : "Select project"}
             </SelectValue>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-none">
             {projects.map((project) => (
               <SelectItem
                 key={project.id}
                 value={project.id}
-                className="cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
+                className="cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2 border-none"
               >
                 {truncateText(project.name, 40)}
               </SelectItem>
             ))}
             <SelectItem
               value="add-project"
-              className="text-muted-foreground cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2"
+              className="text-muted-foreground cursor-pointer hover:bg-accent/70 focus:bg-accent/70 py-2 border-none"
             >
               + Add new project
             </SelectItem>
@@ -222,7 +229,7 @@ function MobileProjectHeader({
       {/* Right side - Save button - Fixed width to match left */}
       <div className="w-20 relative h-8 flex items-center">
         <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-          {!isShowingHistory && projectData && <MobileSaveButton />}
+          {!isShowingHistory && projectData && <MobileAutoSaveIndicator />}
         </div>
       </div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
