@@ -141,6 +141,13 @@ function MobileProjectHeader({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
+  // Automatically open the modal when there are no projects
+  useEffect(() => {
+    if (projects.length === 0) {
+      setAddDialogOpen(true);
+    }
+  }, [projects.length]);
+
   const handleSelectChange = (value: string) => {
     if (value === "add-project") {
       setAddDialogOpen(true);
