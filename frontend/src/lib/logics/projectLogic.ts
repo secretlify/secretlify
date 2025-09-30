@@ -11,9 +11,9 @@ import {
 } from "kea";
 
 import { createPatch } from "diff";
-import { EventSource } from "eventsource";
 import { loaders } from "kea-loaders";
 import { subscriptions } from "kea-subscriptions";
+import { EventSourceWrapper } from "./EventSourceWrapper";
 import { IntegrationsApi, type Integration } from "../api/integrations.api";
 import {
   ProjectsApi,
@@ -100,7 +100,9 @@ export const projectLogic = kea<projectLogicType>([
     syncProject: true,
     unsyncProject: true,
     openProjectStream: (projectId: string) => ({ projectId }),
-    setSyncConnection: (connection: EventSource | null) => ({ connection }),
+    setSyncConnection: (connection: EventSourceWrapper | null) => ({
+      connection,
+    }),
     setIsExternallyUpdated: (isExternallyUpdated: boolean) => ({
       isExternallyUpdated,
     }),
@@ -115,7 +117,7 @@ export const projectLogic = kea<projectLogicType>([
       },
     ],
     syncConnection: [
-      null as EventSource | null,
+      null as EventSourceWrapper | null,
       {
         setSyncConnection: (_, { connection }) => connection,
         unsyncProject: () => null,
@@ -271,21 +273,19 @@ export const projectLogic = kea<projectLogicType>([
 
     openProjectStream: async ({ projectId }: { projectId: string }) => {
       const connect = () => {
-        const eventSource = new EventSource(
-          `${import.meta.env.VITE_API_URL}/projects/${projectId}/events`,
-          {
-            fetch: (input, init) =>
-              fetch(input, {
-                ...init,
-                headers: {
-                  ...init.headers,
-                  Authorization: `Bearer ${values.jwtToken}`,
-                },
-              }),
-          }
-        );
+        const eventSource = new EventSourceWrapper({
+          url: `${import.meta.env.VITE_API_URL}/projects/${projectId}/events`,
+          fetch: (input, init) =>
+            fetch(input, {
+              ...(init || {}),
+              headers: {
+                ...(init?.headers || {}),
+                Authorization: `Bearer ${values.jwtToken}`,
+              },
+            }),
+        });
 
-        eventSource.onmessage = (event) => {
+        eventSource.onMessage((event) => {
           try {
             const secretsUpdatedEvent = JSON.parse(event.data);
 
@@ -295,9 +295,9 @@ export const projectLogic = kea<projectLogicType>([
               actions.handleSecretsUpdate(secretsUpdatedEvent);
             }
           } catch (e) {}
-        };
+        });
 
-        eventSource.onerror = () => {
+        eventSource.onError(() => {
           eventSource.close();
 
           if (values.shouldReconnect) {
@@ -305,7 +305,7 @@ export const projectLogic = kea<projectLogicType>([
               connect();
             }, 3000);
           }
-        };
+        });
 
         actions.setSyncConnection(eventSource);
       };
