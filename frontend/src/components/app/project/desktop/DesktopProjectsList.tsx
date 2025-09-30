@@ -2,6 +2,7 @@ import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
 import { useValues } from "kea";
+import { Plus } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import DesktopProjectsListItem from "./DesktopProjectsListItem";
@@ -48,22 +49,34 @@ export function DesktopProjectsList() {
       animate="visible"
       layout="position"
     >
-      <motion.h2
-        className="font-semibold text-muted-foreground tracking-wide text-center mb-2 flex items-center justify-center gap-2"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
-      >
-        <div className="flex items-center justify-center gap-2">
-          <span>Projects</span>
-          <span className="text-sm">({projects.length})</span>
-        </div>
-      </motion.h2>
       <motion.div
-        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur p-3 shadow-sm overflow-y-auto custom-scrollbar"
+        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur shadow-sm overflow-y-auto custom-scrollbar"
         layout="position"
       >
-        <motion.nav className="space-y-2" variants={listVariants} layout>
+        <motion.h2
+          className="font-semibold text-muted-foreground tracking-wide flex items-center justify-between p-4 mb-2 sticky top-0 bg-card/60 backdrop-blur z-10"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
+        >
+          <div className="flex items-center justify-center gap-2">
+            <span>Projects</span>
+            <span className="text-sm">({projects.length})</span>
+          </div>
+          <button
+            type="button"
+            aria-label="Add project"
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
+            onClick={() => setAddDialogOpen(true)}
+          >
+            <Plus className="w-6 h-6" />
+          </button>
+        </motion.h2>
+        <motion.nav
+          className="space-y-2 px-3 pb-3"
+          variants={listVariants}
+          layout
+        >
           {projects.map((project) => {
             const isActive = project.id === activeProject?.id;
 
@@ -79,21 +92,6 @@ export function DesktopProjectsList() {
         </motion.nav>
       </motion.div>
       <AddProjectDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-      <motion.div
-        className="mt-2"
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: [0, 1, 0, 1], delay: 0.2 }}
-      >
-        <button
-          type="button"
-          aria-label="Add project"
-          className="w-full text-center text-xs text-muted-foreground hover:underline cursor-pointer"
-          onClick={() => setAddDialogOpen(true)}
-        >
-          Add project
-        </button>
-      </motion.div>
     </motion.div>
   );
 }
