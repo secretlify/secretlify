@@ -1,6 +1,14 @@
 import AddProjectDialog from "@/components/dialogs/AddProjectDialog";
+import { IntegrationsDialog } from "@/components/dialogs/IntegrationsDialog";
 import { ProjectAccessDialog } from "@/components/dialogs/ProjectAccessDialog";
+import { ProjectSettingsDialog } from "@/components/dialogs/ProjectSettingsDialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -11,7 +19,14 @@ import {
 import { useProjects } from "@/lib/hooks/useProjects";
 import { projectLogic } from "@/lib/logics/projectLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
-import { IconArrowLeft, IconHistory, IconShare } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconBrandGithub,
+  IconDots,
+  IconHistory,
+  IconSettings,
+  IconUsers,
+} from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useActions, useValues } from "kea";
 import { AnimatePresence, motion } from "motion/react";
@@ -140,6 +155,8 @@ function MobileProjectHeader({
   const { toggleHistoryView } = useActions(projectLogic);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
 
   const handleSelectChange = (value: string) => {
     if (value === "add-project") {
@@ -174,14 +191,29 @@ function MobileProjectHeader({
             >
               <IconHistory className="size-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShareDialogOpen(true)}
-              aria-label="Share project"
-            >
-              <IconShare className="size-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <IconDots className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setShareDialogOpen(true)}>
+                  <IconUsers className="size-4 mr-2" />
+                  <span>Members</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSettingsDialogOpen(true)}>
+                  <IconSettings className="size-4 mr-2" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setIntegrationsDialogOpen(true)}
+                >
+                  <IconBrandGithub className="size-4 mr-2" />
+                  <span>Integrations</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </>
         )}
       </div>
@@ -229,6 +261,14 @@ function MobileProjectHeader({
       <ProjectAccessDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
+      />
+      <ProjectSettingsDialog
+        open={settingsDialogOpen}
+        onOpenChange={setSettingsDialogOpen}
+      />
+      <IntegrationsDialog
+        open={integrationsDialogOpen}
+        onOpenChange={setIntegrationsDialogOpen}
       />
     </div>
   );
