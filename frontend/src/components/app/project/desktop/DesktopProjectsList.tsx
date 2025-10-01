@@ -68,13 +68,15 @@ export function DesktopProjectsList() {
           <motion.button
             type="button"
             aria-label="Add project"
-            className="text-muted-foreground hover:text-foreground cursor-pointer bg-accent/100 rounded-md p-1"
+            className="text-muted-foreground hover:text-foreground cursor-pointer bg-accent/100 rounded-md w-8 h-8 justify-center items-center"
             onClick={() => setAddDialogOpen(true)}
             animate={{ scale: isAddProjectButtonHovered ? 1.15 : 1 }}
             onHoverStart={() => setAddProjectButtonHovered(true)}
             onHoverEnd={() => setAddProjectButtonHovered(false)}
           >
-            <Plus className="w-6 h-6" />
+            <div className="flex items-center justify-center">
+              <Plus className="w-5 h-5" />
+            </div>
           </motion.button>
         </motion.h2>
         <motion.nav
