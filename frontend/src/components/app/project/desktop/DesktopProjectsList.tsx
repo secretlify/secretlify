@@ -10,6 +10,8 @@ import DesktopProjectsListItem from "./DesktopProjectsListItem";
 export function DesktopProjectsList() {
   const { projects, projectsLoading } = useValues(projectsLogic);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [isAddProjectButtonHovered, setAddProjectButtonHovered] =
+    useState(false);
 
   const { activeProject } = useProjects();
 
@@ -63,14 +65,17 @@ export function DesktopProjectsList() {
             <span>Projects</span>
             <span className="text-sm">({projects.length})</span>
           </div>
-          <button
+          <motion.button
             type="button"
             aria-label="Add project"
-            className="text-muted-foreground hover:text-foreground cursor-pointer"
+            className="text-muted-foreground hover:text-foreground cursor-pointer bg-accent/100 rounded-md p-1"
             onClick={() => setAddDialogOpen(true)}
+            animate={{ scale: isAddProjectButtonHovered ? 1.15 : 1 }}
+            onHoverStart={() => setAddProjectButtonHovered(true)}
+            onHoverEnd={() => setAddProjectButtonHovered(false)}
           >
             <Plus className="w-6 h-6" />
-          </button>
+          </motion.button>
         </motion.h2>
         <motion.nav
           className="space-y-2 px-3 pb-3"
