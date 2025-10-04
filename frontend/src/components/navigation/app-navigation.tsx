@@ -18,11 +18,11 @@ function AppNavigationImpl() {
     ...(!isLoggedIn
       ? [
           {
-            title: "Login",
+            title: "Landing page",
             icon: (
               <LogIn className="h-full w-full text-neutral-500 dark:text-neutral-300" />
             ),
-            href: "/app/login",
+            href: "/",
           },
         ]
       : []),
