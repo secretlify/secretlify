@@ -47,10 +47,10 @@ export const EnvConfigs: EnvConfigs = {
   [OurEnv.Prod]: {
     oauth: {
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        clientIdAlternative: process.env.GITHUB_CLIENT_ID_ALTERNATIVE!,
-        clientSecretAlternative: process.env.GITHUB_CLIENT_SECRET_ALTERNATIVE!,
+        clientId: process.env._GITHUB_CLIENT_ID!,
+        clientSecret: process.env._GITHUB_CLIENT_SECRET!,
+        clientIdAlternative: process.env._GITHUB_CLIENT_ID_ALTERNATIVE!,
+        clientSecretAlternative: process.env._GITHUB_CLIENT_SECRET_ALTERNATIVE!,
       },
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -75,18 +75,18 @@ export const EnvConfigs: EnvConfigs = {
     },
     github: {
       app: {
-        id: process.env.GITHUB_CRYPTLY_APP_ID!,
-        privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
+        id: process.env._GITHUB_CRYPTLY_APP_ID!,
+        privateKey: process.env._GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
       },
     },
   },
   [OurEnv.Dev]: {
     oauth: {
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        clientIdAlternative: process.env.GITHUB_CLIENT_ID_ALTERNATIVE!,
-        clientSecretAlternative: process.env.GITHUB_CLIENT_SECRET_ALTERNATIVE!,
+        clientId: process.env._GITHUB_CLIENT_ID!,
+        clientSecret: process.env._GITHUB_CLIENT_SECRET!,
+        clientIdAlternative: process.env._GITHUB_CLIENT_ID_ALTERNATIVE!,
+        clientSecretAlternative: process.env._GITHUB_CLIENT_SECRET_ALTERNATIVE!,
       },
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -111,8 +111,8 @@ export const EnvConfigs: EnvConfigs = {
     },
     github: {
       app: {
-        id: process.env.GITHUB_CRYPTLY_APP_ID!,
-        privateKey: process.env.GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
+        id: process.env._GITHUB_CRYPTLY_APP_ID!,
+        privateKey: process.env._GITHUB_CRYPTLY_APP_PRIVATE_KEY!,
       },
     },
   },
