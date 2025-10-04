@@ -52,7 +52,7 @@ export function DesktopProjectsList() {
       layout="position"
     >
       <motion.div
-        className="max-h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur shadow-sm overflow-y-auto custom-scrollbar"
+        className="h-[65vh] rounded-2xl border border-border bg-card/60 backdrop-blur shadow-sm overflow-y-auto custom-scrollbar"
         layout="position"
       >
         <motion.h2
