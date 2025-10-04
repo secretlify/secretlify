@@ -1,7 +1,7 @@
-import { useValues, useActions } from "kea";
 import { useNavigate } from "@tanstack/react-router";
-import { commonLogic } from "../logics/commonLogic";
+import { useActions, useValues } from "kea";
 import type { User } from "../api/user.api";
+import { commonLogic } from "../logics/commonLogic";
 
 export function useAfterLogin() {
   const navigate = useNavigate();
@@ -17,10 +17,7 @@ export function useAfterLogin() {
       navigate({ to: `/invite/${inviteIdToShowAfterLogin}` });
       setInviteIdToShowAfterLogin(null);
     } else {
-      navigate({
-        to: "/app/project/$projectId",
-        params: { projectId: "demo" },
-      });
+      navigate({ to: "/app/project" });
     }
   };
 

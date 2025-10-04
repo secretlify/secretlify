@@ -1,15 +1,15 @@
 import { DesktopProjectView } from "@/components/app/project/desktop/DesktopProjectView";
 import { MobileProjectView } from "@/components/app/project/mobile/MobileProjectView";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import { BindLogic, useValues } from "kea";
-import { projectLogic } from "@/lib/logics/projectLogic";
-import { useEffect, useState } from "react";
+import { useProjects } from "@/lib/hooks/useProjects";
 import { authLogic } from "@/lib/logics/authLogic";
+import { integrationsLogic } from "@/lib/logics/integrationsLogic";
 import { invitationsLogic } from "@/lib/logics/invitationsLogic";
+import { projectLogic } from "@/lib/logics/projectLogic";
 import { projectSettingsLogic } from "@/lib/logics/projectSettingsLogic";
 import { projectsLogic } from "@/lib/logics/projectsLogic";
-import { useProjects } from "@/lib/hooks/useProjects";
-import { integrationsLogic } from "@/lib/logics/integrationsLogic";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { BindLogic, useValues } from "kea";
+import { useEffect, useState } from "react";
 
 export function ProjectPage() {
   const { projects } = useValues(projectsLogic);
@@ -37,6 +37,8 @@ export function ProjectPage() {
         to: "/app/project/$projectId",
         params: { projectId: projects[0].id },
       });
+    } else if (projects.length === 0) {
+      navigate({ to: "/app/project" });
     }
   }, [projects, activeProject]);
 
