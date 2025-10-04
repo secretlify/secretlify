@@ -35,8 +35,6 @@ inputs:
     required: true
   posthog-host:
     required: true
-  posthog-sample-rate:
-    required: true
 
   google-client-id:
     required: true

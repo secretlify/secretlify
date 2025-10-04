@@ -69,7 +69,7 @@ jobs:
             ../.github/scripts/decrypt-backup.sh \
               "$ENCRYPTED_FILE" \
               "$DECRYPTED_FILE" \
-              "${{ secrets.BACKEND_AGE_SECRET_KEY }}"
+              "${{ secrets.AGE_SECRET_KEY }}"
             
             BACKUP_FILE="$DECRYPTED_FILE"
           else
@@ -103,7 +103,7 @@ jobs:
       - name: Test Mongo Connection
         run: |
           echo "🔗 Testing Mongo connection..."
-          mongosh "${{ secrets.BACKEND_MONGO_URL }}" --eval "db.adminCommand({ ping: 1 })"
+          mongosh "${{ secrets.MONGO_URL }}" --eval "db.adminCommand({ ping: 1 })"
           echo "✅ Mongo connection successful"
         shell: bash
 
@@ -113,7 +113,7 @@ jobs:
           cd restore
 
           # Restore database from backup. --drop will delete existing collections before restoring.
-          mongorestore --uri="${{ secrets.BACKEND_MONGO_URL }}" --drop backup/mongodb_dump
+          mongorestore --uri="${{ secrets.MONGO_URL }}" --drop backup/mongodb_dump
 
           echo "✅ Database restoration completed"
         shell: bash
@@ -124,7 +124,7 @@ jobs:
 
           # List restored collections
           echo "📋 Restored collections:"
-          mongosh "${{ secrets.BACKEND_MONGO_URL }}" --eval "db.getCollectionNames()"
+          mongosh "${{ secrets.MONGO_URL }}" --eval "db.getCollectionNames()"
 
           echo "✅ Restoration verification completed"
         shell: bash

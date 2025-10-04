@@ -36,44 +36,44 @@ jobs:
         with:
           context: ./backend
           file: ./backend/Dockerfile
-          dockerhub-username: ${{ secrets.BACKEND_DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.BACKEND_DOCKERHUB_TOKEN }}
-          image-name: ${{ secrets.BACKEND_DOCKER_IMAGE_NAME }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          image-name: ${{ secrets.DOCKER_IMAGE_NAME }}
       - name: Deploy
         uses: "./.github/templates/deploy-backend-container"
         with:
-          host: ${{ secrets.BACKEND_SSH_HOST }}
-          username: ${{ secrets.BACKEND_SSH_USERNAME }}
-          port: ${{ secrets.BACKEND_SSH_PORT }}
-          ssh-private-key: ${{ secrets.BACKEND_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           server-port: 3002
           application-port: 3002
-          image-name: ${{ secrets.BACKEND_DOCKER_IMAGE_NAME }}
+          image-name: ${{ secrets.DOCKER_IMAGE_NAME }}
           container-name: secretly-backend
-          jwt-secret: ${{ secrets.BACKEND_JWT_SECRET }}
+          jwt-secret: ${{ secrets.JWT_SECRET }}
           our-env: prod
-          mongo-url: ${{ secrets.BACKEND_MONGO_URL }}
+          mongo-url: ${{ secrets.MONGO_URL }}
 
-          google-client-id: ${{ secrets.BACKEND_GOOGLE_CLIENT_ID }}
-          google-client-secret: ${{ secrets.BACKEND_GOOGLE_CLIENT_SECRET }}
-          google-redirect-uri: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI }}
-          google-redirect-uri-alternative: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI_ALTERNATIVE }}
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          google-redirect-uri: ${{ secrets.GOOGLE_REDIRECT_URI }}
+          google-redirect-uri-alternative: ${{ secrets.GOOGLE_REDIRECT_URI_ALTERNATIVE }}
 
-          github-client-id: ${{ secrets.BACKEND_GITHUB_CLIENT_ID }}
-          github-client-secret: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET }}
-          github-client-id-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_ID_ALTERNATIVE }}
-          github-client-secret-alternative: ${{ secrets.BACKEND_GITHUB_CLIENT_SECRET_ALTERNATIVE }}
-          github-cryptly-app-id: ${{ secrets.BACKEND_GITHUB_CRYPTLY_APP_ID }}
-          github-cryptly-app-private-key: ${{ secrets.BACKEND_GITHUB_CRYPTLY_APP_PRIVATE_KEY }}
+          github-client-id: ${{ secrets.GITHUB_CLIENT_ID }}
+          github-client-secret: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          github-client-id-alternative: ${{ secrets.GITHUB_CLIENT_ID_ALTERNATIVE }}
+          github-client-secret-alternative: ${{ secrets.GITHUB_CLIENT_SECRET_ALTERNATIVE }}
+          github-cryptly-app-id: ${{ secrets.GITHUB_CRYPTLY_APP_ID }}
+          github-cryptly-app-private-key: ${{ secrets.GITHUB_CRYPTLY_APP_PRIVATE_KEY }}
 
-          logdash-api-key: ${{ secrets.BACKEND_LOGDASH_API_KEY }}
+          logdash-api-key: ${{ secrets.LOGDASH_API_KEY }}
 
-          posthog-api-key: ${{ secrets.BACKEND_POSTHOG_API_KEY }}
-          posthog-host: ${{ secrets.BACKEND_POSTHOG_HOST }}
+          posthog-api-key: ${{ secrets.POSTHOG_API_KEY }}
+          posthog-host: ${{ secrets.POSTHOG_HOST }}
       - name: Prune
         uses: "./.github/templates/prune"
         with:
-          host: ${{ secrets.BACKEND_SSH_HOST }}
-          username: ${{ secrets.BACKEND_SSH_USERNAME }}
-          port: ${{ secrets.BACKEND_SSH_PORT }}
-          ssh-private-key: ${{ secrets.BACKEND_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
