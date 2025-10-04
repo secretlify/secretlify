@@ -142,15 +142,16 @@ export class ProjectCoreController {
     @Body() body: UpdateProjectBody,
     @CurrentUserId() userId: string,
   ): Promise<ProjectSerialized> {
-    const project = await this.projectWriteService.update(projectId, body, userId);
-    const memberIds = [...project.members.keys()];
+    const project = await this.projectReadService.findById(projectId);
+    this.requireIsAllowedUpdate(project.members.get(userId)!, body);
+
+    const updatedProject = await this.projectWriteService.update(projectId, body, userId);
+    const memberIds = [...updatedProject.members.keys()];
     const members = await this.userReadService.readByIds(memberIds);
     const membersHydrated = members.map(UserSerializer.serializePartial);
     const latestVersion = await this.projectSecretsVersionReadService.findLatestByProjectId(
       new Types.ObjectId(projectId),
     );
-
-    this.requireIsAllowedUpdate(project.members.get(userId)!, body);
 
     if (body.encryptedSecrets) {
       const author = membersHydrated.find((m) => m.id === userId);
@@ -161,7 +162,7 @@ export class ProjectCoreController {
     }
 
     return ProjectSerializer.serialize(
-      { ...project, updatedAt: latestVersion.updatedAt },
+      { ...updatedProject, updatedAt: latestVersion.updatedAt },
       membersHydrated,
       latestVersion.encryptedSecrets,
     );
