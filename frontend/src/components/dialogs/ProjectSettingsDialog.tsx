@@ -43,7 +43,7 @@ function RenameProjectSection() {
 
     try {
       setIsRenaming(true);
-      await updateProject({ projectId: projectData.id, name: newName.trim() });
+      await updateProject({ name: newName.trim() });
       setShowRenameForm(false);
     } finally {
       setIsRenaming(false);

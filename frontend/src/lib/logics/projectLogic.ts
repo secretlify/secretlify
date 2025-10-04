@@ -13,7 +13,6 @@ import {
 import { createPatch } from "diff";
 import { loaders } from "kea-loaders";
 import { subscriptions } from "kea-subscriptions";
-import { EventSourceWrapper } from "./EventSourceWrapper";
 import { IntegrationsApi, type Integration } from "../api/integrations.api";
 import {
   ProjectsApi,
@@ -23,6 +22,7 @@ import {
 import { AsymmetricCrypto } from "../crypto/crypto.asymmetric";
 import { SymmetricCrypto } from "../crypto/crypto.symmetric";
 import { authLogic } from "./authLogic";
+import { EventSourceWrapper } from "./EventSourceWrapper";
 import { keyLogic } from "./keyLogic";
 import type { projectLogicType } from "./projectLogicType";
 import { projectsLogic } from "./projectsLogic";
@@ -340,10 +340,13 @@ export const projectLogic = kea<projectLogicType>([
         values.projectData?.passphraseAsKey!
       );
 
-      await ProjectsApi.updateProjectContent(values.jwtToken!, {
-        projectId: props.projectId,
-        encryptedSecrets: encryptedContent,
-      });
+      await ProjectsApi.updateProjectContent(
+        values.jwtToken!,
+        props.projectId,
+        {
+          encryptedSecrets: encryptedContent,
+        }
+      );
       actions.setIsExternallyUpdated(false);
 
       await IntegrationsApi.pushSecrets(

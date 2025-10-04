@@ -89,7 +89,7 @@ export const projectSettingsLogic = kea<projectSettingsLogicType>([
 
   listeners(({ props, values, actions }) => ({
     updateProject: async ({ dto }) => {
-      await ProjectsApi.updateProject(values.jwtToken!, dto);
+      await ProjectsApi.updateProject(values.jwtToken!, props.projectId, dto);
       actions.loadProjects();
 
       actions.setUpdateProjectLoading(false);

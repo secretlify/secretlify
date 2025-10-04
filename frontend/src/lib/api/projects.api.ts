@@ -48,12 +48,10 @@ export interface CreateProjectDto {
 }
 
 export interface UpdateProjectContentDto {
-  projectId: string;
   encryptedSecrets: string;
 }
 
 export interface UpdateProjectDto {
-  projectId: string;
   name?: string;
   githubInstallationId?: number | null;
 }
@@ -135,10 +133,11 @@ export class ProjectsApi {
 
   public static async updateProjectContent(
     jwtToken: string,
+    projectId: string,
     dto: UpdateProjectContentDto
   ): Promise<void> {
     await axios.patch(
-      `/projects/${dto.projectId}`,
+      `/projects/${projectId}`,
       { encryptedSecrets: dto.encryptedSecrets },
       {
         headers: {
@@ -150,10 +149,11 @@ export class ProjectsApi {
 
   public static async updateProject(
     jwtToken: string,
+    projectId: string,
     dto: UpdateProjectDto
   ): Promise<Project> {
     const response = await axios.patch<Project>(
-      `/projects/${dto.projectId}`,
+      `/projects/${projectId}`,
       dto,
       {
         headers: {
